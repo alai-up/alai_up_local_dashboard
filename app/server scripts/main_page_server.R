@@ -106,7 +106,10 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                            color = "gray",
                            weight = 1,
                            fillOpacity = 0.5,
-                           label = labels))
+                           label = labels) |>
+               addLegend(pal = pal, values = ~n,
+                         opacity = 0.7, title = "Number of patients",
+                         position = "bottomright"))
     })
   })
 
@@ -233,7 +236,10 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                            color = "gray",
                            weight = 1,
                            fillOpacity = 0.5,
-                           label = labels))
+                           label = labels) |>
+               addLegend(pal = pal, values = ~n_on_cab,
+                         opacity = 0.7, title = "Number ever on iCAB/RPV",
+                         position = "bottomright"))
     })
   })
 

@@ -572,6 +572,8 @@ server <- function(input, output, session) {
                            label = "Create map",
                            icon = icon("play")),
               leafletOutput("zip_map"),
+              div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                  "Note: Use caution when sharing this map, as small cell sizes may risk patient confidentiality."),
               downloadButton(outputId = "map_data_download", label = "Download data"))
         )
       )
@@ -675,6 +677,8 @@ server <- function(input, output, session) {
                            label = "Create map",
                            icon = icon("play")),
               leafletOutput("zip_map_b"),
+              div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                  "Note: Use caution when sharing this map, as small cell sizes may risk patient confidentiality."),
               downloadButton(outputId = "map_data_b_download", label = "Download data"))
         )
       )
