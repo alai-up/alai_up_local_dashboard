@@ -2451,6 +2451,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$clinic_level_vl <- renderPlot({
     temp <- tbl |>
       select(alai_up_uid,site,
+             hiv_dx_date,
              icab_rpv_shot1_date,icab_rpv_shot2_date,
              contains("icab_rpv_discontinued"),
              contains("hiv_vl")) |>
@@ -2460,12 +2461,14 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                    names_pattern = "hiv_vl_(.*)_(date|result)") |>
       mutate(vl_index = case_when(
         vl_index == "pre_icab" ~ "0",
+        vl_index == "dx" ~ "-1",
         .default = vl_index
       ),
       vl_index = as.numeric(vl_index),
       result = as.numeric(result),
       across(contains("date"),as.Date)) |>
-      filter(!is.na(result) & !is.na(date)) |>
+      filter(!is.na(result) & !is.na(date),
+             date > hiv_dx_date + 180) |>
       mutate(
         .by = alai_up_uid,
         first_shot_date = min(icab_rpv_shot1_date,icab_rpv_shot2_date,na.rm = T),
