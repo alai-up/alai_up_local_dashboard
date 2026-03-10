@@ -2468,7 +2468,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       result = as.numeric(result),
       across(contains("date"),as.Date)) |>
       filter(!is.na(result) & !is.na(date),
-             date > hiv_dx_date + 180) |>
+             date > hiv_dx_date + 180 | is.na(hiv_dx_date)) |>
       mutate(
         .by = alai_up_uid,
         first_shot_date = min(icab_rpv_shot1_date,icab_rpv_shot2_date,na.rm = T),
@@ -2529,15 +2529,15 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     if (input$clinic_level_vl_pct_choice == "Percent"){
       p <- p +
-        geom_bar(position = "fill", stat = "identity") +
+        geom_bar(position = "fill", stat = "identity", just = 1) +
         scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
         labs(y = "Percent of patients with VL")
     } else {
-      p <- p + geom_bar(position = "stack", stat = "identity") +
+      p <- p + geom_bar(position = "stack", stat = "identity", just = 1) +
         labs(y = "Number of patients with VL")}
 
-    p <- p + scale_x_date(name = "Period",
-                          breaks = scales::breaks_width(str_c(input$clinic_level_vl_time_choice, " months")),
+    p <- p + scale_x_date(name = "Period ending",
+                          breaks = unique(temp$period),
                           date_labels = "%b %Y",
                           expand = expansion(mult = c(0, 0.05))) +
       scale_fill_manual(name = "Most recent VL",
