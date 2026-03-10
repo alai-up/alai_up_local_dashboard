@@ -144,17 +144,20 @@ server <- function(input, output, session) {
                  detail = "This may take a moment...",
                  value = 0.4,
                  {
-                   if (input$filter_by_year == TRUE &&
-                       length(input$date_filter) == 2 & !is.null(input$active_year)) {
+                   # If filter is NOT active, return full data immediately
+                   if (is.null(input$filter_by_year) || input$filter_by_year == FALSE) {
+                     return(df())
+                   }
+
+                   # If filter IS active, require the dependent inputs.
+                   # This prevents the reactive from running until the UI elements are ready.
+                   req(input$active_year, input$date_filter, length(input$date_filter) == 2)
+
                      get_current_year_data(df(),
                                            as.numeric(input$active_year),
                                            filter_dates = TRUE,
                                            start_date = as.Date(input$date_filter[1]),
                                            end_date = as.Date(input$date_filter[2]))
-                   }
-                   else {
-                     df()  # fallback if no date range selected
-                   }
                  })
 
   })
@@ -183,7 +186,7 @@ server <- function(input, output, session) {
   active_year_options <- reactive({
     req(df())
     df() |>
-      select(contains("active")) |>
+      select(contains("active") & where(~!all(is.na(.)))) |>
       names() |>
       str_extract("\\d+") |>
       as.numeric() |>
@@ -225,6 +228,71 @@ server <- function(input, output, session) {
                             margin-left: 20px; display: inline-block;")
   })
 
+
+  output$filter_by_year_ui <- renderUI({
+    req(input$file1)
+    checkboxInput('filter_by_year',label = "Filter time period",value = FALSE)
+  })
+
+  output$active_year_choice <- renderUI({
+    req(active_year_options())
+
+    selectInput("active_year", "Active year of patients",
+                choices = active_year_options(),
+                selected = year(Sys.Date()))
+
+  })
+
+  observeEvent(input$active_year, {
+    freezeReactiveValue(input, "date_filter")
+  })
+
+  # A reactiveVal to cache the computed max date from tbl()
+  cached_max_date <- reactiveVal()
+
+  # Compute and cache the max date only when tbl() changes
+  observeEvent(df(), {
+
+    # Defensive check in case 'tbl' has no date columns
+    date_cols <- df() |>
+      select(contains("date")&contains("icab_rpv"))
+
+    if (ncol(date_cols) == 0) {
+      cached_max_date(NULL)  # Fallback default
+    } else {
+      max_date <- date_cols |>
+        summarize(across(everything(), \(x) max(x, na.rm = TRUE))) |>
+        pivot_longer(everything()) |>
+        summarize(max(value, na.rm = TRUE)) |>
+        pull()
+
+      cached_max_date(max_date)
+    }
+  })
+
+  computed_end_date <- reactive({
+    req(input$active_year, cached_max_date(), active_year_options())
+
+    # Use the cached_max_date if the selected year is the latest available year
+    if (as.numeric(input$active_year) == max(active_year_options(), na.rm = TRUE)) {
+      cached_max_date()
+    } else {
+      as.Date(sprintf("%s-12-31", input$active_year))
+    }
+  })
+
+  output$date_filter_ui <- renderUI({
+    req(input$file1, computed_end_date())
+
+    dateRangeInput(
+      inputId = 'date_filter',
+      label = "Range of event dates",
+      start = as.Date("2021-01-01"),
+      end = computed_end_date(),
+      min = as.Date("2021-01-01"),
+      max = cached_max_date()
+    )
+  })
 
   observeEvent(input$sidebarItemExpanded, {
     if (input$sidebarItemExpanded == "<strong>LAIindicators</strong>") {
@@ -414,69 +482,6 @@ server <- function(input, output, session) {
                          selected = filter_options()[1])
     })
   }
-
-
-  output$filter_by_year_ui <- renderUI({
-    req(input$file1)
-    checkboxInput('filter_by_year',label = "Filter time period",value = FALSE)
-  })
-
-  output$active_year_choice <- renderUI({
-    req(active_year_options())
-
-    selectInput("active_year", "Active year of patients",
-                choices = active_year_options(),
-                selected = active_year_options() |> last())
-
-  })
-
-  # A reactiveVal to cache the computed max date from tbl()
-  cached_max_date <- reactiveVal()
-
-  # Compute and cache the max date only when tbl() changes
-  observeEvent(tbl(), {
-
-    # Defensive check in case 'tbl' has no date columns
-    date_cols <- tbl() |>
-      select(contains("date")&contains("icab_rpv"))
-
-    if (ncol(date_cols) == 0) {
-      cached_max_date(as.Date("2025-12-31"))  # Fallback default
-    } else {
-      max_date <- date_cols |>
-        summarize(across(everything(), \(x) max(x, na.rm = TRUE))) |>
-        pivot_longer(everything()) |>
-        summarize(max(value, na.rm = TRUE)) |>
-        pull()
-
-      cached_max_date(max_date)
-    }
-  })
-
-  computed_end_date <- reactive({
-    req(input$active_year, cached_max_date())
-
-    if (input$active_year == 2025) {
-      cached_max_date()
-    } else {
-      as.Date(sprintf("%s-12-31", input$active_year))
-    }
-  })
-
-  output$date_filter_ui <- renderUI({
-    req(input$file1, computed_end_date())
-
-    dateRangeInput(
-      inputId = 'date_filter',
-      label = "Range of event dates",
-      start = as.Date("2021-01-01"),
-      end = computed_end_date(),
-      min = as.Date("2021-01-01"),
-      max = cached_max_date()
-    )
-  })
-
-
 
   output$data_explore_page <- renderUI({
     req(input$file1)
