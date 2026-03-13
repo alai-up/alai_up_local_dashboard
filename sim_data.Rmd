@@ -149,21 +149,21 @@ df <- input_df |>
                                                              0.01,0.03,0.03,0.04,0.05)),
            .default = NA
          ),
-         # rx
+         # rx 
          icab_rpv_rx = case_when(
            num_counsel == 1 & icab_rpv_counsel_1_outcome == 3 & icab_rpv_screen_1_outcome == 1 ~ rbinom(n,1,0.98),
            num_counsel == 2 & icab_rpv_counsel_2_outcome == 3 & icab_rpv_screen_2_outcome == 1 ~ rbinom(n,1,0.98)),
          icab_rpv_rx_date = if_else(icab_rpv_rx == 1, ref_date - runif(n,60,90),NA),
-
+         
          # icab shots
          num_shots = if_else(icab_rpv_rx == 1,sample(seq(2,20,by = 1),size = n, replace = T),NA),
-
+         
          # discontinuation
          icab_rpv_discontinued = if_else(icab_rpv_rx == 1, rbinom(n,1,0.2),NA),
          icab_rpv_discontinued_reason = if_else(icab_rpv_discontinued ==1,
                                                 sample(x = c(1,2,3,4,5,6,7,8,9,10,20), size = n, replace = T),
                                                 NA),
-
+         
          # hiv vl
          num_vls = sample(seq(7,10),size = n, replace = T)
          )
@@ -205,10 +205,10 @@ cab_doses <- df |>
            }
   )) |>
   mutate(dose = if_else(index > num_shots,NA,dose),
-         date = if_else(index > num_shots,NA,date)) |>
+         date = if_else(index > num_shots,NA,date)) |> 
   pivot_wider(names_from = "index",
               values_from = c("date","dose"),
-              names_glue = "icab_rpv_shot{index}_{.value}")
+              names_glue = "icab_rpv_shot{index}_{.value}") 
 ```
 
 viral loads
@@ -223,7 +223,7 @@ vl_df <- df |>
   arrange(alai_up_uid, index) |>
   mutate(.by = alai_up_uid,
          result = if_else(any(!is.na(num_vls)),
-                          sample(c(1,2,3,4,5,6),1,replace = T,
+                          sample(c(1,2,3,4,5,6),1,replace = T, 
                                  prob = c(0.7,0.1,0.05,0.07,0.04,0.04)),
                           NA),
          date = if_else(
@@ -240,10 +240,10 @@ vl_df <- df |>
   mutate(result = if_else(index > num_vls,NA,result),
          date = if_else(index > num_vls,NA,date)) |>
   mutate(.by = alai_up_uid,
-         max_cab_date = max(date,na.rm = T)) |>
+         max_cab_date = max(date,na.rm = T)) |> 
   pivot_wider(names_from = "index",
               values_from = c("date","result"),
-              names_glue = "hiv_vl_{index}_{.value}")
+              names_glue = "hiv_vl_{index}_{.value}") 
 ```
 
 
@@ -272,3 +272,10 @@ write to dataframe
 writexl::write_xlsx(filled_df,
                     path = "data/simulated_data.xlsx")
 ```
+
+
+
+
+
+
+
