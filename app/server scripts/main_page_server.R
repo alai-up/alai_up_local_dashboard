@@ -392,8 +392,11 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     bar_names <- ic_df$x_lab[-1]
     if (length(unique(ic_summary_df$site)) > 1){
       max_y = min(2,max(ic_df$high_pct,na.rm = T))
+      caption = str_wrap("Error bars have been used to show range of values from lowest to highest by site. A narrow interval means less variability by site. Prescribed may be above 100% if patients not clinically eligible are prescribed. Initiated may be above 100% if patients switched into the clinic while on LAI.",
+                              width = 150)
     } else {
       max_y = min(2,max(ic_df$Percent,na.rm = T))
+      caption = NULL
     }
     text_size = base_size / 2.5
 
@@ -408,7 +411,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                 family = "Roboto") +
       scale_y_discrete(limits = rev(bar_names),
                        labels = \(x) str_wrap(x, width = 30)) +
-      labs(y = NULL, x = NULL) +
+      labs(y = NULL, x = NULL,
+           caption = caption) +
       scale_x_continuous(labels = scales::percent, breaks = seq(0, max_y, 0.2),
                          limits = c(0,max_y + 0.15)) +
       expand_limits(y = 1) +
