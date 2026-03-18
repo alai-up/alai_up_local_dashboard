@@ -381,7 +381,10 @@ server <- function(input, output, session) {
                      "Immigration status" = "immigration_status_undoc",
                      "Language" = "language",
                      "Incarceration history" = "incarceration_history",
-                     "Recent CD4" = "cd4_recent_result")
+                     "Recent CD4" = "cd4_recent_result",
+                     "SDOH Other 1" = "SDOH_other_1",
+                     "SDOH Other 2" = "SDOH_other_2",
+                      "SDOH Other 3" = "SDOH_other_3")
 
     if (length(site_list()) > 1){
       choice_list <- c(choice_list,c("Site" = "site"))
@@ -410,7 +413,10 @@ server <- function(input, output, session) {
                    "Immigration status" = "immigration_status_undoc",
                    "Language" = "language",
                    "Incarceration history" = "incarceration_history",
-                   "Recent CD4" = "cd4_recent_result")
+                   "Recent CD4" = "cd4_recent_result",
+                   "SDOH Other 1" = "SDOH_other_1",
+                   "SDOH Other 2" = "SDOH_other_2",
+                    "SDOH Other 3" = "SDOH_other_3")
 
     if (length(site_list()) > 1){
       all_vars <- c(all_vars,c("Site" = "site"))
@@ -512,7 +518,8 @@ server <- function(input, output, session) {
                      "Risk MSM","Risk IDU","Risk Heterosex",
                      "Employment status","Poverty level",
                      "Immigration status","Language",
-                     "Incarceration history","Recent CD4")
+                     "Incarceration history","Recent CD4",
+                     "SDOH Other 1","SDOH Other 2","SDOH Other 3")
 
     if (length(site_list()) > 1){
       choice_list <- c(choice_list,"Site")
@@ -618,7 +625,8 @@ server <- function(input, output, session) {
                      "Risk MSM","Risk IDU","Risk Heterosex",
                      "Employment status","Poverty level",
                      "Immigration status","Language",
-                     "Incarceration history","Recent CD4")
+                     "Incarceration history","Recent CD4",
+                     "SDOH Other 1","SDOH Other 2","SDOH Other 3")
 
     if (length(site_list()) > 1){
       choice_list <- c(choice_list,"Site")
@@ -812,7 +820,8 @@ server <- function(input, output, session) {
       "Risk MSM","Risk IDU","Risk Heterosex",
       "Employment status","Poverty level",
       "Immigration status","Language",
-      "Incarceration history","Recent CD4")
+      "Incarceration history","Recent CD4",
+      "SDOH Other 1","SDOH Other 2","SDOH Other 3")
 
     if (length(site_list()) > 1){
       temp <- c(temp,"Site")

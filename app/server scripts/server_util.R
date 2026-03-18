@@ -50,7 +50,8 @@ load_and_process_data <- function(input_df) {
                      "age","sex_birth","ethnicity_hispanic","insurance_status",
                      "housing_status","gender_id","risk_msm","risk_idu","risk_heterosex",
                      "employment_status", "poverty_level","immigration_status_undoc",
-                     "language","incarceration_history","cd4_recent_result") |>
+                     "language","incarceration_history","cd4_recent_result",
+                    "SDOH_other_1","SDOH_other_2","SDOH_other_3") |>
     select(-any_of(c("date","index","event"))) |> 
     filter(age >= 18) |>
     # mutate(
@@ -201,7 +202,19 @@ load_and_process_data <- function(input_df) {
       cd4_recent_result >= 350 & cd4_recent_result < 500 ~ "350-499",
       cd4_recent_result >= 500 ~ "500+",
       .default = "Unknown"
-    ), levels = c("<200","200-349","350-499","500+","Unknown"))) |>
+    ), levels = c("<200","200-349","350-499","500+","Unknown")),
+    SDOH_other_1 = factor(case_when(
+      !is.na(SDOH_other_1) ~ SDOH_other_1,
+      .default = "Unknown"
+    )),
+    SDOH_other_2 = factor(case_when(
+      !is.na(SDOH_other_2) ~ SDOH_other_2,
+      .default = "Unknown"
+    )),
+    SDOH_other_3 = factor(case_when(
+      !is.na(SDOH_other_3) ~ SDOH_other_3,
+      .default = "Unknown"
+    ))) |>
     mutate(ever_on_cab = if_else(!is.na(icab_rpv_shot1_date) | 
                                  !is.na(icab_rpv_shot2_date),1,0))
   
@@ -374,7 +387,10 @@ demo_plot <- function(input_df, in_col, base_size_in,
                     in_col_string == "language" ~ "Language",
                     in_col_string == "incarceration_history" ~ "Incarceration history",
                     in_col_string == "cd4_recent_result" ~ "Recent CD4",
-                    in_col_string == "site" ~ "Site")
+                    in_col_string == "site" ~ "Site",
+                    in_col_string == "SDOH_other_1" ~ "SDOH Other 1",
+                    in_col_string == "SDOH_other_2" ~ "SDOH Other 2",
+                    in_col_string == "SDOH_other_3" ~ "SDOH Other 3")
   
   if (is.null(selected_year)){
     title_text = str_c("PWH at ", selected_site,
@@ -612,7 +628,8 @@ prepare_ic_summary <- function(input_df) {
              risk_msm, risk_idu, risk_heterosex,
              housing_status, employment_status,
              poverty_level, immigration_status_undoc, 
-             language, incarceration_history,cd4_recent_result) |>
+             language, incarceration_history,cd4_recent_result,
+             SDOH_other_1, SDOH_other_2, SDOH_other_3) |>
     summarise(
       PWH = sum(PWH),
       PWH1 = sum(PWH1),
@@ -783,7 +800,10 @@ ic_var_plot <- function(input_df,
                       group_var_string == "language" ~ "Language",
                       group_var_string == "incarceration_history" ~ "Incarceration history",
                       group_var_string == "cd4_recent_result" ~ "Recent CD4",
-                      group_var_string == "site" ~ "Site")
+                      group_var_string == "site" ~ "Site",
+                      group_var_string == "SDOH_other_1" ~ "SDOH Other 1",
+                      group_var_string == "SDOH_other_2" ~ "SDOH Other 2",
+                      group_var_string == "SDOH_other_3" ~ "SDOH Other 3")
     
     
     if (in_var %in% c("assessed","educated","screened")) {
@@ -1625,7 +1645,10 @@ full_report_table <- function(summary_df, cab_df){
                 "Immigration status" = "immigration_status_undoc",
                 "Language" = "language",
                 "Incarceration history" = "incarceration_history",
-                "Recent CD4" = "cd4_recent_result")
+                "Recent CD4" = "cd4_recent_result",
+                "SDOH Other 1" = "SDOH_other_1",
+                "SDOH Other 2" = "SDOH_other_2",
+                "SDOH Other 3" = "SDOH_other_3")
   
   ic_outcomes <- summary_df |>
     pivot_wider(names_from = "Variable", values_from = "Value") |>
