@@ -239,7 +239,7 @@ server <- function(input, output, session) {
 
     selectInput("active_year", "Active year of patients",
                 choices = active_year_options(),
-                selected = year(Sys.Date()))
+                selected = active_year_options()[length(active_year_options())])
 
   })
 

@@ -53,7 +53,7 @@ load_and_process_data <- function(input_df) {
                      "language","incarceration_history","cd4_recent_result",
                     "SDOH_other_1","SDOH_other_2","SDOH_other_3") |>
     select(-any_of(c("date","index","event"))) |> 
-    filter(age >= 18) |>
+    filter(age >= 18 | is.na(age)) |>
     # mutate(
     #   hiv_dx_date = case_when(str_length(hiv_dx_date)==4 ~ as.Date(paste0(hiv_dx_date,"-01-01"),format = "%Y-%m-%d"),
     #                           str_detect(hiv_dx_date,"/") ~ as.Date(paste0(str_sub(hiv_dx_date,1,4),"-01-01"),format = "%Y-%m-%d"),
@@ -235,6 +235,17 @@ load_and_process_data <- function(input_df) {
     mutate(icab_rpv_discontinued_date = coalesce(icab_rpv_discontinued_date.x, icab_rpv_discontinued_date.y)) |>
     select(-icab_rpv_discontinued_date.x, -icab_rpv_discontinued_date.y)
   
+  max_date <- df |>
+    select(contains("date") & contains("icab_rpv")) |>
+    summarize(across(everything(), \(x) suppressWarnings(max(x, na.rm = TRUE)))) |>
+    pivot_longer(everything()) |>
+    summarize(max_date = suppressWarnings(max(value, na.rm = TRUE))) |>
+    pull(max_date)
+  
+  if (is.infinite(max_date)) {
+    max_date <- Sys.Date()
+  }
+
   disc_dates2 <- df |>
     filter(is.na(icab_rpv_discontinued) &
              (!is.na(icab_rpv_shot1_date) | !is.na(icab_rpv_shot2_date))) |> 
@@ -245,9 +256,7 @@ load_and_process_data <- function(input_df) {
     filter(.by = alai_up_uid,
            date == last(date, na_rm = T)) |>
     mutate(icab_rpv_discontinued = case_when(
-      # TODO this date is hard coded but we need a more flexible solution
-      # Either an input or an autodetected date could work
-      date + days(90) < as.Date("2025-08-31") ~ "1",
+      date + days(90) < max_date ~ "1",
       .default = "0"
     ),
     icab_rpv_discontinued_date = case_when(
