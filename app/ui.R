@@ -78,7 +78,7 @@ ui <- dashboardPage(
                                           radioButtons("vl_cutoff_input",
                                                        label = "Choose VL cutoff",
                                                        choices = c("50 copies/mL","200 copies/mL"),
-                                                       selected = "50 copies/mL"))),
+                                                       selected = "200 copies/mL"))),
                 menuItem(strong("Data Explorer"),tabName = 'page2'),
                 div(id = "explorer_filters",
                     conditionalPanel(
@@ -180,4 +180,3 @@ ui <- dashboardPage(
     )
   )
 )   
-

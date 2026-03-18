@@ -52,7 +52,7 @@ renderSectionPage <- function(input, output, page_id, sections_info, n_output_id
                    inputId = paste0(section$id,"_pct_choice"),
                    label = "Percent or Count?", 
                    choices = c("Percent","Count"),
-                   selected = "Percent")))
+                   selected = "Count")))
       } else{NULL}},
       plotOutput(section$plot, height = "auto"),
       uiOutput(section$download),
