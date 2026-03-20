@@ -15,7 +15,7 @@ list(
             for all patients.')
   ),
   p('Please refer to the reference guide and user guide for detailed instructions. For
-     help preparing your data, please refer to the data dictionary and data validator tools.')
+     help preparing your data, please refer to the data dictionary and data validator tools.'),
   h3('Instructions'),
   p(strong('The Dashboard is organized into the following sections designed to support
     at-a-glance data review, and more in-depth data exploration. If you have multiple
@@ -25,7 +25,7 @@ list(
   p("If counseling and screening (also called 'assessment') are not consistently recorded 
      at your site, select 'No' in the top left. This will focus the indicators and calculations
      on patients prescribed LAI ART only. If counseling and screening is consistently recorded,
-     continue below.")
+     continue below."),
   tags$ol(   
     tags$li('Clinic Demographics. This page shows clinic demographic data for 
             patients overall and by patient characteristics, overall and stratified by LAI use. 
