@@ -14,28 +14,37 @@ list(
     tags$li('Guide efforts to address gaps and improve the quality of services 
             for all patients.')
   ),
+  p('Please refer to the reference guide and user guide for detailed instructions. For
+     help preparing your data, please refer to the data dictionary and data validator tools.')
   h3('Instructions'),
   p(strong('The Dashboard is organized into the following sections designed to support
-    at-a-glance data review, and more in-depth data exploration.  Select a 
-    clinical site to review, then navigate to one of the sections below. To
-    view data on all ALAI UP sites, select “All ALAI UP Sites”')),
+    at-a-glance data review, and more in-depth data exploration. If you have multiple
+    locations, you can select a 
+    clinical site to review, then navigate to one of the sections below. Data for all sites
+    is selected by default. If you do not have multiple clinic locations, continue below.')),
+  p("If counseling and screening (also called 'assessment') are not consistently recorded 
+     at your site, select 'No' in the top left. This will focus the indicators and calculations
+     on patients prescribed LAI ART only. If counseling and screening is consistently recorded,
+     continue below.")
   tags$ol(   
     tags$li('Clinic Demographics. This page shows clinic demographic data for 
-            patients overall and by patient characteristics, regardless of LAI use. 
-            To view demographic data for the selected site , click on 
+            patients overall and by patient characteristics, overall and stratified by LAI use. 
+            To view demographic data, click on 
             "Clinic Demographics" in the menu on the left of the page.'),
     br(),
     tags$li('LAI Indicators. This section shows the LAI care gaps throughout 
             the care continuum: number and percent assessed, eligible, prescribed,
-            initiated, sustained. This section also shows LAI outcomes of the 
-            clinical process: number and percent of PWH on LAI who received LAI 
-            early, on time, or late, and number of injections administered early,
-            on time or late.  To view the LAI care indicator data for the selected
-            site, click on "LAI Indicators" on the left of the page. Once you 
-            click on LAI indicators in the menu, a new menu will open with a 
+            initiated, sustained. 
+            To view the LAI care indicator, click on "LAI Indicators" on the left of the page. 
+            Once you click on LAI indicators in the menu, a new menu will open with a 
             column on the left showing all the indicators you can look at for
             your site.'),
     br(),
+    tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI patients: 
+            number and percent of PWH on LAI who received LAI 
+            early, on time, or late, and time to viral suppression and viral failure.
+            There is also data on clinic-level viral load, including patients on oral ART.'),
+    br(),    
     tags$li('Data Explore. This page allows you to dive deeper into your data,
             by viewing LAI indicators disaggregated by up to two variables at 
             once. If you want to view more detailed data subset by two variables
@@ -52,10 +61,7 @@ list(
     (HHS) U1SHA46532. The award provided 100% 
     of total costs and totaled $7,450,000. The contents are those of the developers. 
     They may not reflect the policies of HRSA, HHS, or the U.S. Government.'),
-  p('This beta Version 0.3 was completed on 12/16/2025. The Dashboard includes
-    data from consenting ALAI UP sites through 8/31/2025 (except for SAAF as of 12/16/25).
-    Users can see data 
-    aggregated across all ALAI UP sites and aggregate data from their own site.')
+  p('This Version 1.0 was completed on 3/20/2026.')
   
 )
   

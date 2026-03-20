@@ -18,11 +18,10 @@ help_text <- list(
     tags$ul(   
       tags$li('"Assessed" is a combined indicator representing the number of 
               PWH with documented education or screening for iCAB/RPV.'),
-      tags$li('"Eligible" indicates the number of PWH who were assessed 
-              to be eligible for iCAB/RPV based on site specific eligibility
-              criteria.'),
+      tags$li('"Interested & Eligible" indicates the number of PWH who were assessed 
+              to be both interested and eligible for iCAB/RPV.'),
       tags$li('"Prescribed" indicates the number of PWH who were prescribed 
-              iCAB/RPV among those eligible.'),
+              iCAB/RPV.'),
       tags$li('"Initiated" indicates the number of PWH who received at least 
               one injection of iCAB/RPV among those prescribed.'),
       tags$li('"Sustained" indicates the number of PWH who were currently 
@@ -43,10 +42,10 @@ help_text <- list(
   
   info2 = tagList(
     p('This page shows the number and percentage of people with HIV at the site
-      in the current year who were assessed. "Assessed" is a combined indicator
+      who were assessed. "Assessed" is a combined indicator
       representing the number of PWH with documented education or screening for iCAB/RPV'),
-    p("To view details about the number of patients educated, screened, and 
-      interested in iCAB/RPV, you can navigate to those pages by clicking on 
+    p("To view details about the number of patients educated, screened, 
+      interested, and eligible for iCAB/RPV, you can navigate to those pages by clicking on 
       the corresponding tabs on the left."),
     p('Light grey bars show indicators with fewer than 10 patients and therefore
       should be interpreted with caution, given the sample size. Dotted lines
@@ -55,42 +54,44 @@ help_text <- list(
   
   info3 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      in the current year who were educated about iCAB/RPV."),
+      who were educated about iCAB/RPV."),
     p("To view details about the number of interested in iCAB/RPV following 
       education, you can navigate to the corresponding tab on the left.")
   ),
   
   info4 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      in the current year interested in iCAB/RPV among those educated. There is
+      interested in iCAB/RPV among those educated. There is
       also a plot showing reasons for not being interested in iCAB/RPV.")
   ),
   
   info5 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      in the current year screened for eligibility for iCAB/RPV.")
+      screened for eligibility for iCAB/RPV.")
   ),
   
   info6 = tagList(
     p("This page shows the number and percentage of people with HIV at the site 
-      in the current year who were assessed to be eligible for iCAB/RPV based 
+      who were assessed to be eligible for iCAB/RPV based 
       on site specific eligibility criteria. There is also a plot showing reasons
       for not being eligible for iCAB/RPV.")
   ),
   
   info7 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      in the current year who were prescribed iCAB/RPV among those eligible.")
+      who were prescribed iCAB/RPV. The percentage is calculated
+      among those eligible (if screening is consistently recorded) or among all PWH
+      at the clinic (if screening is not consistently recorded).")
   ),
   
   info8 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      in the current year who received at least one injection of iCAB/RPV among those prescribed.")
+      who received at least one injection of iCAB/RPV among those prescribed.")
   ),
   
   info9 = tagList(
     p("This page shows the number and percentage of people with HIV at the site 
-      in the current year currently sustained on iCAB/RPV at the site among those initiated. 
+      currently sustained on iCAB/RPV at the site among those initiated. 
       There is also a plot showing reasons for discontinuation.")
   ),
   
@@ -115,14 +116,22 @@ help_text <- list(
       or 200 copies/mL can be used to calculate viral suppression. Viral failure 
       is defined as a signle viral load >1000 copies/mL or 2 consecutive viral loads
       >200 copies/mL.'),
-    p('All plots are calculated using the Kaplan-Meier estimator. This gives a statistical
+    p('The first 5 plots are calculated using the Kaplan-Meier estimator. This gives a statistical
       estimate of the time to the first occurence of the event. Therefore, the percentages
       are only statistical estimates and have some uncertainty attached to them. The
       number of people contributing data (in parentheses) can give a sense of how certain
       or undercertain the estimate is.'),
     p('For the first plot, ideally the time to viral suppression will be short and reach 
       near 100%. For the subsequent plots, ideally time to first elevated viral load 
-      or first viral failure will be long, and the percentage will remain low.')
+      or first viral failure will be long, and the percentage will remain low.'),
+    p('For the clinic-level viral load, the percentage of people with a viral load above/below
+      the chosen threshold in each time period is shown. The time periods can be every 3 months,
+      every 6 months, or every 12 months. It is stratified by iCAB/RPV receipt in period. 
+      Note that, while each person can only contribute 1 viral load result during each period, 
+      that does not mean that each person appears in every period. In fact, the population of
+      people in each period can vary widely; it solely depends on who received a viral load 
+      test during that period. This metric should be considered preliminary; interpret this data
+      with some caution.')
   )
   
 )
