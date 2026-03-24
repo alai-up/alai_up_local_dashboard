@@ -247,38 +247,24 @@ server <- function(input, output, session) {
     freezeReactiveValue(input, "date_filter")
   })
 
-  # A reactiveVal to cache the computed max date from tbl()
-  cached_max_date <- reactiveVal()
+  computed_end_date <- reactive({
+    req(input$active_year, df(), active_year_options())
 
-  # Compute and cache the max date only when tbl() changes
-  observeEvent(df(), {
+    # Get data for the active year without date filtering to avoid circular dependency
+    year_data <- get_current_year_data(df(), as.numeric(input$active_year), filter_dates = FALSE)
 
-    # Defensive check in case 'tbl' has no date columns
-    date_cols <- df() |>
-      select(contains("date")&contains("icab_rpv"))
+    date_cols <- year_data |>
+      select(contains("date") & contains("icab_rpv"))
 
     if (ncol(date_cols) == 0) {
-      cached_max_date(NULL)  # Fallback default
-    } else {
-      max_date <- date_cols |>
-        summarize(across(everything(), \(x) max(x, na.rm = TRUE))) |>
-        pivot_longer(everything()) |>
-        summarize(max(value, na.rm = TRUE)) |>
-        pull()
-
-      cached_max_date(max_date)
+      return(as.Date(sprintf("%s-12-31", input$active_year)))
     }
-  })
 
-  computed_end_date <- reactive({
-    req(input$active_year, cached_max_date(), active_year_options())
-
-    # Use the cached_max_date if the selected year is the latest available year
-    if (as.numeric(input$active_year) == max(active_year_options(), na.rm = TRUE)) {
-      cached_max_date()
-    } else {
-      as.Date(sprintf("%s-12-31", input$active_year))
-    }
+    date_cols |>
+      summarize(across(everything(), \(x) max(x, na.rm = TRUE))) |>
+      pivot_longer(everything()) |>
+      summarize(max(value, na.rm = TRUE)) |>
+      pull()
   })
 
   output$date_filter_ui <- renderUI({
@@ -290,7 +276,7 @@ server <- function(input, output, session) {
       start = as.Date("2021-01-01"),
       end = computed_end_date(),
       min = as.Date("2021-01-01"),
-      max = cached_max_date()
+      max = computed_end_date()
     )
   })
 
