@@ -56,7 +56,7 @@ list(
   br(),
   p('The development of the ALAI UP (Accelerating Implementation of 
     Multilevel-strategies to Advance Long-Acting Injectables for Underserved 
-    Populations) dashboard was financially supported the Health Resources 
+    Populations) dashboard was financially supported by the Health Resources 
     and Services Administration (HRSA), Department of Health and Human Services 
     (HHS) U1SHA46532. The award provided 100% 
     of total costs and totaled $7,450,000. The contents are those of the developers. 
