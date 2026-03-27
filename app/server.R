@@ -237,10 +237,16 @@ server <- function(input, output, session) {
   output$active_year_choice <- renderUI({
     req(active_year_options())
 
-    selectInput("active_year", "Active year of patients",
-                choices = active_year_options(),
-                selected = active_year_options()[length(active_year_options())])
+    # defensive check if active year options is empty for some reason
+    if (length(active_year_options()) == 0){
+      choices = year(Sys.Date)
+    } else {
+      choices = active_year_options()
+    }
 
+    selectInput("active_year", "Active year of patients",
+                choices = choices,
+                selected = choices[length(choices)])
   })
 
   observeEvent(input$active_year, {
