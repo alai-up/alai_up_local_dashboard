@@ -9,13 +9,12 @@ list(
                    solidHeader = TRUE,
                    tagList(
                      p("The data explorer allows you to dive deeper into your data,
-                       by showing LAI indicators across two variables at once. 
-                       The bar plot and the table below it include the same data."),
+                       by showing LAI indicators across two variables at once."),
                      p("First, select an indicator of interest from the dropdown list."),
                      p("Second, select a comparison variable. This variable will
                        appear at the base of the bar."),
                      p("Third, select a filter variable. This will allow you to
-                     select select specific groups of this filter variable that
+                       select specific groups of this filter variable that
                        you are interested in focusing on. The filtered groups will
                        appear at the end of a group of bars."),
                      p("For example, suppose you are interested in comparing the

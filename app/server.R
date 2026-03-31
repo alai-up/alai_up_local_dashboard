@@ -1022,7 +1022,7 @@ server <- function(input, output, session) {
     list(id = "age9", title = "Age", plot = "age9_plot", download = "age9_download_ui"),
     list(id = "insurance9", title = "Insurance status", plot = "insurance9_plot", download = "insurance9_download_ui"),
     list(id = "keypop9", title = "Key populations", plot = "keypop9_plot", download = "keypop9_download_ui"),
-    list(id = "time9", title = "Time spent on CAB", plot = "time9_plot", download = "time9_download_ui"),
+    list(id = "time9", title = "Time spent on iCAB/RPV", plot = "time9_plot", download = "time9_download_ui"),
     list(id = "reason9", title = "Discontinued reasons", plot = "discontinued_reason_plot", download = "discontinued_reason_download_ui")
   )
 

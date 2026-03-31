@@ -92,7 +92,7 @@ help_text <- list(
   info9 = tagList(
     p("This page shows the number and percentage of people with HIV at the site 
       currently sustained on iCAB/RPV at the site among those initiated. 
-      There is also a plot showing reasons for discontinuation.")
+      There is also a plot showing time spent on iCAB/RPV and reasons for discontinuation.")
   ),
   
   info10 = tagList(
@@ -104,8 +104,9 @@ help_text <- list(
       depending on the site’s clinical practice. Either 28 or 56 days (4 or 8 weeks),
       or 31 or 62 days (1 or 2 months) may be used to calculate the target interval.'),
     p('"On time injections" shows the overall percentage of injections administered early, on time, and late.'),
-    p('"On time injections by time" shows how early or late particular injections were, 
-      with the on time injection region shaded in blue.'),
+    p('"On time injections by days since prior injection" shows how early or late particular injections were, 
+        with the on time injection region shaded in blue. There is a plot for monthly injection intervals and
+        a plot for bimonthly injection intervals.'),
     p('"Late injections by patient" shows how many patients had how many late injections.'),
     p('"Early injections by patient" shows how many patients had how many early injections.')
   ),
@@ -114,13 +115,13 @@ help_text <- list(
     p('This page shows viral load results among patients on iCAB/RPV. Different 
       viral load cutoffs of interest can be selected on the left. Either 50 copies/mL 
       or 200 copies/mL can be used to calculate viral suppression. Viral failure 
-      is defined as a signle viral load >1000 copies/mL or 2 consecutive viral loads
+      is defined as a single viral load >1000 copies/mL or 2 consecutive viral loads
       >200 copies/mL.'),
     p('The first 5 plots are calculated using the Kaplan-Meier estimator. This gives a statistical
-      estimate of the time to the first occurence of the event. Therefore, the percentages
+      estimate of the time to the first occurrence of the event. Therefore, the percentages
       are only statistical estimates and have some uncertainty attached to them. The
       number of people contributing data (in parentheses) can give a sense of how certain
-      or undercertain the estimate is.'),
+      or uncertain the estimate is.'),
     p('For the first plot, ideally the time to viral suppression will be short and reach 
       near 100%. For the subsequent plots, ideally time to first elevated viral load 
       or first viral failure will be long, and the percentage will remain low.'),

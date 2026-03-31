@@ -1642,9 +1642,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                                    "1" = "#FE5000"),
                         labels = c("0" = "Sustained on CAB",
                                    "1" = "Discontinued")) +
-      labs(x = "Time spent on CAB (days)",
+      labs(x = "Time spent on iCAB/RPV (days)",
            y = NULL,
-           title = "Time spent on CAB as of reporting period") +
+           title = "Time spent on iCAB/RPV as of reporting period") +
       theme_minimal(base_size = 14,
                     base_family = "Roboto") +
       theme(axis.text = element_text(size = rel(1.1),color = "black"),
