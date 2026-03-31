@@ -19,20 +19,20 @@ list(
                        appear at the end of a group of bars."),
                      p("For example, suppose you are interested in comparing the
                        percentage educated across race categories for PWH aged 
-                       25-34. You would (1) select “Educated” as the indicator; 
-                       (2) select 'Race’ as the comparison variable; and (3) 
-                       'Age' as the filter variable, and check off only age 
-                       group 25-34. The resulting plot would show you the number
-                       and percent educated by race for those aged 25-34, 
+                       25-34. You would (1) select 'Educated' as the indicator; 
+                       (2) select 'Race' as the comparison variable; and (3) select
+                       'Age' as the filter variable, and check off only the '25-34' 
+                       age group. The resulting plot would show you the number
+                       and percentage educated by race for those aged 25-34, 
                        allowing for simple comparison between the groups."),
-                     p("If demographics are selected, then the bars will show the 
+                     p("If 'Demographics' is selected as the indicator, the bars will show the 
                        distribution of the comparison variable among the group selected 
                        via the filter variable. For example, if 'Age' is the comparison 
                        variable and 'Sex' is the filter variable, you will see the 
                        age distribution by sex."),
                      p("If you are interested in focusing on an active year of 
                        patients, or filtering the dates of the events being 
-                       included in the plot, click the 'Filter time period' button
+                       included in the plot, check the 'Filter time period' box
                        to expand those options.")
                    )
                )

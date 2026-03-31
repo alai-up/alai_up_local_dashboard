@@ -13,7 +13,7 @@ help_text <- list(
   ),
   
   info0 = tagList(
-    p("This page shows an overview of the LAI care gap analysis. There are also 
+    p("This page provides an overview of the LAI care gap analysis. It also includes 
       details about the documented education and screening outcomes for those assessed."),
     tags$ul(   
       tags$li('"Assessed" is a combined indicator representing the number of 
@@ -29,33 +29,33 @@ help_text <- list(
     ),
     p('The "Outcomes among those assessed" table shows the distribution of education 
       and screening outcomes among those assessed. The "Percent" buttons allow you to
-      change how the percentages are calculated: "table" for using the number assessed
-      as the denominator, "row" for using the row total, and "column" for using the
-      column total. For example to see the percentage eligible among those interested, 
-      using row percent is best. The highlighted cell shows the number interested and
+      change how the percentages are calculated: "Table" for using the number assessed
+      as the denominator, "Row" for using the row total, and "Column" for using the
+      column total. For example, to see the percentage eligible among those interested, 
+      using the row percent is best. The highlighted cell shows the number of people who are interested and
       eligible, as in the LAI care gap analysis.'),
     p('Use the Jump to Section navigator on the near left to jump to different 
       sections of this page.'),
     p("To view details about each LAI care indicator, click the corresponding tab
-      on the far left.")
+      on the main sidebar on the left.")
   ),
   
   info2 = tagList(
     p('This page shows the number and percentage of people with HIV at the site
       who were assessed. "Assessed" is a combined indicator
-      representing the number of PWH with documented education or screening for iCAB/RPV'),
+      representing the number of PWH with documented education or screening for iCAB/RPV.'),
     p("To view details about the number of patients educated, screened, 
       interested, and eligible for iCAB/RPV, you can navigate to those pages by clicking on 
       the corresponding tabs on the left."),
-    p('Light grey bars show indicators with fewer than 10 patients and therefore
-      should be interpreted with caution, given the sample size. Dotted lines
-      show the average for that indicator across all clinic patients.')
+    p('Light gray bars show indicators with fewer than 10 patients and therefore
+      should be interpreted with caution, given the sample size. The dotted line
+      shows the average for that indicator across all clinic patients.')
   ),
   
   info3 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
       who were educated about iCAB/RPV."),
-    p("To view details about the number of interested in iCAB/RPV following 
+    p("To view details about the number of patients interested in iCAB/RPV following 
       education, you can navigate to the corresponding tab on the left.")
   ),
   
@@ -72,8 +72,8 @@ help_text <- list(
   
   info6 = tagList(
     p("This page shows the number and percentage of people with HIV at the site 
-      who were assessed to be eligible for iCAB/RPV based 
-      on site specific eligibility criteria. There is also a plot showing reasons
+      who were assessed to be eligible for iCAB/RPV based on site-specific 
+      eligibility criteria. It also includes a plot showing reasons
       for not being eligible for iCAB/RPV.")
   ),
   
@@ -96,13 +96,13 @@ help_text <- list(
   ),
   
   info10 = tagList(
-    p('This page shows the numbers and percentages of early, on time, and late 
-      injections out of all follow-up injections after the first injections. "Early" 
+    p("This page shows the numbers and percentages of early, on time, and late 
+      injections out of all follow-up injections after the first injection. 'Early' 
       is defined as occurring more than seven days before the target injection 
-      date.  "Late" is defined as occurring more than seven days after the target
-      injection date. The target injection date can be toggled on the left 
-      depending on the site’s clinical practice. Either 28 or 56 days (4 or 8 weeks),
-      or 31 or 62 days (1 or 2 months) may be used to calculate the target interval.'),
+      date. 'Late' is defined as occurring more than seven days after the target
+      injection date. The target injection date can be toggled on the left, 
+      depending on the site's clinical practice. Either 28 or 56 days (4 or 8 weeks),
+      or 31 or 62 days (1 or 2 months) may be used to calculate the target interval."),
     p('"On time injections" shows the overall percentage of injections administered early, on time, and late.'),
     p('"On time injections by days since prior injection" shows how early or late particular injections were, 
         with the on time injection region shaded in blue. There is a plot for monthly injection intervals and
@@ -131,7 +131,7 @@ help_text <- list(
       Note that, while each person can only contribute 1 viral load result during each period, 
       that does not mean that each person appears in every period. In fact, the population of
       people in each period can vary widely; it solely depends on who received a viral load 
-      test during that period. This metric should be considered preliminary; interpret this data
+      test during that period. This metric should be considered preliminary; interpret these data
       with some caution.')
   )
   
