@@ -1011,7 +1011,7 @@ not_interested_reason_func <- function(input_df, base_size_in){
       case_when(
         disinterest_reason == 1 ~ "Satisfaction with current regimen",
         disinterest_reason == 2 ~ "Fear/dislike of needles",
-        disinterest_reason == 3 ~ "Quantity of clinic visits",
+        disinterest_reason == 3 ~ "Frequency of clinic visits",
         disinterest_reason == 4 ~ "Concerns about cost",
         disinterest_reason == 5 ~ "Concerns about side effects",
         disinterest_reason == 6 ~ "Concerns about newness of modality",
@@ -1020,7 +1020,7 @@ not_interested_reason_func <- function(input_df, base_size_in){
       ),
       levels = c("Satisfaction with current regimen",
                  "Fear/dislike of needles",
-                 "Quantity of clinic visits",
+                 "Frequency of clinic visits",
                  "Concerns about cost",
                  "Concerns about side effects",
                  "Concerns about newness of modality",
@@ -1109,7 +1109,7 @@ not_eligible_reason_func <- function(input_df,base_size_in){
         not_elig_reason == 7 ~ "History of oral ART non-adherence",
         not_elig_reason == 8 ~ "Buttocks implant",
         not_elig_reason == 9 ~ "Pregnancy/Family planning",
-        not_elig_reason == 10 ~ "Not covered--Ryan White",
+        not_elig_reason == 10 ~ "Not covered by insurance/payor",
         not_elig_reason == 20 ~ "Other",
         .default = "Unknown"
       ),
@@ -1122,7 +1122,7 @@ not_eligible_reason_func <- function(input_df,base_size_in){
                  "History of oral ART non-adherence",
                  "Buttocks implant",
                  "Pregnancy/Family planning",
-                 "Not covered--Ryan White",
+                 "Not covered by insurance/payor",
                  "Other",
                  "Unknown"))) |>
     filter(Assessed == 1,
@@ -1194,7 +1194,7 @@ discontinued_reason_func <- function(input_df, base_size_in){
       case_when(
         icab_rpv_discontinued_reason == 1 ~ "Satisfaction with previous regimen",
         icab_rpv_discontinued_reason == 2 ~ "Fear/dislike of needles",
-        icab_rpv_discontinued_reason == 3 ~ "Quantity of visit schedule",
+        icab_rpv_discontinued_reason == 3 ~ "Frequency of visit schedule",
         icab_rpv_discontinued_reason == 4 ~ "Concerns about cost",
         icab_rpv_discontinued_reason == 5 ~ "Concerns about newness of modality",
         icab_rpv_discontinued_reason == 6 ~ "Failing treatment",
@@ -1207,7 +1207,7 @@ discontinued_reason_func <- function(input_df, base_size_in){
         .default = "Unknown"),
       levels = c("Satisfaction with previous regimen",
                  "Fear/dislike of needles",
-                 "Quantity of visit schedule",
+                 "Frequency of visit schedule",
                  "Concerns about cost",
                  "Concerns about newness of modality",
                  "Failing treatment",
