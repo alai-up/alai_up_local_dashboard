@@ -46,6 +46,7 @@ load_and_process_data <- function(input_df) {
   
   df <- input_df |>
     as_tibble() |>
+    # for historical reasons, uid was named alai_up_uid. so preserving that here
     rename(alai_up_uid = any_of(c("uid", "alai_up_uid"))) |>
     add_missing_cols("race_ai_an","race_asian","race_black","race_nh_pi","race_white","race_other",
                      "age","sex_birth","ethnicity_hispanic","insurance_status",
@@ -1413,17 +1414,15 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
     group_by(alai_up_uid) |>
     fill(dose,.direction = "updown") |> # fill based on what's there, but check this with sites
     mutate(shot_date = if_else(shot_appt == 1, date, NA)) |>
-    mutate(interval = if_else(!dose%in%c(4,5,6), shot_date-lag(shot_date),NA),
-           late = case_when(dose %in% c(4,5,6) ~ NA,
-                            lag(shot_index) == 1 & lag(dose) != 6 ~ interval > interval_1+7,
-                            lag(dose) %in% c(1,3,4,5) ~ interval > interval_1+7,
-                            lag(dose) %in% c(2,6) ~ interval > interval_2+7,
+    mutate(interval = if_else(dose != 0, shot_date-lag(shot_date),NA),
+           late = case_when(dose == 0~ NA,
+                            lag(dose) == 1 ~ interval > interval_1+7,
+                            lag(dose) == 2 ~ interval > interval_2+7,
                             is.na(lag(dose)) ~ interval > interval_2 + 7,
                             .default = FALSE),
-           early = case_when(dose %in% c(4,5,6) ~ NA,
-                             lag(shot_index) == 1 & lag(dose) != 6  ~ interval < interval_1-7,
-                             lag(dose) %in% c(1,3,4,5) ~ interval < interval_1-7,
-                             lag(dose) %in% c(2,6) ~ interval < interval_2-7,
+           early = case_when(dose == 0 ~ NA,
+                             lag(dose) == 1 ~ interval < interval_1-7,
+                             lag(dose) == 2 ~ interval < interval_2-7,
                              is.na(lag(dose)) ~ interval < interval_1 - 7,
                              .default = FALSE),
            bridged = case_when(date >= icab_rpv_bridge1_start_date & 
@@ -1436,10 +1435,10 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
                                late == FALSE & early == FALSE ~ "On time",
                                late == TRUE & bridged == TRUE ~ "On time")) |>
     mutate(lag_dose = lag(dose),
-           monthly = case_when(lag(shot_index) == 1 & lag_dose %in% c(1,2) ~ "Second injection",
-                               lag_dose %in% c(3,4) ~ "Second injection",
-                               lag_dose %in% c(1,5) ~ "Monthly",
-                               lag_dose %in% c(2,6) ~ "Bimonthly",
+           monthly = case_when(lag(shot_index) == 1 & lag_dose == 1 ~ "Second injection",
+                               lag_dose == 0 ~ "Second injection",
+                               lag_dose == 1 ~ "Monthly",
+                               lag_dose == 2 ~ "Bimonthly",
                                .default = NA)) |>
     ungroup() |>
     arrange(alai_up_uid,date)
