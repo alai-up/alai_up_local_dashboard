@@ -17,7 +17,7 @@ data("zip_code_db")
 
 get data
 ```{r}
-input_df <- read_excel("data/ALAI UP Client-level Reporting Tool_short_template_2.26.26.xlsx",
+input_df <- read_excel("data/ALAI UP Client-level Reporting Tool Template_4.7.26.xlsx",
                        sheet = "Client-level data")
 
 input_df[1:1000,] <- NA
@@ -33,7 +33,7 @@ set.seed(123)
 n = 1000
 df <- input_df |>
   mutate(site = "My site",
-         alai_up_uid = row_number(),
+         uid = row_number(),
          zip_code = sample(ny_zips$zipcode,n, replace = T),
          age = round(truncnorm::rtruncnorm(n, a = 18, b = 90, mean = 42, sd = 13)),
          birth_year = 2025 - age,
@@ -173,14 +173,14 @@ df <- input_df |>
 cab doses
 ```{r}
 cab_doses <- df |>
-  select(alai_up_uid,contains("icab_rpv_shot"),num_shots,ref_date) |>
+  select(uid,contains("icab_rpv_shot"),num_shots,ref_date) |>
   pivot_longer(cols = contains("icab_rpv_shot"),
                names_to = c("index",".value"),
                names_pattern = "icab_rpv_shot(\\d+)_(date|dose)") |>
   mutate(index = as.numeric(index),
          date = as.Date(date)) |>
-  arrange(alai_up_uid, index) |>
-  mutate(.by = alai_up_uid,
+  arrange(uid, index) |>
+  mutate(.by = uid,
          dose = if_else(any(!is.na(num_shots)),
                         sample(c(1,2),1,replace = T),
                         NA),
@@ -214,14 +214,14 @@ cab_doses <- df |>
 viral loads
 ```{r}
 vl_df <- df |>
-  select(alai_up_uid,contains("hiv_vl")&!contains("dx")&!contains("pre"),num_vls,ref_date) |>
+  select(uid,contains("hiv_vl")&!contains("dx")&!contains("pre"),num_vls,ref_date) |>
   pivot_longer(cols = contains("hiv_vl"),
                names_to = c("index",".value"),
                names_pattern = "hiv_vl_(\\d+)_(date|dose)") |>
   mutate(index = as.numeric(index),
          date = as.Date(date)) |>
-  arrange(alai_up_uid, index) |>
-  mutate(.by = alai_up_uid,
+  arrange(uid, index) |>
+  mutate(.by = uid,
          result = if_else(!is.na(num_vls),
                           sample(c(1,2,3,4,5,6),1,replace = T,
                                  prob = c(0.6,0.2,0.05,0.05,0.05,0.05)),
@@ -239,7 +239,7 @@ vl_df <- df |>
   filter(!is.na(index)) |>
   mutate(result = if_else(index > num_vls,NA,result),
          date = if_else(index > num_vls,NA,date)) |>
-  mutate(.by = alai_up_uid,
+  mutate(.by = uid,
          # want a random chance of the VL going up or down at any given point,
          result = accumulate(seq_along(result), \(x,i) {
           y <- result[i]
@@ -258,7 +258,7 @@ vl_df <- df |>
           },
           .init =result[1]
          ) |> tail(-1)) |> 
-  mutate(.by = alai_up_uid,
+  mutate(.by = uid,
          max_cab_date = max(date,na.rm = T)) |> 
   pivot_wider(names_from = "index",
               values_from = c("date","result"),

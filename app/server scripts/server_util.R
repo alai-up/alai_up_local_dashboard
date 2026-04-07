@@ -46,6 +46,7 @@ load_and_process_data <- function(input_df) {
   
   df <- input_df |>
     as_tibble() |>
+    rename(alai_up_uid = any_of(c("uid", "alai_up_uid"))) |>
     add_missing_cols("race_ai_an","race_asian","race_black","race_nh_pi","race_white","race_other",
                      "age","sex_birth","ethnicity_hispanic","insurance_status",
                      "housing_status","gender_id","risk_msm","risk_idu","risk_heterosex",
