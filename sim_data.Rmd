@@ -78,7 +78,7 @@ df <- input_df |>
          cd4_recent_result = truncnorm::rtruncnorm(n, a = 0, b = 1500, mean = 650, sd = 200),
          # counseling and screening
          # ever and never
-         icab_rpv_counsel_ever = rbinom(n,1,0.6),
+         icab_rpv_counsel_ever = rbinom(n,1,0.7),
          icab_rpv_screen_ever = case_when(
            icab_rpv_counsel_ever == 1 ~ icab_rpv_counsel_ever - rbinom(n,1,0.05),
            icab_rpv_counsel_ever == 0 ~ icab_rpv_counsel_ever + rbinom(n,1,0.05)
@@ -94,7 +94,7 @@ df <- input_df |>
          ),
          icab_rpv_counsel_1_outcome = case_when(
            icab_rpv_counsel_ever == 1 ~ sample(x = c(1,2,3), size = n, replace = T,
-                                               prob = c(0.5,0.25,0.25)),
+                                               prob = c(0.3,0.2,0.5)),
            .default = NA
          ),
          icab_rpv_disinterest_reason_1 = case_when(
@@ -109,7 +109,7 @@ df <- input_df |>
          ),
          icab_rpv_counsel_2_outcome = case_when(
            icab_rpv_counsel_ever == 1 & num_counsel == 2 ~ sample(x = c(1,2,3), size = n, replace = T,
-                                               prob = c(0.5,0.25,0.25)),
+                                               prob = c(0.3,0.2,0.5)),
            .default = NA
          ),
          icab_rpv_disinterest_reason_2 = case_when(
@@ -222,9 +222,9 @@ vl_df <- df |>
          date = as.Date(date)) |>
   arrange(alai_up_uid, index) |>
   mutate(.by = alai_up_uid,
-         result = if_else(any(!is.na(num_vls)),
-                          sample(c(1,2,3,4,5,6),1,replace = T, 
-                                 prob = c(0.7,0.1,0.05,0.07,0.04,0.04)),
+         result = if_else(!is.na(num_vls),
+                          sample(c(1,2,3,4,5,6),1,replace = T,
+                                 prob = c(0.6,0.2,0.05,0.05,0.05,0.05)),
                           NA),
          date = if_else(
            !is.na(num_vls), {
@@ -239,6 +239,25 @@ vl_df <- df |>
   filter(!is.na(index)) |>
   mutate(result = if_else(index > num_vls,NA,result),
          date = if_else(index > num_vls,NA,date)) |>
+  mutate(.by = alai_up_uid,
+         # want a random chance of the VL going up or down at any given point,
+         result = accumulate(seq_along(result), \(x,i) {
+          y <- result[i]
+          if (is.na(y)) return(NA)
+          else if (is.na(x)) return(x)
+          else if (i == 1) return(x)
+          else if (y >= 4 & i == 2){
+            x - 3*rbinom(1,1,0.8)
+          } else if (x <= 2) {
+            x + rbinom(1,1,0.2)
+          } else if (x >= 5){
+            x - rbinom(1,1,0.8)
+          } else {
+            x + sample(c(-1,0,1),1,replace = T, prob = c(0.3,0.4,0.3))
+          }
+          },
+          .init =result[1]
+         ) |> tail(-1)) |> 
   mutate(.by = alai_up_uid,
          max_cab_date = max(date,na.rm = T)) |> 
   pivot_wider(names_from = "index",
@@ -272,10 +291,3 @@ write to dataframe
 writexl::write_xlsx(filled_df,
                     path = "data/simulated_data.xlsx")
 ```
-
-
-
-
-
-
-

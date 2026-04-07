@@ -105,7 +105,7 @@ help_text <- list(
       or 31 or 62 days (1 or 2 months) may be used to calculate the target interval."),
     p('"On time injections" shows the overall percentage of injections administered early, on time, and late.'),
     p('"On time injections by days since prior injection" shows how early or late particular injections were, 
-        with the on time injection region shaded in blue. There is a plot for monthly injection intervals and
+        with the on time injection region shaded in gray There is a plot for monthly injection intervals and
         a plot for bimonthly injection intervals.'),
     p('"Late injections by patient" shows how many patients had how many late injections.'),
     p('"Early injections by patient" shows how many patients had how many early injections.')
