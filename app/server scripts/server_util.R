@@ -319,7 +319,7 @@ get_current_year_data <- function(input_df, input_year,
 time_period_filter <- function(input_df, start_date, end_date){
   input_df |>
     select(-any_of(c("date","index","event"))) |> 
-    # educated, interested
+    # counseled, interested
     pivot_longer(cols = (contains("icab_rpv_counsel")) &
                    !contains("ever"),
                  names_to = c("event","index", ".value"),
@@ -517,8 +517,8 @@ get_IC_df <-function(input_df){
       icab_rpv_counsel_ever==0 & icab_rpv_screen_ever==0 ~0,
       .default=0
     ),
-    # 1a educated
-    Educated = data.table::fifelse(icab_rpv_counsel_ever == 1,1,0),
+    # 1a counseled
+    Counseled = data.table::fifelse(icab_rpv_counsel_ever == 1,1,0),
     # 1c screened
     Screened = data.table::fifelse(icab_rpv_screen_ever == 1,1,0),
     # 3 prescribed
@@ -644,7 +644,7 @@ prepare_ic_summary <- function(input_df) {
       PWH = sum(PWH),
       PWH1 = sum(PWH1),
       Assessed = sum(Assessed, na.rm = TRUE),
-      Educated = sum(Educated, na.rm = TRUE),
+      Counseled = sum(Counseled, na.rm = TRUE),
       Interested = sum(Interested==1, na.rm = TRUE),
       Screened = sum(Screened, na.rm = TRUE),
       Eligible = sum(Eligible, na.rm = TRUE),
@@ -654,7 +654,7 @@ prepare_ic_summary <- function(input_df) {
       Sustained = sum(Sustained, na.rm = TRUE),
       .groups = "drop"
     ) |>
-    pivot_longer(cols = c(PWH, Assessed, Educated, Interested, 
+    pivot_longer(cols = c(PWH, Assessed, Counseled, Interested, 
                           Screened, Eligible, `Interested & Eligible`,
                           Prescribed, Initiated, Sustained),
                  names_to = "Variable", values_to = "Value")
@@ -684,13 +684,13 @@ ic_var_plot <- function(input_df,
       summarise(.by = Variable,
                 Value=sum(Value), PWH1=sum(PWH1))|>
       group_by(Variable) |>
-      arrange(match(Variable,c('PWH', 'Assessed','Educated',
+      arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible', 
                                'Interested & Eligible',
                                'Prescribed', 'Initiated', 'Sustained'))) |> 
       ungroup() |>
-      mutate(prev_lab = case_when(Variable == "Educated" ~ "PWH",
-                                  Variable == "Interested" ~ "Educated",
+      mutate(prev_lab = case_when(Variable == "Counseled" ~ "PWH",
+                                  Variable == "Interested" ~ "Counseled",
                                   Variable == "Screened" ~ "PWH",
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",
@@ -706,7 +706,7 @@ ic_var_plot <- function(input_df,
     max_x = max(ic_df$Percent,na.rm=T)
     x_lim = max(1.15,max_x+0.15)
     
-    if (in_var %in% c("assessed","educated","screened")) {
+    if (in_var %in% c("assessed","counseled","screened")) {
       if (is.null(selected_year)){
         title_text = str_c(str_to_title(unique(ic_df$Variable)), 
                            " at ",selected_site,
@@ -751,14 +751,14 @@ ic_var_plot <- function(input_df,
       summarise(.by = c(Variable, {{group_var}}),
                 Value=sum(Value), PWH1=sum(PWH1)) |>
       group_by(Variable, {{group_var}})|>
-      arrange(match(Variable,c('PWH', 'Assessed','Educated',
+      arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible', 
                                'Interested & Eligible',
                                'Prescribed', 'Initiated', 'Sustained'))) |> 
       ungroup() |>
       mutate(.by = {{group_var}},
-             prev_lab = case_when(Variable == "Educated" ~ "PWH",
-                                  Variable == "Interested" ~ "Educated",
+             prev_lab = case_when(Variable == "Counseled" ~ "PWH",
+                                  Variable == "Interested" ~ "Counseled",
                                   Variable == "Screened" ~ "PWH",
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",
@@ -816,7 +816,7 @@ ic_var_plot <- function(input_df,
                       group_var_string == "SDOH_other_3" ~ "SDOH Other 3")
     
     
-    if (in_var %in% c("assessed","educated","screened")) {
+    if (in_var %in% c("assessed","counseled","screened")) {
       if (is.null(selected_year)){
         title_text = str_c(str_to_title(unique(ic_df$Variable)), 
                            " at ",selected_site,
@@ -1026,7 +1026,7 @@ not_interested_reason_func <- function(input_df, base_size_in){
                  "Concerns about newness of modality",
                  "Other",
                  "Unknown"))) |>
-    filter(Educated == 1,
+    filter(Counseled == 1,
            Interested==0 | Interested == 2) |>
     group_by(disinterest_reason) |>
     count() |>
@@ -1043,7 +1043,7 @@ not_interested_reason_func <- function(input_df, base_size_in){
   
   # Get "other" reasons
   other_df <- ic_df |>
-    filter(Educated == 1,
+    filter(Counseled == 1,
            Interested==0 | Interested == 2,
            disinterest_reason == 20) |>
     group_by(disinterest_other_reason) |>
@@ -1449,8 +1449,8 @@ int_elig_table_func <- function(input_df, percent_type){
   
   temp <- get_IC_df(input_df) |>
     mutate(
-      Educated = case_when(
-        Educated == 1 ~ 1,
+      Counseled = case_when(
+        Counseled == 1 ~ 1,
         .default = 0),
       Interested = case_when(
         Interested == 1 ~ 1,
@@ -1464,17 +1464,17 @@ int_elig_table_func <- function(input_df, percent_type){
         .default = 0)) |>
     filter(Assessed == 1) |> 
     mutate(Eligible = if_else(Screened == 1, Eligible,NA),
-           Interested = if_else(Educated == 1,Interested,NA),
+           Interested = if_else(Counseled == 1,Interested,NA),
            Interest_label = case_match(
              Interested,
              0 ~ "Not interested",
              1 ~ "Interested",
              2 ~ "Maybe interested",
-             .default = "Not educated"
+             .default = "Not counseled"
            ),
            interest_order = case_match(
              Interest_label,
-             "Not educated" ~ 1,
+             "Not counseled" ~ 1,
              "Not interested" ~ 2,
              "Maybe interested" ~ 3,
              "Interested" ~ 4
@@ -1529,7 +1529,7 @@ int_elig_table_func <- function(input_df, percent_type){
     tab_spanner(label = "Screening outcome",
                 columns = any_of(c("Not screened","Not eligible","Eligible"))) |>
     cols_align("center") |>
-    tab_stubhead(label = "Education outcome") |>
+    tab_stubhead(label = "Counseling outcome") |>
     tab_footnote(
       footnote = "Interested and eligible, as in above chart",
       locations = cells_body(columns = "Eligible",
@@ -1545,7 +1545,7 @@ int_elig_table_func <- function(input_df, percent_type){
     tab_footnote(
       footnote = "Opportunities for improvement.",
       locations = list(cells_body(columns = any_of("Eligible"),
-                             rows = Interest_label == "Not educated"),
+                             rows = Interest_label == "Not counseled"),
                        cells_body(columns = any_of("Eligible"),
                                   rows = Interest_label == "Maybe interested"),
                        cells_body(columns = any_of("Not screened"),
@@ -1665,7 +1665,7 @@ full_report_table <- function(summary_df, cab_df){
     summarize(Variable = "Overall",
               Value = "Overall",
               Assessed = sum(Assessed),
-              Educated = sum(Educated),
+              Counseled = sum(Counseled),
               Interested = sum(Interested),
               Screened = sum(Screened),
               Eligible = sum(Eligible),
@@ -1682,7 +1682,7 @@ full_report_table <- function(summary_df, cab_df){
       pivot_wider(names_from = "Variable", values_from = "Value") |>
       group_by({{col}}) |>
       summarize(Assessed = sum(Assessed),
-                Educated = sum(Educated),
+                Counseled = sum(Counseled),
                 Interested = sum(Interested),
                 Screened = sum(Screened),
                 Eligible = sum(Eligible),

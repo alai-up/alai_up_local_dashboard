@@ -18,12 +18,12 @@ list(
                        you are interested in focusing on. The filtered groups will
                        appear at the end of a group of bars."),
                      p("For example, suppose you are interested in comparing the
-                       percentage educated across race categories for PWH aged 
-                       25-34. You would (1) select 'Educated' as the indicator; 
+                       percentage counseled across race categories for PWH aged 
+                       25-34. You would (1) select 'Counseled' as the indicator; 
                        (2) select 'Race' as the comparison variable; and (3) select
                        'Age' as the filter variable, and check off only the '25-34' 
                        age group. The resulting plot would show you the number
-                       and percentage educated by race for those aged 25-34, 
+                       and percentage counseled by race for those aged 25-34, 
                        allowing for simple comparison between the groups."),
                      p("If 'Demographics' is selected as the indicator, the bars will show the 
                        distribution of the comparison variable among the group selected 

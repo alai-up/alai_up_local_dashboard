@@ -301,7 +301,7 @@ server <- function(input, output, session) {
   # Define the items and their properties in a simple list
   menu_items <- list(
     list(id = "assessed",  label = strong("Assessed"),              tab = "assessed_page",   ic = NULL),
-    list(id = "educated",  label = "Educated",                      tab = "educated_page",   ic = "angle-double-right"),
+    list(id = "counseled",  label = "Counseled",                      tab = "counseled_page",   ic = "angle-double-right"),
     list(id = "interested",label = HTML("&nbsp;&nbsp; Interested"), tab = "interested_page", ic = "angle-double-right"),
     list(id = "screened",  label = "Screened",                      tab = "screened_page",   ic = "angle-double-right"),
     list(id = "eligible",  label = HTML("&nbsp;&nbsp; Eligible"),   tab = "eligible_page",   ic = "angle-double-right")
@@ -324,7 +324,7 @@ server <- function(input, output, session) {
   observeEvent(input$assessed_choice, {
     if (input$assessed_choice == "No") {
       # If they are on any of the 'Assessed' related tabs, kick them back to home
-      if (input$sidebar %in% c('assessed_page', 'educated_page', 'interested_page', 'screened_page', 'eligible_page')) {
+      if (input$sidebar %in% c('assessed_page', 'counseled_page', 'interested_page', 'screened_page', 'eligible_page')) {
         updateTabItems(session, "sidebar", "lai_overview")
       }
     }
@@ -335,7 +335,7 @@ server <- function(input, output, session) {
     if (input$assessed_choice == "Yes"){
       choice_list <- c("Demographics",
                        "Assessed",
-                       'Educated',
+                       'Counseled',
                        'Interested',
                        'Screened',
                        "Eligible",
@@ -442,15 +442,15 @@ server <- function(input, output, session) {
       temp <- ic_summary_df |>
         group_by(Variable,!!grouping_var,!!filter_var) |>
         summarize(Value = sum(Value), PWH1 = sum(PWH1)) |>
-        arrange(match(Variable,c('PWH', 'Assessed','Educated',
+        arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                  'Interested', 'Screened', 'Eligible',
                                  'Interested & Eligible',
                                  'Prescribed', 'Initiated', 'Sustained'))) |>
         # this should be the grouping var (first) and filter var (second)
         group_by(!!grouping_var,!!filter_var) |>
         mutate(prev_lab = case_when(Variable == "PWH" ~ "PWH",
-                                    Variable == "Educated" ~ "PWH",
-                                    Variable == "Interested" ~ "Educated",
+                                    Variable == "Counseled" ~ "PWH",
+                                    Variable == "Interested" ~ "Counseled",
                                     Variable == "Screened" ~ "PWH",
                                     Variable == "Eligible" ~ "Screened",
                                     Variable == "Interested & Eligible" ~ "Assessed",
@@ -849,27 +849,27 @@ server <- function(input, output, session) {
                       selected = input$keypop2_choice) # Preserve user selection
   })
 
-  educated_sections_info <- list(
+  counseled_sections_info <- list(
     list(id = "top3", title = "Home", plot = NULL, download = NULL),
-    list(id = "overall3", title = "Overall", plot = "educated_overall_plot", download = "educated_overall_download_ui"),
+    list(id = "overall3", title = "Overall", plot = "counseled_overall_plot", download = "counseled_overall_download_ui"),
     list(id = "sex3", title = "Sex", plot = "sex3_plot", download = "sex3_download_ui"),
     list(id = "race3", title = "Race", plot = "race3_plot", download = "race3_download_ui"),
     list(id = "ethnicity3", title = "Ethnicity", plot = "ethnicity3_plot", download = "ethnicity3_download_ui"),
     list(id = "age3", title = "Age", plot = "age3_plot", download = "age3_download_ui"),
     list(id = "insurance3", title = "Insurance status", plot = "insurance3_plot", download = "insurance3_download_ui"),
     list(id = "keypop3", title = "Key populations", plot = "keypop3_plot", download = "keypop3_download_ui"),
-    list(id = "time3", title = "Educated over time by person", plot = "time3_plot", download = "time3_download_ui"),
-    list(id = "time3_event", title = "Educated over time by encounter", plot = "time3_event_plot", download = "time3_event_download_ui")
+    list(id = "time3", title = "Counseled over time by person", plot = "time3_plot", download = "time3_download_ui"),
+    list(id = "time3_event", title = "Counseled over time by encounter", plot = "time3_event_plot", download = "time3_event_download_ui")
   )
 
 
 
-  # Educated
+  # Counseled
   renderSectionPage(
     input, output,
-    page_id = "educated_page",
-    sections_info = educated_sections_info,
-    n_output_id = "educated_n"
+    page_id = "counseled_page",
+    sections_info = counseled_sections_info,
+    n_output_id = "counseled_n"
   )
 
   observe({

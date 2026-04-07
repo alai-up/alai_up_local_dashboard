@@ -51,7 +51,7 @@ ui <- dashboardPage(
                          menuItem(text = strong("Overview"),
                                   tabName = 'lai_overview'),
                          menuItemOutput("assessed_sidebar"),
-                         menuItemOutput("educated_sidebar"),
+                         menuItemOutput("counseled_sidebar"),
                          menuItemOutput("interested_sidebar"),
                          menuItemOutput("screened_sidebar"),
                          menuItemOutput("eligible_sidebar"),
@@ -138,8 +138,8 @@ ui <- dashboardPage(
         uiOutput('assessed_page')
       ),
       tabItem(
-        tabName = 'educated_page',
-        uiOutput('educated_page')
+        tabName = 'counseled_page',
+        uiOutput('counseled_page')
       ),
       tabItem(
         tabName = 'interested_page',

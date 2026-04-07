@@ -16,15 +16,15 @@ data_explore_server <- function(input, output, filtered_ic_summary_df, session){
     temp <- filtered_ic_summary_df |>
       group_by(Variable,!!grouping_var,!!filter_var) |>
       summarize(Value = sum(Value)) |>
-      arrange(match(Variable,c('PWH', 'Assessed','Educated',
+      arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible', 
                                'Interested & Eligible',
                                'Prescribed', 'Initiated', 'Sustained'))) |>
       # this should be the grouping var (first) and filter var (second)
       group_by(!!grouping_var,!!filter_var) |>
       mutate(prev_lab = case_when(Variable == "PWH" ~ "PWH",
-                                  Variable == "Educated" ~ "PWH",
-                                  Variable == "Interested" ~ "Educated",
+                                  Variable == "Counseled" ~ "PWH",
+                                  Variable == "Interested" ~ "Counseled",
                                   Variable == "Screened" ~ "PWH",
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",

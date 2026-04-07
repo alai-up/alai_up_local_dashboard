@@ -14,10 +14,10 @@ help_text <- list(
   
   info0 = tagList(
     p("This page provides an overview of the LAI care gap analysis. It also includes 
-      details about the documented education and screening outcomes for those assessed."),
+      details about the documented counseling and screening outcomes for those assessed."),
     tags$ul(   
       tags$li('"Assessed" is a combined indicator representing the number of 
-              PWH with documented education or screening for iCAB/RPV.'),
+              PWH with documented counseling or screening for iCAB/RPV.'),
       tags$li('"Interested & Eligible" indicates the number of PWH who were assessed 
               to be both interested and eligible for iCAB/RPV.'),
       tags$li('"Prescribed" indicates the number of PWH who were prescribed 
@@ -27,7 +27,7 @@ help_text <- list(
       tags$li('"Sustained" indicates the number of PWH who were currently 
               sustained on iCAB/RPV at the site among those initiated.')
     ),
-    p('The "Outcomes among those assessed" table shows the distribution of education 
+    p('The "Outcomes among those assessed" table shows the distribution of counseling 
       and screening outcomes among those assessed. The "Percent" buttons allow you to
       change how the percentages are calculated: "Table" for using the number assessed
       as the denominator, "Row" for using the row total, and "Column" for using the
@@ -43,8 +43,8 @@ help_text <- list(
   info2 = tagList(
     p('This page shows the number and percentage of people with HIV at the site
       who were assessed. "Assessed" is a combined indicator
-      representing the number of PWH with documented education or screening for iCAB/RPV.'),
-    p("To view details about the number of patients educated, screened, 
+      representing the number of PWH with documented counseling or screening for iCAB/RPV.'),
+    p("To view details about the number of patients counseled, screened, 
       interested, and eligible for iCAB/RPV, you can navigate to those pages by clicking on 
       the corresponding tabs on the left."),
     p('Light gray bars show indicators with fewer than 10 patients and therefore
@@ -54,14 +54,14 @@ help_text <- list(
   
   info3 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      who were educated about iCAB/RPV."),
+      who were counseled about iCAB/RPV."),
     p("To view details about the number of patients interested in iCAB/RPV following 
-      education, you can navigate to the corresponding tab on the left.")
+      counseling, you can navigate to the corresponding tab on the left.")
   ),
   
   info4 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      interested in iCAB/RPV among those educated. There is
+      interested in iCAB/RPV among those counseled. There is
       also a plot showing reasons for not being interested in iCAB/RPV.")
   ),
   

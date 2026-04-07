@@ -24,8 +24,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   assessed_count <- count_df  |>
     filter(Variable == "Assessed") |> pull()
 
-  educated_count <- count_df  |>
-    filter(Variable == "Educated") |> pull()
+  counseled_count <- count_df  |>
+    filter(Variable == "Counseled") |> pull()
 
   interested_count <- count_df  |>
     filter(Variable == "Interested") |> pull()
@@ -347,13 +347,13 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     ic_df <- ic_summary_df |>
       group_by(site, Variable) |>
       summarise(Value=sum(Value,na.rm = T)) |>
-      arrange(match(Variable,c('PWH', 'Assessed','Educated',
+      arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible',
                                'Interested & Eligible',
                                'Prescribed', 'Initiated', 'Sustained'))) |>
       group_by(site) |>
-      mutate(prev_lab = case_when(Variable == "Educated" ~ "PWH",
-                                  Variable == "Interested" ~ "Educated",
+      mutate(prev_lab = case_when(Variable == "Counseled" ~ "PWH",
+                                  Variable == "Interested" ~ "Counseled",
                                   Variable == "Screened" ~ "PWH",
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",
@@ -471,11 +471,11 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     age2       = list(var = "age_cat",          label = "age",       input_var = "assessed"),
     insurance2 = list(var = "insurance_status", label = "insurance", input_var = "assessed"),
 
-    sex3       = list(var = "sex_birth",        label = "sex",       input_var = "educated"),
-    race3      = list(var = "race",             label = "race",      input_var = "educated"),
-    ethnicity3 = list(var = "ethnicity",        label = "ethnicity", input_var = "educated"),
-    age3       = list(var = "age_cat",          label = "age",       input_var = "educated"),
-    insurance3 = list(var = "insurance_status", label = "insurance", input_var = "educated"),
+    sex3       = list(var = "sex_birth",        label = "sex",       input_var = "counseled"),
+    race3      = list(var = "race",             label = "race",      input_var = "counseled"),
+    ethnicity3 = list(var = "ethnicity",        label = "ethnicity", input_var = "counseled"),
+    age3       = list(var = "age_cat",          label = "age",       input_var = "counseled"),
+    insurance3 = list(var = "insurance_status", label = "insurance", input_var = "counseled"),
 
     sex4       = list(var = "sex_birth",        label = "sex",       input_var = "interested"),
     race4      = list(var = "race",             label = "race",      input_var = "interested"),
@@ -690,20 +690,20 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   }, height = 400)
 
 
-  output$educated_n <-  renderUI({
+  output$counseled_n <-  renderUI({
     if (is.null(selected_year())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        educated_count,
-        "</span> people were educated out of ",
+        counseled_count,
+        "</span> people were counseled out of ",
         pwh_count," people with HIV who received care at ",
         selected_site
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        educated_count,
-        "</span> people were educated out of ",
+        counseled_count,
+        "</span> people were counseled out of ",
         pwh_count," people with HIV who received care at ",
         selected_site,
         " in ", selected_year()
@@ -711,31 +711,31 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     }
   })
 
-  n_bars_educated_overall <<- reactiveVal(1)
-  output$educated_overall_plot <- renderPlot({
+  n_bars_counseled_overall <<- reactiveVal(1)
+  output$counseled_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "educated",by_group = F, base_size_in = base_size,
+    p <- ic_var_plot(ic_summary_df, "counseled",by_group = F, base_size_in = base_size,
                      selected_site = selected_site, selected_year = selected_year())
 
-    output$educated_overall_plot_download <- download_box("educated_overall", p,nrow(p$data))
-    output$educated_overall_table_download <- download_table("educated_overall", p$data)
-    output$educated_overall_download_ui <- renderUI({
+    output$counseled_overall_plot_download <- download_box("counseled_overall", p,nrow(p$data))
+    output$counseled_overall_table_download <- download_table("counseled_overall", p$data)
+    output$counseled_overall_download_ui <- renderUI({
       tagList(
-        downloadButton(outputId = "educated_overall_plot_download", label = "Download plot"),
-        downloadButton(outputId = "educated_overall_table_download",
+        downloadButton(outputId = "counseled_overall_plot_download", label = "Download plot"),
+        downloadButton(outputId = "counseled_overall_table_download",
                        label = "Download table",
                        icon = icon("table"))
       )
     })
 
-    n_bars_educated_overall(nrow(p$data))
+    n_bars_counseled_overall(nrow(p$data))
     p
   }, height = function() {
-    50 * n_bars_educated_overall() + 50
+    50 * n_bars_counseled_overall() + 50
   })
 
-  n_bars_educated_keypop <<- reactiveVal(1)
+  n_bars_counseled_keypop <<- reactiveVal(1)
   output$keypop3_plot <- renderPlot({
     base_size <- 14
 
@@ -756,12 +756,12 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "educated", by_group = T,
+    p <- ic_var_plot(ic_summary_df, "counseled", by_group = T,
                      group_var = var_str, base_size_in = base_size,
                      selected_site = selected_site, selected_year = selected_year())
 
-    output$keypop3_plot_download <- download_box(paste0("educated_",var_str), p,nrow(p$data))
-    output$keypop3_table_download <- download_table(paste0("educated_",var_str), p$data)
+    output$keypop3_plot_download <- download_box(paste0("counseled_",var_str), p,nrow(p$data))
+    output$keypop3_table_download <- download_table(paste0("counseled_",var_str), p$data)
     output$keypop3_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "keypop3_plot_download", label = "Download plot"),
@@ -770,10 +770,10 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                        icon = icon("table"))
       )
     })
-    n_bars_educated_keypop(nrow(p$data))
+    n_bars_counseled_keypop(nrow(p$data))
     p
   }, height = function() {
-    50 * n_bars_educated_keypop() + 100
+    50 * n_bars_counseled_keypop() + 100
   })
 
   output$time3_plot <- renderPlot({
@@ -785,10 +785,10 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       pivot_longer(cols = contains("icab_rpv")&(contains("counsel")) & contains("date"),
                    names_to = "event",
                    values_to = "date") |>
-      plot_outcome_by_month("Number of people by month of most recent education",base_size_in = base_size)
+      plot_outcome_by_month("Number of people by month of most recent counseling",base_size_in = base_size)
 
-    output$time3_plot_download <- download_box("educated_time",p)
-    output$time3_table_download <- download_table("educated_time",p$data)
+    output$time3_plot_download <- download_box("counseled_time",p)
+    output$time3_table_download <- download_table("counseled_time",p$data)
     output$time3_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "time3_plot_download", label = "Download plot"),
@@ -810,11 +810,11 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       pivot_longer(cols = contains("icab_rpv")&(contains("counsel")) & contains("date"),
                    names_to = "event",
                    values_to = "date") |>
-      plot_outcome_by_month("Number of education encounters by month",base_size_in = base_size,
+      plot_outcome_by_month("Number of counseling encounters by month",base_size_in = base_size,
                             by_person = F)
 
-    output$time3_event_plot_download <- download_box("educated_time_event",p)
-    output$time3_event_table_download <- download_table("educated_time_event",p$data)
+    output$time3_event_plot_download <- download_box("counseled_time_event",p)
+    output$time3_event_table_download <- download_table("counseled_time_event",p$data)
     output$time3_event_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "time3_event_plot_download", label = "Download plot"),
@@ -834,7 +834,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
         "<span style='color: #FE5000; font-size: 36px;'>",
         interested_count,
         "</span> people were interested out of ",
-        educated_count," people educated at ",
+        counseled_count," people counseled at ",
         selected_site
       ))
     } else {
@@ -842,7 +842,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
         "<span style='color: #FE5000; font-size: 36px;'>",
         interested_count,
         "</span> people were interested out of ",
-        educated_count," people educated at ",
+        counseled_count," people counseled at ",
         selected_site,
         " among PWH active in ", selected_year()
       ))
@@ -926,12 +926,12 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       mutate(outcome = case_when(outcome == 1 ~ "i1",
                                  outcome == 2 ~ "i2",
                                  outcome == 3 ~ "i3")) |>
-      plot_outcome_by_month("Number of people interested by month of most recent education",
+      plot_outcome_by_month("Number of people interested by month of most recent counseling",
                             base_size_in = base_size,
                             by_outcome = T)
 
-    output$time4_plot_download <- download_box("educated_time",p)
-    output$time4_table_download <- download_box("educated_time",p$data)
+    output$time4_plot_download <- download_box("counseled_time",p)
+    output$time4_table_download <- download_box("counseled_time",p$data)
     output$time4_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "time4_plot_download", label = "Download plot"),
@@ -956,12 +956,12 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       mutate(outcome = case_when(outcome == 1 ~ "i1",
                                  outcome == 2 ~ "i2",
                                  outcome == 3 ~ "i3")) |>
-      plot_outcome_by_month("Number of education encounters by month and outcome",base_size_in = base_size,
+      plot_outcome_by_month("Number of counseling encounters by month and outcome",base_size_in = base_size,
                             by_outcome = T,
                             by_person = F)
 
-    output$time4_event_plot_download <- download_box("educated_time_event",p)
-    output$time4_event_table_download <- download_table("educated_time_event",p$data)
+    output$time4_event_plot_download <- download_box("counseled_time_event",p)
+    output$time4_event_table_download <- download_table("counseled_time_event",p$data)
     output$time4_event_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "time4_event_plot_download", label = "Download plot"),
