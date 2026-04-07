@@ -249,11 +249,11 @@ vl_df <- df |>
           else if (y >= 4 & i == 2){
             x - 3*rbinom(1,1,0.8)
           } else if (x <= 2) {
-            x + rbinom(1,1,0.2)
+            x + rbinom(1,1,0.15)
           } else if (x >= 5){
             x - rbinom(1,1,0.8)
           } else {
-            x + sample(c(-1,0,1),1,replace = T, prob = c(0.3,0.4,0.3))
+            x + sample(c(-1,0,1),1,replace = T, prob = c(0.4,0.4,0.2))
           }
           },
           .init =result[1]
