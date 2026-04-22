@@ -1282,12 +1282,12 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
    input_df |>
     select(alai_up_uid,site,
            contains("icab_rpv_discontinued"),
-           contains("icab_rpv_shot")&(contains("date")|contains("dose")),
+           contains("icab_rpv_shot")&(contains("date")|contains("freq")|contains("reentry_flag")),
            contains("bridge")) |>
     mutate(across(!alai_up_uid,as.character)) |> 
-    pivot_longer(cols = contains("icab_rpv_shot")&(contains("date")|contains("dose")),
+    pivot_longer(cols = contains("icab_rpv_shot")&(contains("date")|contains("freq")|contains("reentry_flag")),
                  names_to = c("shot_index",".value"),
-                 names_pattern = "icab_rpv_shot(\\d+)_(date|dose)") |>
+                 names_pattern = "icab_rpv_shot(\\d+)_(date|freq|reentry_flag)") |>
     filter(!is.na(date)) |>
     # join to VL data in long format
     full_join(
@@ -1412,18 +1412,18 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
     mutate(shot_index = as.numeric(shot_index)) |>
     arrange(alai_up_uid,shot_index) |>
     group_by(alai_up_uid) |>
-    fill(dose,.direction = "updown") |> # fill based on what's there, but check this with sites
+    fill(freq,.direction = "updown") |> # fill based on what's there, but check this with sites
     mutate(shot_date = if_else(shot_appt == 1, date, NA)) |>
-    mutate(interval = if_else(dose != 0, shot_date-lag(shot_date),NA),
-           late = case_when(dose == 0~ NA,
-                            lag(dose) == 1 ~ interval > interval_1+7,
-                            lag(dose) == 2 ~ interval > interval_2+7,
-                            is.na(lag(dose)) ~ interval > interval_2 + 7,
+    mutate(interval = if_else(reentry_flag != 1, shot_date-lag(shot_date),NA),
+           late = case_when(reentry_flag == 1 ~ NA,
+                            lag(freq) == 1 ~ interval > interval_1+7,
+                            lag(freq) == 2 ~ interval > interval_2+7,
+                            is.na(lag(freq)) ~ interval > interval_2 + 7,
                             .default = FALSE),
-           early = case_when(dose == 0 ~ NA,
-                             lag(dose) == 1 ~ interval < interval_1-7,
-                             lag(dose) == 2 ~ interval < interval_2-7,
-                             is.na(lag(dose)) ~ interval < interval_1 - 7,
+           early = case_when(reentry_flag == 1 ~ NA,
+                             lag(freq) == 1 ~ interval < interval_1-7,
+                             lag(freq) == 2 ~ interval < interval_2-7,
+                             is.na(lag(freq)) ~ interval < interval_1 - 7,
                              .default = FALSE),
            bridged = case_when(date >= icab_rpv_bridge1_start_date & 
                                  date <= icab_rpv_bridge1_end_date ~ TRUE,

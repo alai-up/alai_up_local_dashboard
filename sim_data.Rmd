@@ -176,16 +176,17 @@ cab_doses <- df |>
   select(uid,contains("icab_rpv_shot"),num_shots,ref_date) |>
   pivot_longer(cols = contains("icab_rpv_shot"),
                names_to = c("index",".value"),
-               names_pattern = "icab_rpv_shot(\\d+)_(date|dose)") |>
+               names_pattern = "icab_rpv_shot(\\d+)_(date|freq|reentry_flag)") |>
+  drop_na(index) |> 
   mutate(index = as.numeric(index),
          date = as.Date(date)) |>
   arrange(uid, index) |>
   mutate(.by = uid,
-         dose = if_else(any(!is.na(num_shots)),
+         freq = if_else(any(!is.na(num_shots)),
                         sample(c(1,2),1,replace = T),
                         NA),
          date = case_when(
-           !is.na(num_shots) & dose == 1 ~ {
+           !is.na(num_shots) & freq == 1 ~ {
              out <- c(first(ref_date),first(ref_date) + rnorm(1,30,5))
              d <- out[2]
              for (i in 3:n()){
@@ -194,7 +195,7 @@ cab_doses <- df |>
              }
              out
            },
-           !is.na(num_shots) & dose == 2 ~  {
+           !is.na(num_shots) & freq == 2 ~  {
              out <- c(first(ref_date),first(ref_date) + rnorm(1,30,5))
              d <- out[2]
              for (i in 3:n()){
@@ -204,10 +205,11 @@ cab_doses <- df |>
              out
            }
   )) |>
-  mutate(dose = if_else(index > num_shots,NA,dose),
-         date = if_else(index > num_shots,NA,date)) |> 
+  mutate(freq = if_else(index > num_shots,NA,freq),
+         date = if_else(index > num_shots,NA,date),
+         reentry_flag = NA) |> 
   pivot_wider(names_from = "index",
-              values_from = c("date","dose"),
+              values_from = c("date","freq","reentry_flag"),
               names_glue = "icab_rpv_shot{index}_{.value}") 
 ```
 
@@ -217,7 +219,7 @@ vl_df <- df |>
   select(uid,contains("hiv_vl")&!contains("dx")&!contains("pre"),num_vls,ref_date) |>
   pivot_longer(cols = contains("hiv_vl"),
                names_to = c("index",".value"),
-               names_pattern = "hiv_vl_(\\d+)_(date|dose)") |>
+               names_pattern = "hiv_vl_(\\d+)_(date|result)") |>
   mutate(index = as.numeric(index),
          date = as.Date(date)) |>
   arrange(uid, index) |>
@@ -283,7 +285,7 @@ filled_df <- df |>
          icab_rpv_discontinued_date = if_else(icab_rpv_discontinued == 1,
                                               max_cab_date + 30,
                                               NA)) |>
-  select(names(input_df))
+  select(-race,-ref_date,-num_counsel,-num_shots,-num_vls)
 ```
 
 write to dataframe
