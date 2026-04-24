@@ -1734,13 +1734,13 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     HTML(paste0(
       "<span style='color: #08519C; font-size: 36px;'>",
       num_doses,
-      "</span> injections were administered to ",
+      "</span> total injections were administered to ",
       "<span style='color: #08519C; font-size: 36px;'>",
       num_people_w_doses,
       "</span> individuals. ",
       "<span style='color: #08519C; font-size: 36px;'>",
       on_time_string,
-      "</span> follow up injections were administered on time or early"
+      "</span> follow-up/maintenance injections were administered on time or early"
     ))
   })
 

@@ -350,14 +350,14 @@ time_period_filter <- function(input_df, start_date, end_date){
            icab_rpv_rx_date = if_else(icab_rpv_rx_date >= start_date & icab_rpv_rx_date <= end_date,
                                       icab_rpv_rx_date, NA)) |>
     # initiated
-    pivot_longer(cols = contains("icab_rpv_shot")&
-                   !contains("bmi")&!contains("needle_length")&!contains("loading"),
+    pivot_longer(cols = contains("icab_rpv_shot"),
                  names_to = c("shot_num",".value"),
-                 names_pattern = "(.+)_(date|dose)") |>
-    mutate(dose = if_else(date >= start_date & date <= end_date,dose,NA),
-           date = if_else(date >= start_date & date <= end_date,date,NA)) |>
+                 names_pattern = "(.+)_(date|interval|late_exception)") |>
+    mutate(interval = if_else(date >= start_date & date <= end_date,interval,NA),
+           date = if_else(date >= start_date & date <= end_date,date,NA),
+           late_exception = if_else(date >= start_date & date <= end_date,late_exception,NA)) |>
     pivot_wider(names_from = shot_num,
-                values_from = c(date,dose),
+                values_from = c(date,interval,late_exception),
                 names_glue = "{shot_num}_{.value}") |>
     # sustained
     mutate(icab_rpv_discontinued = if_else(icab_rpv_discontinued_date >= start_date & 
@@ -1282,12 +1282,12 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
    input_df |>
     select(alai_up_uid,site,
            contains("icab_rpv_discontinued"),
-           contains("icab_rpv_shot")&(contains("date")|contains("freq")|contains("reentry_flag")),
+           contains("icab_rpv_shot")&(contains("date")|contains("interval")|contains("late_exception")),
            contains("bridge")) |>
     mutate(across(!alai_up_uid,as.character)) |> 
-    pivot_longer(cols = contains("icab_rpv_shot")&(contains("date")|contains("freq")|contains("reentry_flag")),
+    pivot_longer(cols = contains("icab_rpv_shot")&(contains("date")|contains("interval")|contains("late_exception")),
                  names_to = c("shot_index",".value"),
-                 names_pattern = "icab_rpv_shot(\\d+)_(date|freq|reentry_flag)") |>
+                 names_pattern = "icab_rpv_shot(\\d+)_(date|interval|late_exception)") |>
     filter(!is.na(date)) |>
     # join to VL data in long format
     full_join(
@@ -1412,18 +1412,18 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
     mutate(shot_index = as.numeric(shot_index)) |>
     arrange(alai_up_uid,shot_index) |>
     group_by(alai_up_uid) |>
-    fill(freq,.direction = "updown") |> # fill based on what's there, but check this with sites
+    fill(interval,.direction = "updown") |> # fill based on what's there, but check this with sites
     mutate(shot_date = if_else(shot_appt == 1, date, NA)) |>
-    mutate(interval = if_else(reentry_flag != 1, shot_date-lag(shot_date),NA),
-           late = case_when(reentry_flag == 1 ~ NA,
-                            lag(freq) == 1 ~ interval > interval_1+7,
-                            lag(freq) == 2 ~ interval > interval_2+7,
-                            is.na(lag(freq)) ~ interval > interval_2 + 7,
+    mutate(time_between_inj = if_else(late_exception != 1, shot_date-lag(shot_date),NA),
+           late = case_when(late_exception == 1 ~ NA,
+                            lag(interval) == 1 ~ time_between_inj > interval_1+7,
+                            lag(interval) == 2 ~ time_between_inj > interval_2+7,
+                            is.na(lag(interval)) ~ time_between_inj > interval_2 + 7,
                             .default = FALSE),
-           early = case_when(reentry_flag == 1 ~ NA,
-                             lag(freq) == 1 ~ interval < interval_1-7,
-                             lag(freq) == 2 ~ interval < interval_2-7,
-                             is.na(lag(freq)) ~ interval < interval_1 - 7,
+           early = case_when(late_exception == 1 ~ NA,
+                             lag(interval) == 1 ~ time_between_inj < interval_1-7,
+                             lag(interval) == 2 ~ time_between_inj < interval_2-7,
+                             is.na(lag(interval)) ~ time_between_inj < interval_1 - 7,
                              .default = FALSE),
            bridged = case_when(date >= icab_rpv_bridge1_start_date & 
                                  date <= icab_rpv_bridge1_end_date ~ TRUE,
@@ -1434,11 +1434,11 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
                                early == TRUE ~ "Early",
                                late == FALSE & early == FALSE ~ "On time",
                                late == TRUE & bridged == TRUE ~ "On time")) |>
-    mutate(lag_dose = lag(dose),
-           monthly = case_when(lag(shot_index) == 1 & lag_dose == 1 ~ "Second injection",
-                               lag_dose == 0 ~ "Second injection",
-                               lag_dose == 1 ~ "Monthly",
-                               lag_dose == 2 ~ "Bimonthly",
+    mutate(lag_interval = lag(interval),
+           monthly = case_when(lag(shot_index) == 1 & lag_interval == 1 ~ "Second injection",
+                               lag_interval == 0 ~ "Second injection",
+                               lag_interval == 1 ~ "Monthly",
+                               lag_interval == 2 ~ "Bimonthly",
                                .default = NA)) |>
     ungroup() |>
     arrange(alai_up_uid,date)
@@ -1572,27 +1572,27 @@ ontime_plot_func <- function(input_df,interval_1,interval_2,
   
   on_time_df <- input_df |>
     filter(!is.na(monthly)) |> 
-    mutate(interval = as.numeric(interval),
-           lag_dose = lag(dose),
+    mutate(time_between_inj = as.numeric(time_between_inj),
+           lag_interval = lag(interval),
            monthly = case_when(monthly == "Monthly" ~ "Monthly injection interval",
                                monthly == "Second injection" ~ "Monthly injection interval",
                                monthly == "Bimonthly" ~ "Bimonthly injection interval",
                                .default = NA)) |> 
-    mutate(interval = if_else(interval > 100,101,interval)) |>
-    group_by(interval, monthly, on_time) |>
+    mutate(time_between_inj = if_else(time_between_inj > 100,101,time_between_inj)) |>
+    group_by(time_between_inj, monthly, on_time) |>
     summarize(n = n()) |>
-    filter(!is.na(interval)) |> 
+    filter(!is.na(time_between_inj)) |> 
     mutate(monthly = factor(monthly,
                             levels = c("Monthly injection interval","Bimonthly injection interval")),
            target_day = if_else(monthly == "Bimonthly injection interval",interval_2,interval_1),
-           time_from_target = interval - target_day,
-           shade_101 = if_else(interval == 101, "1","0"),
-           label = if_else(interval == 101, ">100 days",NA)) |>
+           time_from_target = time_between_inj - target_day,
+           shade_101 = if_else(time_between_inj == 101, "1","0"),
+           label = if_else(time_between_inj == 101, ">100 days",NA)) |>
     ungroup() |>
     filter(monthly == current_period)
   
   p <- on_time_df |>
-    ggplot(aes(x = interval, y = n, fill = on_time)) +
+    ggplot(aes(x = time_between_inj, y = n, fill = on_time)) +
     geom_rect(data = window_df |>
                 filter(monthly == current_period),
               aes(xmin = window_start, xmax = window_end), 
@@ -1601,7 +1601,7 @@ ontime_plot_func <- function(input_df,interval_1,interval_2,
               alpha = 0.5,inherit.aes = FALSE) + 
     geom_col(aes(alpha = shade_101)) +
     geom_segment(data = function(d) d |> filter(!is.na(label)),
-                 aes(x = interval, xend = interval, 
+                 aes(x = time_between_inj, xend = time_between_inj, 
                      y = n, yend = n + 4.9),
                  color = "black") +
     # Text annotation above the bar
