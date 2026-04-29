@@ -2006,6 +2006,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     if (val1() == "<50"){
       temp <- cab_master_df |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(pre_icab_vl_result > 2) |>
         ungroup() |>
@@ -2097,6 +2098,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     if (val1() == "<50"){
       temp <-  cab_master_df |>
+       filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
                !is.na(starting_vl),
@@ -2198,6 +2200,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     if (val1() == "<50"){
       temp <-  cab_master_df |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
                !is.na(starting_vl),
@@ -2298,7 +2301,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     text_size <- base_size / 3
 
     if (val1() == "<50"){
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df |> 
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
                pre_icab_vl_result <= 2) |>
@@ -2396,6 +2400,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     if (val1() == "<50"){
       temp <-  cab_master_df |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
                pre_icab_vl_result > 2 & any(first_under50 == 1)) |>

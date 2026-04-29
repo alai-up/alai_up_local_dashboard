@@ -1413,6 +1413,16 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
     arrange(alai_up_uid,shot_index) |>
     group_by(alai_up_uid) |>
     fill(interval,.direction = "updown") |> # fill based on what's there, but check this with sites
+    # count cab attempts for later use
+    arrange(alai_up_uid,date) |>
+    mutate(
+      interval = if_else(shot_appt == 0,NA,as.numeric(interval)),
+      new_cab_attempt = case_when(
+        shot_index == 1 | late_exception == 1 ~ 1,
+        shot_appt == 0 ~ NA,
+        .default = 0),
+      cab_attempt_number = cumsum(new_cab_attempt)) |>
+    arrange(alai_up_uid, shot_index) |>
     mutate(shot_date = if_else(shot_appt == 1, date, NA)) |>
     mutate(time_between_inj = if_else(late_exception != 1, shot_date-lag(shot_date),NA),
            late = case_when(late_exception == 1 ~ NA,
