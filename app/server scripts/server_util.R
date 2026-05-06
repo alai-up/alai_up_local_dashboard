@@ -1008,6 +1008,8 @@ not_interested_reason_func <- function(input_df, base_size_in){
   ic_df <- get_IC_df(input_df)
   
   disinterest_df <- ic_df |>
+    mutate(disinterest_reason = str_split(disinterest_reason, ",")) |> 
+    unnest(disinterest_reason) |>
     mutate(disinterest_reason = factor(
       case_when(
         disinterest_reason == 1 ~ "Satisfaction with current regimen",
@@ -1191,6 +1193,8 @@ discontinued_reason_func <- function(input_df, base_size_in){
     filter(!is.na(icab_rpv_shot1_date) | 
              !is.na(icab_rpv_shot2_date),
            icab_rpv_discontinued == 1) |>
+    mutate(icab_rpv_discontinued_reason = str_split(icab_rpv_discontinued_reason, ",")) |> 
+    unnest(icab_rpv_discontinued_reason) |>
     mutate(icab_rpv_discontinued_reason = factor(
       case_when(
         icab_rpv_discontinued_reason == 1 ~ "Satisfaction with previous regimen",
