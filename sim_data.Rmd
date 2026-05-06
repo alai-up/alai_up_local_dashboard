@@ -113,7 +113,7 @@ df <- input_df |>
            .default = NA
          ),
          icab_rpv_disinterest_reason_2 = case_when(
-           icab_rpv_counsel_2_outcome == 0 ~ sample(x = c(1,2,3,4,5,6,20,NA),size = n, replace = T,
+           icab_rpv_counsel_2_outcome != 3 ~ sample(x = c(1,2,3,4,5,6,20,NA),size = n, replace = T,
                                                     prob = c(0.6,0.1,0.06,0.04,0.04,0.01,0.1,0.05)),
            .default = NA
          ),
