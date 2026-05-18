@@ -118,7 +118,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   })
 
   demo_sections <- list(
-    sex1       = list(var = "sex_birth",        label = "sex_demographics"),
+    sex1       = list(var = "sex",              label = "sex_demographics"),
     race1      = list(var = "race",             label = "race_demographics"),
     ethnicity1 = list(var = "ethnicity",        label = "ethnicity_demographics"),
     age1       = list(var = "age_cat",          label = "age_demographics"),
@@ -165,7 +165,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop1_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -251,7 +250,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   })
 
   demo_sections_b <- list(
-    sex1b       = list(var = "sex_birth",        label = "sex_demographics_lai"),
+    sex1b       = list(var = "sex",        label = "sex_demographics_lai"),
     race1b      = list(var = "race",             label = "race_demographics_lai"),
     ethnicity1b = list(var = "ethnicity",        label = "ethnicity_demographics_lai"),
     age1b       = list(var = "age_cat",          label = "age_demographics_lai"),
@@ -298,7 +297,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop1b_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -465,49 +463,49 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
 
   plot_sections <- list(
-    sex2       = list(var = "sex_birth",        label = "sex",       input_var = "assessed"),
+    sex2       = list(var = "sex",              label = "sex",       input_var = "assessed"),
     race2      = list(var = "race",             label = "race",      input_var = "assessed"),
     ethnicity2 = list(var = "ethnicity",        label = "ethnicity", input_var = "assessed"),
     age2       = list(var = "age_cat",          label = "age",       input_var = "assessed"),
     insurance2 = list(var = "insurance_status", label = "insurance", input_var = "assessed"),
 
-    sex3       = list(var = "sex_birth",        label = "sex",       input_var = "counseled"),
+    sex3       = list(var = "sex",              label = "sex",       input_var = "counseled"),
     race3      = list(var = "race",             label = "race",      input_var = "counseled"),
     ethnicity3 = list(var = "ethnicity",        label = "ethnicity", input_var = "counseled"),
     age3       = list(var = "age_cat",          label = "age",       input_var = "counseled"),
     insurance3 = list(var = "insurance_status", label = "insurance", input_var = "counseled"),
 
-    sex4       = list(var = "sex_birth",        label = "sex",       input_var = "interested"),
+    sex4       = list(var = "sex",              label = "sex",       input_var = "interested"),
     race4      = list(var = "race",             label = "race",      input_var = "interested"),
     ethnicity4 = list(var = "ethnicity",        label = "ethnicity", input_var = "interested"),
     age4       = list(var = "age_cat",          label = "age",       input_var = "interested"),
     insurance4 = list(var = "insurance_status", label = "insurance", input_var = "interested"),
 
-    sex5       = list(var = "sex_birth",        label = "sex",       input_var = "screened"),
+    sex5       = list(var = "sex",              label = "sex",       input_var = "screened"),
     race5      = list(var = "race",             label = "race",      input_var = "screened"),
     ethnicity5 = list(var = "ethnicity",        label = "ethnicity", input_var = "screened"),
     age5       = list(var = "age_cat",          label = "age",       input_var = "screened"),
     insurance5 = list(var = "insurance_status", label = "insurance", input_var = "screened"),
 
-    sex6       = list(var = "sex_birth",        label = "sex",       input_var = "eligible"),
+    sex6       = list(var = "sex",              label = "sex",       input_var = "eligible"),
     race6      = list(var = "race",             label = "race",      input_var = "eligible"),
     ethnicity6 = list(var = "ethnicity",        label = "ethnicity", input_var = "eligible"),
     age6       = list(var = "age_cat",          label = "age",       input_var = "eligible"),
     insurance6 = list(var = "insurance_status", label = "insurance", input_var = "eligible"),
 
-    sex7       = list(var = "sex_birth",        label = "sex",       input_var = "prescribed"),
+    sex7       = list(var = "sex",              label = "sex",       input_var = "prescribed"),
     race7      = list(var = "race",             label = "race",      input_var = "prescribed"),
     ethnicity7 = list(var = "ethnicity",        label = "ethnicity", input_var = "prescribed"),
     age7       = list(var = "age_cat",          label = "age",       input_var = "prescribed"),
     insurance7 = list(var = "insurance_status", label = "insurance", input_var = "prescribed"),
 
-    sex8       = list(var = "sex_birth",        label = "sex",       input_var = "initiated"),
+    sex8       = list(var = "sex",              label = "sex",       input_var = "initiated"),
     race8      = list(var = "race",             label = "race",      input_var = "initiated"),
     ethnicity8 = list(var = "ethnicity",        label = "ethnicity", input_var = "initiated"),
     age8       = list(var = "age_cat",          label = "age",       input_var = "initiated"),
     insurance8 = list(var = "insurance_status", label = "insurance", input_var = "initiated"),
 
-    sex9       = list(var = "sex_birth",        label = "sex",       input_var = "sustained"),
+    sex9       = list(var = "sex",              label = "sex",       input_var = "sustained"),
     race9      = list(var = "race",             label = "race",      input_var = "sustained"),
     ethnicity9 = list(var = "ethnicity",        label = "ethnicity", input_var = "sustained"),
     age9       = list(var = "age_cat",          label = "age",       input_var = "sustained"),
@@ -601,7 +599,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop2_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -741,7 +738,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop3_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -879,7 +875,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop4_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -1049,7 +1044,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop5_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -1186,7 +1180,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop6_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -1353,7 +1346,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop7_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -1461,7 +1453,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop8_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",
@@ -1570,7 +1561,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     var_name <- input$keypop9_choice
     var_str = case_when(var_name == "Housing status" ~ "housing_status",
-                        var_name == "Gender" ~ "gender_id",
                         var_name == "Risk MSM" ~ "risk_msm",
                         var_name == "Risk IDU" ~ "risk_idu",
                         var_name == "Risk Heterosex" ~ "risk_heterosex",

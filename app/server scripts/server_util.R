@@ -49,8 +49,8 @@ load_and_process_data <- function(input_df) {
     # for historical reasons, uid was named alai_up_uid. so preserving that here
     rename(alai_up_uid = any_of(c("uid", "alai_up_uid"))) |>
     add_missing_cols("race_ai_an","race_asian","race_black","race_nh_pi","race_white","race_other",
-                     "age","sex_birth","ethnicity_hispanic","insurance_status",
-                     "housing_status","gender_id","risk_msm","risk_idu","risk_heterosex",
+                     "age","sex","ethnicity_hispanic","insurance_status",
+                     "housing_status","risk_msm","risk_idu","risk_heterosex",
                      "employment_status", "poverty_level","immigration_status_undoc",
                      "language","incarceration_history","cd4_recent_result",
                     "SDOH_other_1","SDOH_other_2","SDOH_other_3") |>
@@ -92,9 +92,9 @@ load_and_process_data <- function(input_df) {
       ),
       levels = c("18-24","25-34","35-44","45-54","55-64","65+","Unknown"))) |>
     mutate(
-      sex_birth = factor(
-        case_when(sex_birth == 1 ~ "Male",
-                  sex_birth == 2 ~ "Female",
+      sex = factor(
+        case_when(sex == 1 ~ "Male",
+                  sex == 2 ~ "Female",
                   .default = "Unknown"),
         levels = c("Male","Female","Unknown"))) |>
     mutate(ethnicity=factor(
@@ -127,17 +127,6 @@ load_and_process_data <- function(input_df) {
     ),
     levels = c("Stable or permanent","Temporary",
                "Unstable","Unknown")),
-    gender_id = factor(case_when(
-      gender_id == 1 ~ "Cisgender Man",
-      gender_id == 2 ~ "Cisgender Woman",
-      gender_id == 3 ~ "Transgender Woman",
-      gender_id == 4 ~ "Transgender Man",
-      gender_id == 5 ~ "Nonbinary",
-      is.na(gender_id) ~ "Unknown",
-      .default = "Other"
-    ), levels = c("Cisgender Man","Cisgender Woman",
-                  "Transgender Woman","Transgender Man",
-                  "Nonbinary","Other","Unknown")),
     risk_msm = factor(case_when(
       risk_msm == 0 ~ "Not MSM",
       risk_msm == 1 ~ "MSM",
@@ -385,10 +374,9 @@ demo_plot <- function(input_df, in_col, base_size_in,
   title = case_when(in_col_string == "age_cat" ~ "Age",
                     in_col_string == "race" ~ "Race",
                     in_col_string == "ethnicity" ~ "Ethnicity",
-                    in_col_string == "sex_birth" ~ "Sex",
+                    in_col_string == "sex" ~ "Sex",
                     in_col_string == "insurance_status" ~ "Insurance status",
                     in_col_string == "housing_status" ~ "Housing status",
-                    in_col_string == "gender_id" ~ "Gender",
                     in_col_string == "risk_msm" ~ "Risk MSM",
                     in_col_string == "risk_idu" ~ "Risk IDU",
                     in_col_string == "risk_heterosex" ~ "Risk Heterosex",
@@ -634,8 +622,7 @@ get_IC_df <-function(input_df){
 prepare_ic_summary <- function(input_df) {
   input_df |>
     get_IC_df() |>
-    group_by(site,age_cat, sex_birth, race, ethnicity, insurance_status, 
-             gender_id, 
+    group_by(site,age_cat, sex, race, ethnicity, insurance_status, 
              risk_msm, risk_idu, risk_heterosex,
              housing_status, employment_status,
              poverty_level, immigration_status_undoc, 
@@ -798,10 +785,9 @@ ic_var_plot <- function(input_df,
     title = case_when(group_var_string == "age_cat" ~ "Age",
                       group_var_string == "race" ~ "Race",
                       group_var_string == "ethnicity" ~ "Ethnicity",
-                      group_var_string == "sex_birth" ~ "Sex",
+                      group_var_string == "sex" ~ "Sex",
                       group_var_string == "insurance_status" ~ "Insurance status",
                       group_var_string == "housing_status" ~ "Housing status",
-                      group_var_string == "gender_id" ~ "Gender",
                       group_var_string == "risk_msm" ~ "Risk MSM",
                       group_var_string == "risk_idu" ~ "Risk IDU",
                       group_var_string == "risk_heterosex" ~ "Risk Heterosex",
@@ -1654,12 +1640,11 @@ ontime_plot_func <- function(input_df,interval_1,interval_2,
 
 full_report_table <- function(summary_df, cab_df){
   col_list <- c("Age" = "age_cat",
-                "Sex" = "sex_birth",
+                "Sex" = "sex",
                 "Race" = "race",
                 "Ethnicity" = "ethnicity",
                 "Insurance status" = "insurance_status",
                 "Housing status" = "housing_status",
-                "Gender" = "gender_id",
                 "Risk MSM" = "risk_msm",
                 "Risk IDU" = "risk_idu",
                 "Risk Heterosex" = "risk_heterosex",

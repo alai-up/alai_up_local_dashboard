@@ -359,12 +359,11 @@ server <- function(input, output, session) {
   output$grouping_var <- renderUI({
     req(input$file1)
     choice_list <- c("Age" = "age_cat",
-                     "Sex" = "sex_birth",
+                     "Sex" = "sex",
                      "Race" = "race",
                      "Ethnicity" = "ethnicity",
                      "Insurance status" = "insurance_status",
                      "Housing status" = "housing_status",
-                     "Gender" = "gender_id",
                      "Risk MSM" = "risk_msm",
                      "Risk IDU" = "risk_idu",
                      "Risk Heterosex" = "risk_heterosex",
@@ -391,12 +390,11 @@ server <- function(input, output, session) {
   # OBSERVE changes to grouping_var and update filter_var
   observeEvent(input$grouping_var, {
     all_vars <-  c("Age" = "age_cat",
-                   "Sex" = "sex_birth",
+                   "Sex" = "sex",
                    "Race" = "race",
                    "Ethnicity" = "ethnicity",
                    "Insurance status" = "insurance_status",
                    "Housing status" = "housing_status",
-                   "Gender" = "gender_id",
                    "Risk MSM" = "risk_msm",
                    "Risk IDU" = "risk_idu",
                    "Risk Heterosex" = "risk_heterosex",
@@ -506,7 +504,7 @@ server <- function(input, output, session) {
   output$demographics_page <- renderUI({
     req(input$file1)
 
-    choice_list <- c("Housing status","Gender",
+    choice_list <- c("Housing status",
                      "Risk MSM","Risk IDU","Risk Heterosex",
                      "Employment status","Poverty level",
                      "Immigration status","Language",
@@ -613,7 +611,7 @@ server <- function(input, output, session) {
   output$demo_by_lai <- renderUI({
     req(input$file1)
 
-    choice_list <- c("Housing status","Gender",
+    choice_list <- c("Housing status",
                      "Risk MSM","Risk IDU","Risk Heterosex",
                      "Employment status","Poverty level",
                      "Immigration status","Language",
@@ -808,7 +806,7 @@ server <- function(input, output, session) {
 
 
   keypop_choice_list <- reactive({
-    temp <- c("Housing status","Gender",
+    temp <- c("Housing status",
       "Risk MSM","Risk IDU","Risk Heterosex",
       "Employment status","Poverty level",
       "Immigration status","Language",

@@ -33,7 +33,7 @@ renderSectionPage <- function(input, output, page_id, sections_info, n_output_id
         selectInput(
               inputId = paste0(section$id,"_choice"),
               label = "Key population choice", 
-              choices = c("Housing status","Gender",
+              choices = c("Housing status",
                           "Risk MSM","Risk IDU","Risk Heterosex",
                           "Employment status","Poverty level",
                           "Immigration status","Language",

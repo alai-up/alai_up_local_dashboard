@@ -48,11 +48,7 @@ df <- input_df |>
          race_nh_pi = if_else(race == "nh_pi",1,0),
          race_white = if_else(race == "white",1,0),
          race_other = if_else(race == "other",1,0),
-         sex_birth = rbinom(n,1,0.22) + 1, # 1 for male, 2 for female
-         gender_id = case_when(
-           sex_birth == 1 ~ sample(x = c(1,3,5),size = n,replace = T, prob = c(0.95,0.04,0.01)),
-           sex_birth == 2 ~ sample(x = c(2,4,5),size = n,replace = T, prob = c(0.95,0.04,0.01))
-         ),
+         sex = rbinom(n,1,0.22) + 1, # 1 for male, 2 for female
          active_2021 = rbinom(n,1,0.8),
          active_2022 = rbinom(n,1,0.85),
          active_2023 = rbinom(n,1,0.9),
