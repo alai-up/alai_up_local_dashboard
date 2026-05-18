@@ -49,7 +49,7 @@ load_and_process_data <- function(input_df) {
     # for historical reasons, uid was named alai_up_uid. so preserving that here
     rename(alai_up_uid = any_of(c("uid", "alai_up_uid"))) |>
     add_missing_cols("race_ai_an","race_asian","race_black","race_nh_pi","race_white","race_other",
-                     "age","sex","ethnicity_hispanic","insurance_status",
+                     "birth_date","sex","ethnicity_hispanic","insurance_status",
                      "housing_status","risk_msm","risk_idu","risk_heterosex",
                      "employment_status", "poverty_level","immigration_status_undoc",
                      "language","incarceration_history","cd4_recent_result",
@@ -80,7 +80,8 @@ load_and_process_data <- function(input_df) {
       levels = c("American Indian or Alaskan Native","Asian",
                  "Black","Native Hawaiian or Pacific Islander",
                  "White","Other","Unknown"))) |>
-    mutate(age_cat=factor(
+    mutate(age = floor(interval(birth_date, today())/years(1)),
+      age_cat=factor(
       case_when( 
         age>=18 & age<=24 ~ "18-24",
         age>=25 & age<=34 ~ "25-34",

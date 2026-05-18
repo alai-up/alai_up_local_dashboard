@@ -35,8 +35,8 @@ df <- input_df |>
   mutate(site = "My site",
          uid = row_number(),
          zip_code = sample(ny_zips$zipcode,n, replace = T),
-         age = round(truncnorm::rtruncnorm(n, a = 18, b = 90, mean = 42, sd = 13)),
-         birth_year = 2025 - age,
+         age = truncnorm::rtruncnorm(n, a = 18, b = 90, mean = 42, sd = 13),
+         birth_date = as.Date(Sys.Date() - dyears(age)),
          ethnicity_hispanic = rbinom(n,1,0.2),
          race = sample(x = c("ai_an","asian","black","nh_pi","white","other"),
                        size = n,
@@ -281,7 +281,7 @@ filled_df <- df |>
          icab_rpv_discontinued_date = if_else(icab_rpv_discontinued == 1,
                                               max_cab_date + 30,
                                               NA)) |>
-  select(-race,-ref_date,-num_counsel,-num_shots,-num_vls)
+  select(-age,-race,-ref_date,-num_counsel,-num_shots,-num_vls)
 ```
 
 write to dataframe
