@@ -3,19 +3,16 @@ list(
   h1("Welcome"),
   #imageOutput("sites_img"),
   p('Welcome to the ALAI UP Dashboard'),
-  p('The purpose of the Dashboard is to:'),
+  p('The ALAI UP Dashboard is designed to help clinics monitor their long-acting 
+     injectable HIV treatment (LAI ART) programs.'),
+  p('The Dashboard Toolkit can be used by clinic leadership, LAI ART program leads, 
+     data management and quality teams, and other stakeholders to:'),
   tags$ul(
-    tags$li('Help clinics clearly see and understand their HIV treatment data,
-            with a focus on long-acting injectable (LAI) treatment.'),
-    tags$li('Track progress toward program goals, particularly implementation
-            goals for long-acting injectable (LAI) HIV treatment.'),
-    tags$li('Identify gaps in care, especially disparities among different 
-            demographic groups.'),
-    tags$li('Guide efforts to address gaps and improve the quality of services 
-            for all patients.')
+    tags$li('Track progress toward their implementation goals for their LAI ART program.'),
+    tags$li('Identify gaps in LAI ART care delivery across different social determinants of health.'),
+    tags$li('Guide efforts to address gaps and improve the quality of services for all patients.')
   ),
-  p('Please refer to the reference guide and user guide for detailed instructions. For
-     help preparing your data, please refer to the data dictionary and data validator tools.'),
+  p('Please refer to the Dashboard Toolkit for detailed instructions on preparing your data and using the dashboard.'),
   h3('Instructions'),
   p(strong('The Dashboard is organized into the following sections designed to support
     at-a-glance data review, and more in-depth data exploration. If you have multiple
