@@ -86,7 +86,9 @@ help_text <- list(
   
   info8 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      who received at least one injection of iCAB/RPV among those prescribed.")
+      who received at least one injection of iCAB/RPV among those prescribed.  
+      It also includes a plot showing reasons that iCAB/RPV was not financially accessible
+      to clients who were prescribed but did not initiate.")
   ),
   
   info9 = tagList(

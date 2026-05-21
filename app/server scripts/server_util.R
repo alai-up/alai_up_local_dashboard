@@ -1033,8 +1033,7 @@ not_interested_reason_func <- function(input_df, base_size_in){
   # Get "other" reasons
   other_df <- ic_df |>
     filter(Counseled == 1,
-           Interested==0 | Interested == 2,
-           disinterest_reason == 20) |>
+           Interested==0 | Interested == 2) |>
     group_by(disinterest_other_reason) |>
     count() |>
     drop_na() |>
@@ -1132,8 +1131,7 @@ not_eligible_reason_func <- function(input_df,base_size_in){
   # Get "other" reasons
   other_df <- ic_df |>
     filter(Assessed == 1,
-           Eligible==0,
-           not_elig_reason == 20) |>
+           Eligible==0) |>
     group_by(not_elig_other_reason) |>
     count() |>
     drop_na() |>
@@ -1170,6 +1168,93 @@ not_eligible_reason_func <- function(input_df,base_size_in){
           plot.caption.position = "plot",
           plot.caption = element_text(hjust = 0))
 }
+
+# not accessible reason plot.
+not_accessible_reason_func <- function(input_df, base_size_in){
+  base_size <- base_size_in # set dynamically
+  text_size <- base_size / 2.5
+  
+  ic_df <- get_IC_df(input_df)
+  
+  not_accessible_df <- ic_df |>
+    mutate(icab_rpv_not_accessible_reason = str_split(icab_rpv_not_accessible_reason, ",")) |> 
+    unnest(icab_rpv_not_accessible_reason) |>
+    mutate(icab_rpv_not_accessible_reason = factor(
+      case_when(
+        icab_rpv_not_accessible_reason == 1 ~ "Client does not qualify for PAP",
+        icab_rpv_not_accessible_reason == 2 ~ "Medication not on payor formulary",
+        icab_rpv_not_accessible_reason == 3 ~ "Co-pay too expensive for client",
+        icab_rpv_not_accessible_reason == 20 ~ "Other",
+        .default = "Unknown"
+      ),
+      levels = c("Client does not qualify for PAP",
+                 "Medication not on payor formulary",
+                 "Co-pay too expensive for client",
+                 "Other",
+                 "Unknown"))) |>
+    filter(Prescribed == 1,
+           Initiated == 0,
+           icab_rpv_accessible == 0) |>
+    group_by(icab_rpv_not_accessible_reason) |>
+    count() |>
+    ungroup() |>
+    complete(icab_rpv_not_accessible_reason) |>
+    replace_na(list(n = 0)) |>
+    filter(icab_rpv_not_accessible_reason!="Unknown" | 
+             (icab_rpv_not_accessible_reason=="Unknown" & n > 0)) |>
+    mutate(
+      percent = n / sum(n), 
+      labels = paste0(icab_rpv_not_accessible_reason,'\n',n,"/",sum(n)),
+      labels = fct_rev(fct_infreq(labels, w = n))
+    ) 
+  
+  # Get "other" reasons
+  other_df <- ic_df |>
+    filter(Prescribed == 1,
+           Initiated == 0,
+           icab_rpv_accessible == 0) |>
+    group_by(icab_rpv_not_accessible_reason_other) |>
+    count() |>
+    drop_na() |>
+    arrange(-n) |>
+    mutate(text = str_c(icab_rpv_not_accessible_reason_other," (",n,")"))
+  
+  other_reason_list <- other_df |>
+    pull(text) |>
+    str_c(collapse = ", ")
+    
+  
+  if (nrow(not_accessible_df)==0){
+    
+  } else {
+    not_accessible_df |>
+      ggplot(aes(y = labels, x = percent, fill = factor(icab_rpv_not_accessible_reason))) + 
+      geom_col() +
+      scale_fill_manual(values = rep("#08519C",nrow(not_accessible_df))) + 
+      geom_text(aes(label = paste0(round(percent * 100), '%')),
+                vjust = 0.5,hjust = -0.1,
+                size=text_size, fontface = "bold",
+                family = "Roboto") +
+      labs(y = NULL, x = NULL,
+           caption = str_wrap(
+             str_c("Other reasons listed include: ", other_reason_list),
+             120
+           )) +
+      scale_x_continuous(labels = scales::percent, breaks = seq(0, 1, 0.1),
+                         limits = c(0,1)) +
+      theme_minimal(base_size = base_size,
+                    base_family = "Roboto") + 
+      theme(legend.position = 'none',
+            axis.text.y = element_text(size = rel(1.5), color = "black"),
+            axis.text.x = element_blank(),
+            panel.grid = element_blank(),
+            axis.ticks = element_blank(),
+            axis.line = element_blank(),
+            plot.caption.position = "plot",
+            plot.caption = element_text(hjust = 0))
+  }
+}
+
 
 discontinued_reason_func <- function(input_df, base_size_in){
   base_size <- base_size_in # set dynamically

@@ -994,7 +994,8 @@ server <- function(input, output, session) {
     list(id = "age8", title = "Age", plot = "age8_plot", download = "age8_download_ui"),
     list(id = "insurance8", title = "Insurance status", plot = "insurance8_plot", download = "insurance8_download_ui"),
     list(id = "keypop8", title = "Key populations", plot = "keypop8_plot", download = "keypop8_download_ui"),
-    list(id = "time8", title = "Initiated over time", plot = "time8_plot", download = "time8_download_ui")
+    list(id = "time8", title = "Initiated over time", plot = "time8_plot", download = "time8_download_ui"),
+    list(id = "reason8", title = "Not accessible reasons", plot = "not_accessible_reason_plot", download = "not_accessible_reason_download_ui")
   )
 
   # initiated

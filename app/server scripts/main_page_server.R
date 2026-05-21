@@ -1509,6 +1509,29 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     p
   }, height = 400)
 
+  n_bars_not_accessible <<- reactiveVal(1)
+  output$not_accessible_reason_plot <- renderPlot({
+    base_size <- 14
+
+    p <- not_accessible_reason_func(tbl, base_size_in = base_size)
+
+    output$not_accessible_reason_plot_download <- download_box("not_accessible_reason",p,nrow(p$data))
+    output$not_accessible_reason_table_download <- download_table("not_accessible_reason",p$data)
+    output$not_accessible_reason_download_ui <- renderUI({
+      tagList(
+        downloadButton(outputId = "not_accessible_reason_plot_download", label = "Download plot"),
+        downloadButton(outputId = "not_accessible_reason_table_download",
+                       label = "Download table",
+                       icon = icon("table"))
+      )
+    })
+
+    n_bars_not_accessible(nrow(p$data))
+    p
+  }, height = function() {
+    50 * n_bars_not_accessible() + 50
+  })
+
 
   output$sustained_n <-  renderUI({
     if (is.null(selected_year())){
