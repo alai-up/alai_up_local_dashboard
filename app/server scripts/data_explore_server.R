@@ -13,7 +13,7 @@ data_explore_server <- function(input, output, filtered_ic_summary_df, session){
       prescribed_lag <- "PWH"
     }
     
-    temp <- filtered_ic_summary_df |>
+    temp <- filtered_ic_summary_df() |>
       group_by(Variable,!!grouping_var,!!filter_var) |>
       summarize(Value = sum(Value)) |>
       arrange(match(Variable,c('PWH', 'Assessed','Counseled',
@@ -46,8 +46,8 @@ data_explore_server <- function(input, output, filtered_ic_summary_df, session){
       # this should be the filter variable being filtered
       
     # generate caption text
-    group_var_levels <- filtered_ic_summary_df |> pull(!!grouping_var) |> levels()
-    filter_var_levels <- filtered_ic_summary_df |> 
+    group_var_levels <- filtered_ic_summary_df() |> pull(!!grouping_var) |> levels()
+    filter_var_levels <- filtered_ic_summary_df() |> 
       pull(!!filter_var) |> as.factor() |> levels()
     all_var_levels <- expand_grid(group_var_levels, filter_var_levels) |>
       filter(filter_var_levels %in% input$filter_select) |>

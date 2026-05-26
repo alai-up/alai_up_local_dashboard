@@ -12,6 +12,56 @@ source("server scripts/server_util.R")
 source("server scripts/render_scroll_page.R")
 source("server scripts/help_text.R")
 
+# RENDER filter_select UI
+dynamic_filter_select <- function(input, output, ic_summary_df,selected_site, session){
+
+  # Create a reactive expression for the filter options
+  filter_options <- reactive({
+    req(ic_summary_df, input$filter_var)
+
+    grouping_var <- sym(input$grouping_var)
+    filter_var <- sym(input$filter_var)
+
+    temp <- ic_summary_df() |>
+      group_by(Variable,!!grouping_var,!!filter_var) |>
+      summarize(Value = sum(Value), PWH1 = sum(PWH1)) |>
+      arrange(match(Variable,c('PWH', 'Assessed','Counseled',
+                               'Interested', 'Screened', 'Eligible',
+                               'Interested & Eligible',
+                               'Prescribed', 'Initiated', 'Sustained'))) |>
+      # this should be the grouping var (first) and filter var (second)
+      group_by(!!grouping_var,!!filter_var) |>
+      mutate(prev_lab = case_when(Variable == "PWH" ~ "PWH",
+                                  Variable == "Counseled" ~ "PWH",
+                                  Variable == "Interested" ~ "Counseled",
+                                  Variable == "Screened" ~ "PWH",
+                                  Variable == "Eligible" ~ "Screened",
+                                  Variable == "Interested & Eligible" ~ "Assessed",
+                                  .default =  lag(Variable)),
+             prev = Value[match(prev_lab, Variable)]) |>
+      mutate(Percent=if_else(prev == 0, NA, Value/prev)) |>
+      ungroup() |>
+      # indicator selection here as a filter
+      filter(Variable == if_else(input$indicator != "Demographics",input$indicator,"PWH"),
+             prev > 0)
+
+    temp |> pull(!!filter_var) |>
+      unique() |>
+      as.character() |>
+      sort()
+  })
+
+  # Render the checkbox group input
+  output$filter_select <- renderUI({
+    req(input$file1)
+    req(filter_options())
+
+    checkboxGroupInput("filter_select",
+                       "Select the groups you want to see",
+                       choices = filter_options(),
+                       selected = filter_options()[1])
+  })
+}
 
 server <- function(input, output, session) {
 
@@ -216,23 +266,25 @@ server <- function(input, output, session) {
       sort()
   })
 
-  observe({
-    req(tbl(), ic_summary_df(), cab_master_df())
+  # Calculate site once as a reactive to pass to modules
+  selected_site_reactive <- reactive({
+    req(site_list())
+    if (length(site_list()) > 1) input$site_choice_input else input$site_name_input
+  })
 
-      if (length(site_list()) > 1){
-        selected_site <- input$site_choice_input
-      } else {
-        selected_site <- input$site_name_input
-      }
+  # Initialize modules ONCE at top-level. 
+  # Pass the reactive objects (e.g., tbl, NOT tbl()) so they manage their own invalidation.
+  main_page_server(input, output, tbl, ic_summary_df, selected_site_reactive, cab_master_df, session)
+  dynamic_filter_select(input, output, ic_summary_df, selected_site_reactive, session)
+  data_explore_server(input, output, ic_summary_df, session)
+
+  observe({
+    
+    req(tbl(), ic_summary_df(), cab_master_df())
 
       updateActionButton(session, "go_button",
                          label = "Data is ready",
                          icon = icon("check"))
-
-      main_page_server(input, output, tbl(), ic_summary_df(), selected_site, cab_master_df(), session)
-      dynamic_filter_select(input, output, ic_summary_df(), selected_site, session)
-      data_explore_server(input, output, ic_summary_df(), session)
-
   })
 
   full_report_data <- reactive({
@@ -430,59 +482,6 @@ server <- function(input, output, session) {
     req(input$grouping_var)  # depends on this being ready
     selectInput("filter_var", "Filter by", choices = NULL)
   })
-
-  # RENDER filter_select UI
-  dynamic_filter_select <- function(input, output, ic_summary_df,selected_site, session){
-
-
-    # Create a reactive expression for the filter options
-    filter_options <- reactive({
-      req(ic_summary_df, input$filter_var)
-
-      grouping_var <- sym(input$grouping_var)
-      filter_var <- sym(input$filter_var)
-
-      temp <- ic_summary_df |>
-        group_by(Variable,!!grouping_var,!!filter_var) |>
-        summarize(Value = sum(Value), PWH1 = sum(PWH1)) |>
-        arrange(match(Variable,c('PWH', 'Assessed','Counseled',
-                                 'Interested', 'Screened', 'Eligible',
-                                 'Interested & Eligible',
-                                 'Prescribed', 'Initiated', 'Sustained'))) |>
-        # this should be the grouping var (first) and filter var (second)
-        group_by(!!grouping_var,!!filter_var) |>
-        mutate(prev_lab = case_when(Variable == "PWH" ~ "PWH",
-                                    Variable == "Counseled" ~ "PWH",
-                                    Variable == "Interested" ~ "Counseled",
-                                    Variable == "Screened" ~ "PWH",
-                                    Variable == "Eligible" ~ "Screened",
-                                    Variable == "Interested & Eligible" ~ "Assessed",
-                                    .default =  lag(Variable)),
-               prev = Value[match(prev_lab, Variable)]) |>
-        mutate(Percent=if_else(prev == 0, NA, Value/prev)) |>
-        ungroup() |>
-        # indicator selection here as a filter
-        filter(Variable == if_else(input$indicator != "Demographics",input$indicator,"PWH"),
-               prev > 0)
-
-      temp |> pull(!!filter_var) |>
-        unique() |>
-        as.character() |>
-        sort()
-    })
-
-
-    # Render the checkbox group input
-    output$filter_select <- renderUI({
-      req(input$file1)
-      req(filter_options())
-
-      checkboxGroupInput("filter_select",
-                         "Select the groups you want to see",
-                         choices = filter_options(),
-                         selected = filter_options()[1])
-    })
-  }
 
   output$data_explore_page <- renderUI({
     req(input$file1)

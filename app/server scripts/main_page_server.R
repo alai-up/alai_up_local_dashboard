@@ -2,7 +2,7 @@
 
 main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_master_df, session){
 
-  selected_year <- reactive({
+  selected_year_val <- reactive({
     if (input$filter_by_year == FALSE){
       NULL
     } else if (input$active_year == "All data") {
@@ -12,66 +12,52 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     }
   })
 
-  temp <- ic_summary_df |>
-    group_by(Variable) |>
-    summarise(Value=sum(Value,na.rm = T))
+  # Static data wrangling must be converted to reactives
+  temp <- reactive({
+    ic_summary_df() |>
+      group_by(Variable) |>
+      summarise(Value=sum(Value,na.rm = T))
+  })
 
-  count_df <- ic_summary_df |>
-    group_by(Variable) |>
-    summarize(Value = sum(Value))
+  count_df <- reactive({
+    ic_summary_df() |>
+      group_by(Variable) |>
+      summarize(Value = sum(Value))
+  })
 
-  pwh_count <- count_df  |>
-    filter(Variable == "PWH") |> pull()
-
-  assessed_count <- count_df  |>
-    filter(Variable == "Assessed") |> pull()
-
-  counseled_count <- count_df  |>
-    filter(Variable == "Counseled") |> pull()
-
-  interested_count <- count_df  |>
-    filter(Variable == "Interested") |> pull()
-
-  screened_count <- count_df  |>
-    filter(Variable == "Screened") |> pull()
-
-  eligible_count <- count_df  |>
-    filter(Variable == "Eligible") |> pull()
-
-  interested_eligible_count <- count_df  |>
-    filter(Variable == "Interested & Eligible") |> pull()
-
-  prescribed_count <- count_df  |>
-    filter(Variable == "Prescribed") |> pull()
-
-  initiated_count <- count_df  |>
-    filter(Variable == "Initiated") |> pull()
-
-  sustained_count <- count_df  |>
-    filter(Variable == "Sustained") |> pull()
+  pwh_count <- reactive({ count_df() |> filter(Variable == "PWH") |> pull(Value) })
+  assessed_count <- reactive({ count_df() |> filter(Variable == "Assessed") |> pull(Value) })
+  counseled_count <- reactive({ count_df() |> filter(Variable == "Counseled") |> pull(Value) })
+  interested_count <- reactive({ count_df() |> filter(Variable == "Interested") |> pull(Value) })
+  screened_count <- reactive({ count_df() |> filter(Variable == "Screened") |> pull(Value) })
+  eligible_count <- reactive({ count_df() |> filter(Variable == "Eligible") |> pull(Value) })
+  interested_eligible_count <- reactive({ count_df() |> filter(Variable == "Interested & Eligible") |> pull(Value) })
+  prescribed_count <- reactive({ count_df() |> filter(Variable == "Prescribed") |> pull(Value) })
+  initiated_count <- reactive({ count_df() |> filter(Variable == "Initiated") |> pull(Value) })
+  sustained_count <- reactive({ count_df() |> filter(Variable == "Sustained") |> pull(Value) })
 
   output$overall_n = renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        pwh_count,
+        pwh_count(),
         "</span> people with HIV received care at ",
-        selected_site
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        pwh_count,
+        pwh_count(),
         "</span> people with HIV received care at ",
-        selected_site,
-        " in ", selected_year()
+        selected_site(),
+        " in ", selected_year_val()
       ))
     }
   })
 
   map_data <- eventReactive(input$render_map_button, {
     withProgress(message = "Preparing map...", {
-      zip_counts <- tbl |>
+      zip_counts <- tbl() |>
         group_by(zip_code) |>
         summarize(n = n(),
                   n_on_cab = sum(ever_on_cab == 1))
@@ -139,8 +125,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     output[[paste0(id, "_plot")]] <- renderPlot({
       base_size <- 14
 
-      p <- demo_plot(tbl, var_str, base_size,
-                     selected_site = selected_site, selected_year = selected_year(),
+      p <- demo_plot(tbl(), var_str, base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val(),
                      by_cab_status = FALSE)
 
       output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
@@ -181,8 +167,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- demo_plot(tbl, var_str, base_size,
-                   selected_site = selected_site, selected_year = selected_year(),
+    p <- demo_plot(tbl(), var_str, base_size,
+                   selected_site = selected_site(), selected_year = selected_year_val(),
                    by_cab_status = FALSE)
 
     output$keypop1_plot_download <- download_box(paste0(var_str,"_demographics"), p,nrow(p$data))
@@ -203,7 +189,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   map_data_b <- eventReactive(input$render_map_button_b, {
     withProgress(message = "Preparing map...", {
-      zip_counts <- tbl |>
+      zip_counts <- tbl() |>
         group_by(zip_code) |>
         summarize(n = n(),
                   n_on_cab = sum(ever_on_cab == 1))
@@ -271,8 +257,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     output[[paste0(id, "_plot")]] <- renderPlot({
       base_size <- 14
 
-      p <- demo_plot(tbl, var_str, base_size,
-                     selected_site = selected_site, selected_year = selected_year(),
+      p <- demo_plot(tbl(), var_str, base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val(),
                      by_cab_status = TRUE)
 
       output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
@@ -313,8 +299,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- demo_plot(tbl, var_str, base_size,
-                   selected_site = selected_site, selected_year = selected_year(),
+    p <- demo_plot(tbl(), var_str, base_size,
+                   selected_site = selected_site(), selected_year = selected_year_val(),
                    by_cab_status = TRUE)
 
     output$keypop1b_plot_download <- download_box(paste0(var_str,"_demographics_lai"), p,nrow(p$data))
@@ -344,7 +330,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       filter_list <- c("PWH","prescribed","initiated","sustained")
     }
 
-    ic_df <- ic_summary_df |>
+    ic_df <- ic_summary_df() |>
       group_by(site, Variable) |>
       summarise(Value=sum(Value,na.rm = T)) |>
       arrange(match(Variable,c('PWH', 'Assessed','Counseled',
@@ -396,7 +382,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     base_size <- 14
 
     bar_names <- ic_df$x_lab[-1]
-    if (length(unique(ic_summary_df$site)) > 1){
+    if (length(unique(ic_summary_df()$site)) > 1) {
       max_y = min(2,max(ic_df$high_pct,na.rm = T))
       caption = str_wrap("Error bars have been used to show range of values from lowest to highest by site. A narrow interval means less variability by site. Prescribed may be above 100% if clients not clinically eligible are prescribed. Initiated may be above 100% if clients switched into the clinic while on LAI.",
                               width = 150)
@@ -431,7 +417,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
             plot.caption = element_text(hjust = 0),
             plot.caption.position = "plot")
 
-    if (length(unique(ic_summary_df$site)) > 1){
+    if (length(unique(ic_summary_df()$site)) > 1) {
       chart <- chart +
         geom_errorbar(aes(y = as.numeric(fct_rev(x_lab)) + 0.25,
                           xmin = low_pct,xmax = high_pct),
@@ -456,7 +442,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   }, res = 72)
 
   output$int_elig_table <- render_gt({
-    gt_tbl <- int_elig_table_func(tbl, input$int_elig_pct)
+    gt_tbl <- int_elig_table_func(tbl(), input$int_elig_pct)
 
     output$int_elig_table_download <- download_table("assessed_outcomes",gt_tbl$`_data`)
     gt_tbl
@@ -529,8 +515,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       req(input$sidebar == page_selected)
 
       base_size <- 14
-      p <- ic_var_plot(ic_summary_df, input_var, by_group = T, group_var = var_str, base_size_in = base_size,
-                       selected_site = selected_site, selected_year = selected_year())
+      p <- ic_var_plot(ic_summary_df(), input_var, by_group = T, group_var = var_str, base_size_in = base_size, selected_site = selected_site(), selected_year = selected_year_val())
 
       output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
       output[[paste0(id, "_table_download")]] <- download_table(label, p$data)
@@ -551,22 +536,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   })
 
   output$assessed_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        assessed_count,
+        assessed_count(),
         "</span> people were assessed out of ",
-        pwh_count," people with HIV who received care at ",
-        selected_site
+        pwh_count()," people with HIV who received care at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        assessed_count,
+        assessed_count(),
         "</span> people were assessed out of ",
-        pwh_count," people with HIV who received care at ",
-        selected_site,
-        " in ", selected_year()
+        pwh_count()," people with HIV who received care at ",
+        selected_site(),
+        " in ", selected_year_val()
       ))
     }
   })
@@ -575,8 +560,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$assessed_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "assessed",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "assessed",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$assessed_overall_plot_download <- download_box("assessed_overall", p,nrow(p$data))
     output$assessed_overall_table_download <- download_table("assessed_overall", p$data)
@@ -615,9 +600,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "assessed", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "assessed", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop2_plot_download <- download_box(paste0("assessed_",var_str), p,nrow(p$data))
     output$keypop2_table_download <- download_table(paste0("assessed_",var_str), p$data)
@@ -638,7 +623,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time2_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("counsel")|contains("screen")) & contains("date")) |>
       pivot_longer(cols = contains("icab_rpv")&(contains("counsel")|contains("screen")) & contains("date"),
@@ -664,7 +649,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time2_event_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("counsel")|contains("screen")) & contains("date")) |>
       pivot_longer(cols = contains("icab_rpv")&(contains("counsel")|contains("screen")) & contains("date"),
@@ -690,22 +675,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
 
   output$counseled_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        counseled_count,
+        counseled_count(),
         "</span> people were counseled out of ",
-        pwh_count," people with HIV who received care at ",
-        selected_site
+        pwh_count()," people with HIV who received care at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        counseled_count,
+        counseled_count(),
         "</span> people were counseled out of ",
-        pwh_count," people with HIV who received care at ",
-        selected_site,
-        " in ", selected_year()
+        pwh_count()," people with HIV who received care at ",
+        selected_site(),
+        " in ", selected_year_val()
       ))
     }
   })
@@ -714,8 +699,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$counseled_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "counseled",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "counseled",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$counseled_overall_plot_download <- download_box("counseled_overall", p,nrow(p$data))
     output$counseled_overall_table_download <- download_table("counseled_overall", p$data)
@@ -754,9 +739,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "counseled", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "counseled", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop3_plot_download <- download_box(paste0("counseled_",var_str), p,nrow(p$data))
     output$keypop3_table_download <- download_table(paste0("counseled_",var_str), p$data)
@@ -777,7 +762,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time3_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("counsel")) & contains("date")) |>
       pivot_longer(cols = contains("icab_rpv")&(contains("counsel")) & contains("date"),
@@ -802,7 +787,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time3_event_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("counsel")) & contains("date")) |>
       pivot_longer(cols = contains("icab_rpv")&(contains("counsel")) & contains("date"),
@@ -827,22 +812,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
 
   output$interested_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        interested_count,
+        interested_count(),
         "</span> people were interested out of ",
-        counseled_count," people counseled at ",
-        selected_site
+        counseled_count()," people counseled at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        interested_count,
+        interested_count(),
         "</span> people were interested out of ",
-        counseled_count," people counseled at ",
-        selected_site,
-        " among PWH active in ", selected_year()
+        counseled_count()," people counseled at ",
+        selected_site(),
+        " among PWH active in ", selected_year_val()
       ))
     }
   })
@@ -851,8 +836,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$interested_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "interested",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "interested",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$interested_overall_plot_download <- download_box("interested_overall", p,nrow(p$data))
     output$interested_overall_table_download <- download_table("interested_overall", p$data)
@@ -891,9 +876,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "interested", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "interested", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop4_plot_download <- download_box(paste0("interested_",var_str), p,nrow(p$data))
     output$keypop4_table_download <- download_table(paste0("interested_",var_str), p$data)
@@ -914,7 +899,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time4_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&contains("counsel")) |>
       pivot_longer(cols = contains("icab_rpv")&contains("counsel"),
@@ -944,7 +929,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time4_event_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&contains("counsel")) |>
       pivot_longer(cols = contains("icab_rpv")&contains("counsel"),
@@ -976,7 +961,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$not_interested_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- not_interested_reason_func(tbl, base_size_in = base_size)
+    p <- not_interested_reason_func(tbl(), base_size_in = base_size)
 
     output$not_interested_reason_plot_download <- download_box("not_interested_reason",p,nrow(p$data))
     output$not_interested_reason_table_download <- download_table("not_interested_reason",p$data)
@@ -996,22 +981,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   })
 
   output$screened_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        screened_count,
+        screened_count(),
         "</span> people were screened out of ",
-        pwh_count," people with HIV who received care at ",
-        selected_site
+        pwh_count()," people with HIV who received care at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        screened_count,
+        screened_count(),
         "</span> people were screened out of ",
-        pwh_count," people with HIV who received care at ",
-        selected_site,
-        " in ", selected_year()
+        pwh_count()," people with HIV who received care at ",
+        selected_site(),
+        " in ", selected_year_val()
       ))
     }
   })
@@ -1020,8 +1005,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$screened_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "screened",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "screened",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$screened_overall_plot_download <- download_box("screened_overall", p,nrow(p$data))
     output$screened_overall_table_download <- download_table("screened_overall", p$data)
@@ -1060,9 +1045,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "screened", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "screened", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop5_plot_download <- download_box(paste0("screened_",var_str), p,nrow(p$data))
     output$keypop5_table_download <- download_table(paste0("screened_",var_str), p$data)
@@ -1083,7 +1068,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time5_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("screen")) & contains("date")) |>
       pivot_longer(cols = contains("icab_rpv")&(contains("screen")) & contains("date"),
@@ -1108,7 +1093,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time5_event_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("screen")) & contains("date")) |>
       pivot_longer(cols = contains("icab_rpv")&(contains("screen")) & contains("date"),
@@ -1132,22 +1117,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   }, height = 400)
 
   output$eligible_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        eligible_count,
+        eligible_count(),
         "</span> people were eligible out of ",
-        assessed_count," people assessed at ",
-        selected_site
+        assessed_count()," people assessed at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        eligible_count,
+        eligible_count(),
         "</span> people were eligible out of ",
-        assessed_count," people assessed at ",
-        selected_site,
-        " among PWH active in ", selected_year()
+        assessed_count()," people assessed at ",
+        selected_site(),
+        " among PWH active in ", selected_year_val()
       ))
     }
   })
@@ -1156,8 +1141,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$eligible_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "eligible",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "eligible",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$eligible_overall_plot_download <- download_box("eligible_overall", p,nrow(p$data))
     output$eligible_overall_table_download <- download_table("eligible_overall", p$data)
@@ -1196,9 +1181,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "eligible", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "eligible", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop6_plot_download <- download_box(paste0("eligible_",var_str), p,nrow(p$data))
     output$keypop6_table_download <- download_table(paste0("eligible_",var_str), p$data)
@@ -1219,7 +1204,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time6_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("screen"))) |>
       pivot_longer(cols = contains("icab_rpv")&contains("screen"),
@@ -1247,7 +1232,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time6_event_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       select(alai_up_uid,
              contains("icab_rpv")&(contains("screen"))) |>
       pivot_longer(cols = contains("icab_rpv")&contains("screen"),
@@ -1277,7 +1262,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$not_eligible_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- not_eligible_reason_func(tbl, base_size_in = base_size)
+    p <- not_eligible_reason_func(tbl(), base_size_in = base_size)
 
     output$not_eligible_reason_plot_download <- download_box("not_eligible_reason",p,nrow(p$data))
     output$not_eligible_reason_table_download <- download_table("not_eligible_reason",p$data)
@@ -1297,22 +1282,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   })
 
   output$prescribed_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        prescribed_count,
+        prescribed_count(),
         "</span> people were prescribed out of ",
-        interested_eligible_count," people eligible & interested at ",
-        selected_site
+        interested_eligible_count()," people eligible & interested at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        prescribed_count,
+        prescribed_count(),
         "</span> people were prescribed out of ",
-        interested_eligible_count," people eligible & interested at ",
-        selected_site,
-        " among PWH active in ", selected_year()
+        interested_eligible_count()," people eligible & interested at ",
+        selected_site(),
+        " among PWH active in ", selected_year_val()
       ))
     }
   })
@@ -1321,8 +1306,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$prescribed_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "prescribed",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year(),
+    p <- ic_var_plot(ic_summary_df(), "prescribed",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val(),
                      assessed_choice = input$assessed_choice)
 
     output$prescribed_overall_plot_download <- download_box("prescribed_overall", p,nrow(p$data))
@@ -1362,9 +1347,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "prescribed", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "prescribed", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop7_plot_download <- download_box(paste0("prescribed_",var_str), p,nrow(p$data))
     output$keypop7_table_download <- download_table(paste0("prescribed_",var_str), p$data)
@@ -1385,7 +1370,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time7_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       mutate(date = icab_rpv_rx_date,
              event = NA) |>
       plot_outcome_by_month("Prescription month",base_size_in = base_size)
@@ -1405,22 +1390,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   }, height = 400)
 
   output$initiated_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        initiated_count,
+        initiated_count(),
         "</span> people were initiated out of ",
-        prescribed_count," people prescribed at ",
-        selected_site
+        prescribed_count()," people prescribed at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        initiated_count,
+        initiated_count(),
         "</span> people were initiated out of ",
-        prescribed_count," people prescribed at ",
-        selected_site,
-        " among PWH active in ", selected_year()
+        prescribed_count()," people prescribed at ",
+        selected_site(),
+        " among PWH active in ", selected_year_val()
       ))
     }
   })
@@ -1429,8 +1414,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$initiated_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "initiated",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "initiated",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$initiated_overall_plot_download <- download_box("initiated_overall", p,nrow(p$data))
     output$initiated_overall_table_download <- download_table("initiated_overall", p$data)
@@ -1469,9 +1454,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "initiated", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "initiated", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop8_plot_download <- download_box(paste0("initiated_",var_str), p,nrow(p$data))
     output$keypop8_table_download <- download_table(paste0("initiated_",var_str), p$data)
@@ -1492,7 +1477,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time8_plot <- renderPlot({
     base_size <- 14
 
-    p <- tbl |>
+    p <- tbl() |>
       mutate(date = icab_rpv_shot1_date,
              event = NA) |>
       plot_outcome_by_month("Initiation month",base_size_in = base_size)
@@ -1515,7 +1500,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$not_accessible_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- not_accessible_reason_func(tbl, base_size_in = base_size)
+    p <- not_accessible_reason_func(tbl(), base_size_in = base_size)
 
     output$not_accessible_reason_plot_download <- download_box("not_accessible_reason",p,nrow(p$data))
     output$not_accessible_reason_table_download <- download_table("not_accessible_reason",p$data)
@@ -1536,22 +1521,22 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
 
   output$sustained_n <-  renderUI({
-    if (is.null(selected_year())){
+    if (is.null(selected_year_val())){
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        sustained_count,
+        sustained_count(),
         "</span> people were sustained out of ",
-        initiated_count," people initiated at ",
-        selected_site
+        initiated_count()," people initiated at ",
+        selected_site()
       ))
     } else {
       HTML(paste0(
         "<span style='color: #FE5000; font-size: 36px;'>",
-        sustained_count,
+        sustained_count(),
         "</span> people were sustained out of ",
-        initiated_count," people initiated at ",
-        selected_site,
-        " among PWH active in ", selected_year()
+        initiated_count()," people initiated at ",
+        selected_site(),
+        " among PWH active in ", selected_year_val()
       ))
     }
   })
@@ -1560,8 +1545,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$sustained_overall_plot <- renderPlot({
     base_size <- 14
 
-    p <- ic_var_plot(ic_summary_df, "sustained",by_group = F, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+    p <- ic_var_plot(ic_summary_df(), "sustained",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$sustained_overall_plot_download <- download_box("sustained_overall", p,nrow(p$data))
     output$sustained_overall_table_download <- download_table("sustained_overall", p$data)
@@ -1600,9 +1585,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
 
-    p <- ic_var_plot(ic_summary_df, "sustained", by_group = T,
+    p <- ic_var_plot(ic_summary_df(), "sustained", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site, selected_year = selected_year())
+                     selected_site = selected_site(), selected_year = selected_year_val())
 
     output$keypop9_plot_download <- download_box(paste0("sustained_",var_str), p,nrow(p$data))
     output$keypop9_table_download <- download_table(paste0("sustained_",var_str), p$data)
@@ -1623,7 +1608,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$time9_plot <- renderPlot({
     base_size <- 14
 
-    temp <- tbl |>
+    temp <- tbl() |>
       filter(!is.na(icab_rpv_shot1_date) | !is.na(icab_rpv_shot2_date)) |>
       select(alai_up_uid,icab_rpv_discontinued,
              icab_rpv_discontinued_date,
@@ -1684,7 +1669,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$discontinued_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- discontinued_reason_func(tbl, base_size_in = base_size)
+    p <- discontinued_reason_func(tbl(), base_size_in = base_size)
 
     output$discontinued_reason_plot_download <- download_box("discontinued_reason",p,nrow(p$data))
     output$discontinued_reason_table_download <- download_table("discontinued_reason",p$data)
@@ -1706,37 +1691,26 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   # on time outcomes
 
-  interval_1 <- reactive({
-    if (input$ontime_target_input == "4 or 8 weeks") {
-      28
-    } else if (input$ontime_target_input == "1 or 2 months") {
-      31
-    }
-  })
-
-  interval_2 <- reactive({
-    if (input$ontime_target_input == "4 or 8 weeks") {
-      56
-    } else if (input$ontime_target_input == "1 or 2 months") {
-      62
-    }
-  })
-
-  cab_doses_df <- cab_master_df |>
+  cab_doses_df_val <- reactive({
+    cab_master_df() |>
     filter(shot_appt == 1)
+  })
 
-  temp <- cab_doses_df |>
+  temp_val <- reactive({
+    cab_doses_df_val() |>
     filter(!is.na(on_time)) |>
     summarise(.by = on_time,
               n = n()) |>
     mutate(pct = n/sum(n),
            my_string = paste0(n, "/", sum(n), " (",round(100*pct,1),"%)"))
+  })
 
-  num_doses <- nrow(cab_doses_df)
+  num_doses <- reactive({ nrow(cab_doses_df_val()) })
 
-  num_people_w_doses <- length(unique(cab_doses_df$alai_up_uid))
+  num_people_w_doses <- reactive({ length(unique(cab_doses_df_val()$alai_up_uid)) })
 
-  on_time_string <- temp |>
+  on_time_string <- reactive({
+    temp_val() |>
     mutate(on_time = if_else(on_time == "Late","Late","On time/early")) |>
     summarize(.by = on_time,
               n = sum(n)) |>
@@ -1744,24 +1718,25 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
            my_string = paste0(n, "/", sum(n), " (",round(100*pct,1),"%)")) |>
     filter(on_time == "On time/early") |>
     pull(my_string)
+  })
 
   output$clinical_n <-  renderUI({
     HTML(paste0(
       "<span style='color: #08519C; font-size: 36px;'>",
-      num_doses,
+      num_doses(),
       "</span> total injections were administered to ",
       "<span style='color: #08519C; font-size: 36px;'>",
-      num_people_w_doses,
+      num_people_w_doses(),
       "</span> individuals. ",
       "<span style='color: #08519C; font-size: 36px;'>",
-      on_time_string,
+      on_time_string(),
       "</span> follow-up/maintenance injections were administered on time or early"
     ))
   })
 
   output$ontime_status_bar <- renderPlot({
 
-    p <- temp |>
+    p <- temp_val() |>
       mutate(y = "null",
              on_time = factor(on_time, levels = c("Late","On time","Early")),
              label_col = str_c(on_time, "\n",n, "/", sum(n), " (",round(100*pct,1),"%)")) |>
@@ -1800,7 +1775,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   output$ontime_plot_monthly <- renderPlot({
 
 
-    p <- ontime_plot_func(cab_master_df |>
+    p <- ontime_plot_func(cab_master_df() |>
                              filter(shot_appt == 1),
                           interval_1(),interval_2(),
                           "Monthly injection interval")
@@ -1821,7 +1796,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   output$ontime_plot_bimonthly <- renderPlot({
 
-    p <- ontime_plot_func(cab_master_df |>
+    p <- ontime_plot_func(cab_master_df() |>
                              filter(shot_appt == 1),interval_1(),interval_2(),
                           "Bimonthly injection interval")
 
@@ -1843,7 +1818,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     base_size <- 14
     text_size <- base_size / 3.5
 
-    plot_data <-  cab_master_df |>
+    plot_data <-  cab_master_df() |>
       filter(shot_appt == 1) |>
       filter(!is.na(on_time)) |>
       summarize(.by = alai_up_uid,
@@ -1892,7 +1867,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     base_size <- 14
     text_size <- base_size / 3.5
 
-    plot_data <-  cab_master_df |>
+    plot_data <-  cab_master_df() |>
       filter(shot_appt == 1) |>
       filter(!is.na(on_time)) |>
       summarize(.by = alai_up_uid,
@@ -1939,20 +1914,23 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   # VL page
   # BANs
-  cab_vl <- cab_master_df |>
+  cab_vl_val <- reactive({ cab_master_df() |>
     filter(vl_appt == 1)
+  })
 
-  num_people_w_doses <- length(unique(cab_master_df$alai_up_uid))
+  num_people_w_doses_vl <- reactive({ length(unique(cab_master_df()$alai_up_uid)) })
 
-  n_pre_cab_vl <- cab_vl |>
-    filter(!is.na(pre_icab_vl_result)) |>
-    ungroup() |>
-    summarize(n = n_distinct(alai_up_uid)) |>
-    pull(n)
+  n_pre_cab_vl <- reactive({
+    cab_vl_val() |>
+      filter(!is.na(pre_icab_vl_result)) |>
+      ungroup() |>
+      summarize(n = n_distinct(alai_up_uid)) |>
+      pull(n)
+  })
 
-  pre_cab_vl_string <- str_c(n_pre_cab_vl,"/", num_people_w_doses," (",
-                             round(100 * n_pre_cab_vl/num_people_w_doses,1),
-                             "%)")
+  pre_cab_vl_string <- reactive({ str_c(n_pre_cab_vl(),"/", num_people_w_doses_vl()," (",
+                             round(100 * n_pre_cab_vl()/num_people_w_doses_vl(),1),
+                             "%)") })
 
   val1 <- reactive({
     if (input$vl_cutoff_input == "50 copies/mL"){
@@ -1972,35 +1950,35 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   observe({
 
-    n_vs <- cab_vl |>
+    n_vs <- cab_vl_val() |>
       filter(!is.na(pre_icab_vl_result),
              pre_icab_vl_result <= if_else(val1() == "<50",2,3)) |>
       ungroup()  |>
       summarize(n = n_distinct(alai_up_uid)) |>
       pull(n)
 
-    n_vs_string <- str_c(n_vs,"/", n_pre_cab_vl," (",
-                         round(100 * n_vs/n_pre_cab_vl,1),
+    n_vs_string <- str_c(n_vs,"/", n_pre_cab_vl()," (",
+                         round(100 * n_vs/n_pre_cab_vl(),1),
                          "%)")
 
-    n_vf <- cab_vl |>
+    n_vf <- cab_vl_val() |>
       filter(!is.na(pre_icab_vl_result),
              pre_icab_vl_result > if_else(val1() == "<50",2,3)) |>
       ungroup()  |>
       summarize(n = n_distinct(alai_up_uid)) |>
       pull(n)
 
-    n_vf_string <- str_c(n_vf,"/", n_pre_cab_vl," (",
-                         round(100 * n_vf/n_pre_cab_vl,1),
+    n_vf_string <- str_c(n_vf,"/", n_pre_cab_vl()," (",
+                         round(100 * n_vf/n_pre_cab_vl(),1),
                          "%)")
 
     output$vl_n <-  renderUI({
       HTML(paste0(
         "<span style='color: #08519C; font-size: 36px;'>",
-        num_people_w_doses,
+        num_people_w_doses_vl(),
         "</span> individuals had ever received a iCAB/RPV dose. ",
         "<span style='color: #08519C; font-size: 36px;'>",
-        pre_cab_vl_string,
+        pre_cab_vl_string(),
         "</span> of them had a valid pre-iCAB/RPV VL result, and VL results while on iCAB/RPV.<br>",
         "<span style='color: #08519C; font-size: 36px;'>",
         n_vs_string,
@@ -2020,7 +1998,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     text_size <- base_size / 3
 
     if (val1() == "<50"){
-      temp <- cab_master_df |>
+      temp <- cab_master_df() |>
         filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(pre_icab_vl_result > 2) |>
@@ -2029,7 +2007,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                   event = max(first_under50),
                   time = min(first_under50_time, last_cab_time,na.rm = T))
     } else {
-      temp <- cab_master_df |>
+      temp <- cab_master_df() |>
         filter(vl_appt == 1) |>
         filter(pre_icab_vl_result > 3) |>
         ungroup() |>
@@ -2112,7 +2090,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     text_size <- base_size / 3
 
     if (val1() == "<50"){
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
@@ -2125,7 +2103,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                   event = max(first_elevated_vl_ref50),
                   time = min(first_elevated_vl_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
                !is.na(starting_vl),
@@ -2214,7 +2192,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     text_size <- base_size / 3
 
     if (val1() == "<50"){
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
         filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
@@ -2227,7 +2205,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                   event = max(first_elevated_vl_ref50),
                   time = min(first_elevated_vl_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
                !is.na(starting_vl),
@@ -2316,7 +2294,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     text_size <- base_size / 3
 
     if (val1() == "<50"){
-      temp <-  cab_master_df |> 
+      temp <-  cab_master_df() |> 
         filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
@@ -2327,7 +2305,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                   event = max(first_failure_ref50),
                   time = min(first_failure_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
                pre_icab_vl_result <= 3) |>
@@ -2414,7 +2392,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     text_size <- base_size / 3
 
     if (val1() == "<50"){
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
         filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
@@ -2425,7 +2403,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                   event = max(first_failure_ref50),
                   time = min(first_failure_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
-      temp <-  cab_master_df |>
+      temp <-  cab_master_df() |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
                pre_icab_vl_result > 3 & any(first_under200 == 1)) |>
@@ -2509,7 +2487,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   }, height = 400)
 
   output$clinic_level_vl <- renderPlot({
-    temp <- tbl |>
+    temp <- tbl() |>
       select(alai_up_uid,site,
              hiv_dx_date,
              icab_rpv_shot1_date,icab_rpv_shot2_date,
