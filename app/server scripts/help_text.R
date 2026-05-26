@@ -1,12 +1,12 @@
 help_text <- list(
   info1 = tagList(
-    p("This page shows overall clinic demographics and patient characteristics, 
+    p("This page shows overall clinic demographics and client characteristics, 
       for all people with HIV served at your clinic, regardless of LAI use."),
     p("Use the Jump to Section navigator on the near left to jump to different
       sections of this page.")
   ),
   info1b = tagList(
-    p("This page shows overall clinic demographics and patient characteristics, 
+    p("This page shows overall clinic demographics and client characteristics, 
       for all people with HIV served at your clinic, stratified by LAI use."),
     p("Use the Jump to Section navigator on the near left to jump to different
       sections of this page.")
@@ -44,18 +44,18 @@ help_text <- list(
     p('This page shows the number and percentage of people with HIV at the site
       who were assessed. "Assessed" is a combined indicator
       representing the number of PWH with documented counseling or screening for iCAB/RPV.'),
-    p("To view details about the number of patients counseled, screened, 
+    p("To view details about the number of clients counseled, screened, 
       interested, and eligible for iCAB/RPV, you can navigate to those pages by clicking on 
       the corresponding tabs on the left."),
-    p('Light gray bars show indicators with fewer than 10 patients and therefore
+    p('Light gray bars show indicators with fewer than 10 clients and therefore
       should be interpreted with caution, given the sample size. The dotted line
-      shows the average for that indicator across all clinic patients.')
+      shows the average for that indicator across all clinic clients.')
   ),
   
   info3 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
       who were counseled about iCAB/RPV."),
-    p("To view details about the number of patients interested in iCAB/RPV following 
+    p("To view details about the number of clients interested in iCAB/RPV following 
       counseling, you can navigate to the corresponding tab on the left.")
   ),
   
@@ -109,12 +109,12 @@ help_text <- list(
     p('"On time injections by days since prior injection" shows how early or late particular injections were, 
         with the on time injection region shaded in gray There is a plot for monthly injection intervals and
         a plot for bimonthly injection intervals.'),
-    p('"Late injections by patient" shows how many patients had how many late injections.'),
-    p('"Early injections by patient" shows how many patients had how many early injections.')
+    p('"Late injections by client" shows how many clients had how many late injections.'),
+    p('"Early injections by client" shows how many clients had how many early injections.')
   ),
   
   info11 = tagList(
-    p('This page shows viral load results among patients on iCAB/RPV. Different 
+    p('This page shows viral load results among clients on iCAB/RPV. Different 
       viral load cutoffs of interest can be selected on the left. Either 50 copies/mL 
       or 200 copies/mL can be used to calculate viral suppression. Viral failure 
       is defined as a single viral load >1000 copies/mL or 2 consecutive viral loads

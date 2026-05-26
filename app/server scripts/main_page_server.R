@@ -108,7 +108,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                            fillOpacity = 0.5,
                            label = labels) |>
                addLegend(pal = pal, values = ~n,
-                         opacity = 0.7, title = "Number of patients",
+                         opacity = 0.7, title = "Number of clients",
                          position = "bottomright"))
     })
   })
@@ -362,7 +362,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
         Variable = if_else(Variable != "PWH",str_to_lower(Variable),Variable) ,
         prev_lab = if_else(prev_lab != "PWH",str_to_lower(prev_lab),prev_lab),
         Percent=Value/prev,
-        x_lab = str_c(Value," patients were ",Variable," out of ",prev," ", prev_lab)) |>
+        x_lab = str_c(Value," clients were ",Variable," out of ",prev," ", prev_lab)) |>
       filter(Variable %in% filter_list) |>
       group_by(Variable) |>
       summarize(low_pct = min(Percent),
@@ -374,7 +374,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                 prev_lab = unique(prev_lab),
                 prev = sum(prev)) |>
       mutate(Percent = Value/prev,
-             x_lab = str_c(Value," patients were ",Variable," out of ",prev," ", prev_lab),
+             x_lab = str_c(Value," clients were ",Variable," out of ",prev," ", prev_lab),
              low_site = str_c(low_site, ", ",round(100*low_pct),"%"),
              high_site = str_c(high_site, ", ",round(100*high_pct),"%")) |>
       arrange(match(Variable,filter_list)) |>
@@ -396,7 +396,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     bar_names <- ic_df$x_lab[-1]
     if (length(unique(ic_summary_df$site)) > 1){
       max_y = min(2,max(ic_df$high_pct,na.rm = T))
-      caption = str_wrap("Error bars have been used to show range of values from lowest to highest by site. A narrow interval means less variability by site. Prescribed may be above 100% if patients not clinically eligible are prescribed. Initiated may be above 100% if patients switched into the clinic while on LAI.",
+      caption = str_wrap("Error bars have been used to show range of values from lowest to highest by site. A narrow interval means less variability by site. Prescribed may be above 100% if clients not clinically eligible are prescribed. Initiated may be above 100% if clients switched into the clinic while on LAI.",
                               width = 150)
     } else {
       max_y = min(2,max(ic_df$Percent,na.rm = T))
@@ -1849,7 +1849,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       summarize(.by = late,
                 num_clients = n()) |>
       mutate(fill_col = if_else(late == 0, "ontime", "late"),
-             label_col = paste0(num_clients," patients had ", late," late injections"))
+             label_col = paste0(num_clients," clients had ", late," late injections"))
 
     max_y = max(plot_data$num_clients)
 
@@ -1860,7 +1860,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                 family = "Roboto") +
       geom_col(aes(fill = fill_col)) +
       labs(x = "Number of late injections",
-           y = "Number of patients") +
+           y = "Number of clients") +
       scale_fill_manual(values = c("ontime" = "#08519C",
                                    "early" = "#9ECAE1",
                                    "late" = "#fE5000"),
@@ -1898,7 +1898,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       summarize(.by = early,
                 num_clients = n()) |>
       mutate(fill_col = if_else(early == 0, "ontime", "early"),
-             label_col = paste0(num_clients," patients had ", early," early injections"))
+             label_col = paste0(num_clients," clients had ", early," early injections"))
 
     max_y = max(plot_data$num_clients)
 
@@ -1909,7 +1909,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                 vjust = -0.2, size = text_size,
                 family = "Roboto") +
       labs(x = "Number of early injections",
-           y = "Number of patients") +
+           y = "Number of clients") +
       scale_fill_manual(values = c("ontime" = "#08519C",
                                    "early" = "#9ECAE1",
                                    "late" = "#fE5000"),
@@ -2589,10 +2589,10 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       p <- p +
         geom_bar(position = "fill", stat = "identity", just = 1) +
         scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
-        labs(y = "Percent of patients with VL")
+        labs(y = "Percent of clients with VL")
     } else {
       p <- p + geom_bar(position = "stack", stat = "identity", just = 1) +
-        labs(y = "Number of patients with VL")}
+        labs(y = "Number of clients with VL")}
 
     p <- p + scale_x_date(name = "Period ending",
                           breaks = unique(temp$period),

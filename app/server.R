@@ -244,7 +244,7 @@ server <- function(input, output, session) {
       choices = active_year_options()
     }
 
-    selectInput("active_year", "Active year of patients",
+    selectInput("active_year", "Active year of clients",
                 choices = choices,
                 selected = choices[length(choices)])
   })
@@ -575,7 +575,7 @@ server <- function(input, output, session) {
                            icon = icon("play")),
               leafletOutput("zip_map"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
-                  "Note: Use caution when sharing this map, as small cell sizes may risk patient confidentiality."),
+                  "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
               downloadButton(outputId = "map_data_download", label = "Download data"))
         )
       )
@@ -681,7 +681,7 @@ server <- function(input, output, session) {
                            icon = icon("play")),
               leafletOutput("zip_map_b"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
-                  "Note: Use caution when sharing this map, as small cell sizes may risk patient confidentiality."),
+                  "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
               downloadButton(outputId = "map_data_b_download", label = "Download data"))
         )
       )
@@ -1044,8 +1044,8 @@ server <- function(input, output, session) {
     list(id = "status_bar", title = "On time injections", plot = "ontime_status_bar", download = "ontime_status_download_ui"),
     list(id = "ontime_1m", title = "On time injections by days since prior injection, monthly injection interval", plot = "ontime_plot_monthly", download = "ontime_monthly_download_ui"),
     list(id = "ontime_2m", title = "On time injections by days since prior injection, bimonthly injection interval", plot = "ontime_plot_bimonthly", download = "ontime_bimonthly_download_ui"),
-    list(id = "late_pt", title = "Late injections by patient", plot = "late_pt_plot", download = "late_pt_download_ui"),
-    list(id = "early_pt", title = "Early injections by patient", plot = "early_pt_plot", download = "early_pt_download_ui")
+    list(id = "late_pt", title = "Late injections by client", plot = "late_pt_plot", download = "late_pt_download_ui"),
+    list(id = "early_pt", title = "Early injections by client", plot = "early_pt_plot", download = "early_pt_download_ui")
   )
 
   renderSectionPage(

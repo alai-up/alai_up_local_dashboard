@@ -31,7 +31,7 @@ list(
                        variable and 'Sex' is the filter variable, you will see the 
                        age distribution by sex."),
                      p("If you are interested in focusing on an active year of 
-                       patients, or filtering the dates of the events being 
+                       clients, or filtering the dates of the events being 
                        included in the plot, check the 'Filter time period' box
                        to expand those options.")
                    )

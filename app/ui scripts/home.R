@@ -10,7 +10,7 @@ list(
   tags$ul(
     tags$li('Track progress toward their implementation goals for their LAI ART program.'),
     tags$li('Identify gaps in LAI ART care delivery across different social determinants of health.'),
-    tags$li('Guide efforts to address gaps and improve the quality of services for all patients.')
+    tags$li('Guide efforts to address gaps and improve the quality of services for all clients.')
   ),
   p('Please refer to the Dashboard Toolkit for detailed instructions on preparing your data and using the dashboard.'),
   h3('Instructions'),
@@ -21,11 +21,11 @@ list(
     is selected by default. If you do not have multiple clinic locations, continue below.')),
   p("If counseling and screening (also called 'assessment') are not consistently recorded 
      at your site, select 'No' in the top left. This will focus the indicators and calculations
-     on patients prescribed LAI ART only. If counseling and screening is consistently recorded,
+     on clients prescribed LAI ART only. If counseling and screening is consistently recorded,
      continue below."),
   tags$ol(   
     tags$li('Clinic Demographics. This page shows clinic demographic data for 
-            patients overall and by patient characteristics, overall and stratified by LAI use. 
+            clients overall and by client characteristics, overall and stratified by LAI use. 
             To view demographic data, click on 
             "Clinic Demographics" in the menu on the left of the page.'),
     br(),
@@ -37,10 +37,10 @@ list(
             column on the left showing all the indicators you can look at for
             your site.'),
     br(),
-    tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI patients: 
+    tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI clients: 
             number and percent of PWH on LAI who received LAI 
             early, on time, or late, and time to viral suppression and viral failure.
-            There is also data on clinic-level viral load, including patients on oral ART.'),
+            There is also data on clinic-level viral load, including clients on oral ART.'),
     br(),    
     tags$li('Data Explore. This page allows you to dive deeper into your data,
             by viewing LAI indicators disaggregated by up to two variables at 
