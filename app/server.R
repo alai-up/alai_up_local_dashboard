@@ -138,6 +138,11 @@ server <- function(input, output, session) {
                  })
   })
 
+  year_filtered_df <- reactive({
+    req(df(), input$active_year)
+    filter_active_year(df(), input$active_year)
+  })
+
   tbl <- reactive({
     req(df())
     withProgress(message = "Processing data",
@@ -145,21 +150,19 @@ server <- function(input, output, session) {
                  value = 0.4,
                  {
                    # If filter is NOT active, return full data immediately
-                   if (is.null(input$filter_by_year) || input$filter_by_year == FALSE) {
+                   if (!isTRUE(input$filter_by_year)) {
                      return(df())
                    }
 
                    # If filter IS active, require the dependent inputs.
-                   # This prevents the reactive from running until the UI elements are ready.
-                   req(input$active_year, input$date_filter, length(input$date_filter) == 2)
+                   req(year_filtered_df(), input$date_filter, length(input$date_filter) == 2)
 
-                     get_current_year_data(df(),
-                                           input$active_year,
-                                           filter_dates = TRUE,
-                                           start_date = as.Date(input$date_filter[1]),
-                                           end_date = as.Date(input$date_filter[2]))
+                   time_period_filter(
+                     year_filtered_df(),
+                     start_date = as.Date(input$date_filter[1]),
+                     end_date = as.Date(input$date_filter[2])
+                   )
                  })
-
   })
 
   cab_master_df <- reactive({
@@ -256,23 +259,8 @@ server <- function(input, output, session) {
   })
 
   computed_end_date <- reactive({
-    req(input$active_year, df(), active_year_options())
-
-    # Get data for the active year without date filtering to avoid circular dependency
-    year_data <- get_current_year_data(df(), input$active_year, filter_dates = FALSE)
-
-    date_cols <- year_data |>
-      select(contains("date") & contains("icab_rpv"))
-
-    if (ncol(date_cols) == 0) {
-      return(as.Date(sprintf("%s-12-31", input$active_year)))
-    }
-
-    date_cols |>
-      summarize(across(everything(), \(x) max(x, na.rm = TRUE))) |>
-      pivot_longer(everything()) |>
-      summarize(max(value, na.rm = TRUE)) |>
-      pull()
+    req(year_filtered_df())
+    get_max_event_date(year_filtered_df(), input$active_year)
   })
 
   output$date_filter_ui <- renderUI({

@@ -290,25 +290,36 @@ filter_data_by_site <- function(input_df, dataset_name = NULL){
 }
 
   
-get_current_year_data <- function(input_df, input_year,
-                                  filter_dates = FALSE,
-                                  start_date = NULL,
-                                  end_date = NULL) {
-  if (input_year == "All data") {
-    tbl <- input_df
-  } else {
-    # Filter to specific year
-    tbl <- input_df |>
-      filter(if_any(contains("active")&contains(as.character(input_year)),
-                    \(x) x == 1))
+filter_active_year <- function(input_df, input_year) {
+  if (is.null(input_year) || input_year == "All data") {
+    return(input_df)
+  }
+  input_df |>
+    filter(if_any(contains("active") & contains(as.character(input_year)),
+                  \(x) x == 1))
+}
+
+get_max_event_date <- function(data, fallback_year = NULL) {
+  date_cols <- data |>
+    select(contains("date") & contains("icab_rpv"))
+  
+  if (ncol(date_cols) == 0) {
+    if (is.null(fallback_year) || fallback_year == "All data") {
+      return(Sys.Date())
+    }
+    return(as.Date(sprintf("%s-12-31", fallback_year)))
   }
   
-  if (filter_dates == TRUE){
-    tbl <- time_period_filter(tbl, start_date, end_date)
-  } 
+  max_date <- date_cols |>
+    summarize(across(everything(), \(x) suppressWarnings(max(x, na.rm = TRUE)))) |>
+    pivot_longer(everything()) |>
+    summarize(max_val = suppressWarnings(max(value, na.rm = TRUE))) |>
+    pull(max_val)
   
-  return(tbl)
-  
+  if (is.na(max_date) || is.infinite(max_date)) {
+    return(Sys.Date())
+  }
+  return(as.Date(max_date))
 }
 
 time_period_filter <- function(input_df, start_date, end_date){
