@@ -3,7 +3,9 @@
 main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_master_df, session){
 
   selected_year <- reactive({
-    if (input$filter_by_year == FALSE) {
+    if (input$filter_by_year == FALSE){
+      NULL
+    } else if (input$active_year == "All data") {
       NULL
     } else {
       input$active_year

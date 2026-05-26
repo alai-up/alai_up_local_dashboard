@@ -154,7 +154,7 @@ server <- function(input, output, session) {
                    req(input$active_year, input$date_filter, length(input$date_filter) == 2)
 
                      get_current_year_data(df(),
-                                           as.numeric(input$active_year),
+                                           input$active_year,
                                            filter_dates = TRUE,
                                            start_date = as.Date(input$date_filter[1]),
                                            end_date = as.Date(input$date_filter[2]))
@@ -239,14 +239,16 @@ server <- function(input, output, session) {
 
     # defensive check if active year options is empty for some reason
     if (length(active_year_options()) == 0){
-      choices = year(Sys.Date)
+      year_choices <- as.character(year(Sys.Date()))
     } else {
-      choices = active_year_options()
+      year_choices <- as.character(active_year_options())
     }
+
+    choices <- c("All data",year_choices)
 
     selectInput("active_year", "Active year of clients",
                 choices = choices,
-                selected = choices[length(choices)])
+                selected = choices[1])
   })
 
   observeEvent(input$active_year, {
@@ -257,7 +259,7 @@ server <- function(input, output, session) {
     req(input$active_year, df(), active_year_options())
 
     # Get data for the active year without date filtering to avoid circular dependency
-    year_data <- get_current_year_data(df(), as.numeric(input$active_year), filter_dates = FALSE)
+    year_data <- get_current_year_data(df(), input$active_year, filter_dates = FALSE)
 
     date_cols <- year_data |>
       select(contains("date") & contains("icab_rpv"))

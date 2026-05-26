@@ -294,10 +294,14 @@ get_current_year_data <- function(input_df, input_year,
                                   filter_dates = FALSE,
                                   start_date = NULL,
                                   end_date = NULL) {
-  #current year counts
-  tbl <- input_df |>  
-    filter(if_any(contains("active")&contains(as.character(input_year)),
-                  \(x) x == 1))
+  if (input_year == "All data") {
+    tbl <- input_df
+  } else {
+    # Filter to specific year
+    tbl <- input_df |>
+      filter(if_any(contains("active")&contains(as.character(input_year)),
+                    \(x) x == 1))
+  }
   
   if (filter_dates == TRUE){
     tbl <- time_period_filter(tbl, start_date, end_date)
