@@ -231,7 +231,7 @@ server <- function(input, output, session) {
 
   output$filter_by_year_ui <- renderUI({
     req(input$file1)
-    checkboxInput('filter_by_year',label = "Filter time period",value = FALSE)
+    checkboxInput('filter_by_year',label = "Filter clients and time period",value = FALSE)
   })
 
   output$active_year_choice <- renderUI({

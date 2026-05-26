@@ -32,7 +32,7 @@ list(
                        age distribution by sex."),
                      p("If you are interested in focusing on an active year of 
                        clients, or filtering the dates of the events being 
-                       included in the plot, check the 'Filter time period' box
+                       included in the plot, check the 'Filter clients and time period' box
                        to expand those options.")
                    )
                )
