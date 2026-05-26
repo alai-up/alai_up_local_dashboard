@@ -196,12 +196,6 @@ server <- function(input, output, session) {
       sort()
   })
 
-  observeEvent(ic_summary_df(),{
-    updateActionButton(session, "go_button",
-                       label = "Data is ready",
-                       icon = icon("check"))
-  })
-
   observe({
     req(tbl(), ic_summary_df(), cab_master_df())
 
@@ -210,6 +204,11 @@ server <- function(input, output, session) {
       } else {
         selected_site <- input$site_name_input
       }
+
+      updateActionButton(session, "go_button",
+                         label = "Data is ready",
+                         icon = icon("check"))
+
       main_page_server(input, output, tbl(), ic_summary_df(), selected_site, cab_master_df(), session)
       dynamic_filter_select(input, output, ic_summary_df(), selected_site, session)
       data_explore_server(input, output, ic_summary_df(), session)
