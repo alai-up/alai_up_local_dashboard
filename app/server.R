@@ -138,13 +138,33 @@ server <- function(input, output, session) {
                  })
   })
 
+  # Gatekeeper to prevent double-recalculation during UI updates
+  ui_ready <- reactiveVal(TRUE)
+  
+  observeEvent(input$filter_by_year, {
+    if (isTRUE(input$filter_by_year)) ui_ready(FALSE) else ui_ready(TRUE)
+  })
+  
+  observeEvent(input$active_year, {
+    if (isTRUE(input$filter_by_year)) ui_ready(FALSE)
+  })
+  
+  observeEvent(input$date_filter, {
+    ui_ready(TRUE)
+  })
+
   year_filtered_df <- reactive({
-    req(df(), input$active_year)
+    req(df())
+    
+    # Wait for active_year to exist if filtering is turned on
+    if (isTRUE(input$filter_by_year)) req(input$active_year)
+    
     filter_active_year(df(), input$active_year)
   })
 
   tbl <- reactive({
-    req(df())
+    req(df(), ui_ready())
+    
     withProgress(message = "Processing data",
                  detail = "This may take a moment...",
                  value = 0.4,
@@ -251,10 +271,6 @@ server <- function(input, output, session) {
     selectInput("active_year", "Active year of clients",
                 choices = choices,
                 selected = choices[1])
-  })
-
-  observeEvent(input$active_year, {
-    freezeReactiveValue(input, "date_filter")
   })
 
   computed_end_date <- reactive({
