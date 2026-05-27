@@ -86,7 +86,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
         zip_counts$zip_code,
         zip_counts$n,
         zip_counts$n_on_cab
-      ) |> lapply(HTML)
+      ) |> map(HTML)
 
       return(leaflet(zip_counts) |>
                addProviderTiles(providers$CartoDB.Positron) |>
@@ -114,34 +114,38 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   )
 
   n_bars <- list()
+  demo_plot_data <- list()
 
-  lapply(names(demo_sections), function(id) {
+  map(names(demo_sections), function(id) {
     section <- demo_sections[[id]]
     page_selected <- "demographics_page"
     var_str <- section$var
     label <- section$label
 
     n_bars[[id]] <- reactiveVal(1)
-
-    output[[paste0(id, "_plot")]] <- renderPlot({
-      req(input$sidebar == page_selected)
+    demo_plot_data[[id]] <- reactive({
       base_size <- 14
-
       p <- demo_plot(tbl(), var_str, base_size,
                      selected_site = selected_site(), selected_year = selected_year_val(),
                      by_cab_status = FALSE)
-
-      output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
+                     
+      output[[paste0(id, "_plot_download")]] <- download_box(label, p, nrow(p$data))
       output[[paste0(id, "_table_download")]] <- download_table(label, p$data)
-      output[[paste0(id,"_download_ui")]] <- renderUI({
-        tagList(
-          downloadButton(outputId = paste0(id, "_plot_download"), label = "Download plot"),
-          downloadButton(outputId = paste0(id, "_table_download"),
-                         label = "Download table",
-                         icon = icon("table"))
-        )
-      })
 
+      p
+    })
+
+    
+    output[[paste0(id,"_download_ui")]] <- renderUI({
+      tagList(
+        downloadButton(outputId = paste0(id, "_plot_download"), "Download plot"),
+        downloadButton(outputId = paste0(id, "_table_download"), "Download table", icon = icon("table"))
+      )
+    })
+  
+    output[[paste0(id, "_plot")]] <- renderPlot({
+      req(input$sidebar == page_selected)
+      p <- demo_plot_data[[id]]()
       n_bars[[id]](nrow(p$data))
       p
     }, height = function() {
@@ -150,7 +154,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   })
 
   n_bars_demo_keypop <<- reactiveVal(1)
-  output$keypop1_plot <- renderPlot({
+  keypop1_plot <- reactive({
     base_size <- 14
 
     var_name <- input$keypop1_choice
@@ -168,21 +172,28 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 1" ~ "SDOH_other_1",
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
-
+    
     p <- demo_plot(tbl(), var_str, base_size,
-                   selected_site = selected_site(), selected_year = selected_year_val(),
-                   by_cab_status = FALSE)
-
-    output$keypop1_plot_download <- download_box(paste0(var_str,"_demographics"), p,nrow(p$data))
+              selected_site = selected_site(), selected_year = selected_year_val(),
+              by_cab_status = FALSE)
+    
+    output$keypop1_plot_download <- download_box(paste0(var_str,"_demographics"), p, nrow(p$data))
     output$keypop1_table_download <- download_table(paste0(var_str,"_demographics"), p$data)
-    output$keypop1_download_ui <- renderUI({
+    
+    p
+  })
+
+   output$keypop1_download_ui <- renderUI({
       tagList(
-        downloadButton(outputId = "keypop1_plot_download", label = "Download plot"),
-        downloadButton(outputId = "keypop1_table_download",
-                       label = "Download table",
-                       icon = icon("table"))
+        downloadButton(outputId = "keypop1_plot_download", "Download plot"),
+        downloadButton(outputId = "keypop1_table_download", "Download table", icon = icon("table"))
       )
     })
+
+  output$keypop1_plot <- renderPlot({
+    
+    p <- keypop1_plot()
+
     n_bars_demo_keypop(nrow(p$data))
     p
   }, height = function() {
@@ -220,7 +231,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
         zip_counts$zip_code,
         zip_counts$n,
         zip_counts$n_on_cab
-      ) |> lapply(HTML)
+      ) |> map(HTML)
 
       return(leaflet(zip_counts) |>
                addProviderTiles(providers$CartoDB.Positron) |>
@@ -248,34 +259,37 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   )
 
   n_bars <- list()
+  demo_plot_data_b <- list()
 
-  lapply(names(demo_sections_b), function(id) {
+  map(names(demo_sections_b), function(id) {
     section <- demo_sections_b[[id]]
     page_selected <- "demo_by_lai"
     var_str <- section$var
     label <- section$label
 
     n_bars[[id]] <- reactiveVal(1)
-
-    output[[paste0(id, "_plot")]] <- renderPlot({
-      req(input$sidebar == page_selected)
+    demo_plot_data_b[[id]] <- reactive({
       base_size <- 14
-
       p <- demo_plot(tbl(), var_str, base_size,
                      selected_site = selected_site(), selected_year = selected_year_val(),
                      by_cab_status = TRUE)
-
-      output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
+                     
+      output[[paste0(id, "_plot_download")]] <- download_box(label, p, nrow(p$data))
       output[[paste0(id, "_table_download")]] <- download_table(label, p$data)
-      output[[paste0(id,"_download_ui")]] <- renderUI({
-        tagList(
-          downloadButton(outputId = paste0(id, "_plot_download"), label = "Download plot"),
-          downloadButton(outputId = paste0(id, "_table_download"),
-                         label = "Download table",
-                         icon = icon("table"))
-        )
-      })
 
+      p
+    })
+
+    output[[paste0(id,"_download_ui")]] <- renderUI({
+      tagList(
+        downloadButton(outputId = paste0(id, "_plot_download"), "Download plot"),
+        downloadButton(outputId = paste0(id, "_table_download"), "Download table", icon = icon("table"))
+      )
+    })
+
+    output[[paste0(id, "_plot")]] <- renderPlot({
+      req(input$sidebar == page_selected)
+      p <- demo_plot_data_b[[id]]()
       n_bars[[id]](nrow(p$data))
       p
     }, height = function() {
@@ -283,8 +297,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     })
   })
 
-  n_bars_demo_keypop <<- reactiveVal(1)
-  output$keypop1b_plot <- renderPlot({
+  n_bars_demo_keypopb <<- reactiveVal(1)
+  keypop1b_plot <- reactive({
     base_size <- 14
 
     var_name <- input$keypop1b_choice
@@ -302,26 +316,34 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                         var_name == "SDOH Other 1" ~ "SDOH_other_1",
                         var_name == "SDOH Other 2" ~ "SDOH_other_2",
                         var_name == "SDOH Other 3" ~ "SDOH_other_3")
-
+    
     p <- demo_plot(tbl(), var_str, base_size,
-                   selected_site = selected_site(), selected_year = selected_year_val(),
-                   by_cab_status = TRUE)
-
-    output$keypop1b_plot_download <- download_box(paste0(var_str,"_demographics_lai"), p,nrow(p$data))
+              selected_site = selected_site(), selected_year = selected_year_val(),
+              by_cab_status = TRUE)
+    
+    output$keypop1b_plot_download <- download_box(paste0(var_str,"_demographics_lai"), p, nrow(p$data))
     output$keypop1b_table_download <- download_table(paste0(var_str,"_demographics_lai"), p$data)
-    output$keypop1b_download_ui <- renderUI({
+    
+    p
+  })
+
+   output$keypop1b_download_ui <- renderUI({
       tagList(
-        downloadButton(outputId = "keypop1b_plot_download", label = "Download plot"),
-        downloadButton(outputId = "keypop1b_table_download",
-                       label = "Download table",
-                       icon = icon("table"))
+        downloadButton(outputId = "keypop1b_plot_download", "Download plot"),
+        downloadButton(outputId = "keypop1b_table_download", "Download table", icon = icon("table"))
       )
     })
-    n_bars_demo_keypop(nrow(p$data))
+
+  output$keypop1b_plot <- renderPlot({
+    
+    p <- keypop1b_plot()
+
+    n_bars_demo_keypopb(nrow(p$data))
     p
   }, height = function() {
-    30 * n_bars_demo_keypop() + 100
+    30 * n_bars_demo_keypopb() + 100
   })
+ 
 
   n_bars_caregap <- reactiveVal(1)
 
@@ -506,7 +528,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   n_bars <- list()
 
-  lapply(names(plot_sections), function(id) {
+  map(names(plot_sections), function(id) {
     section <- plot_sections[[id]]
     input_var <- section$input_var
     page_selected <- paste0(input_var,"_page")

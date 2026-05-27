@@ -430,10 +430,10 @@ demo_plot <- function(input_df, in_col, base_size_in,
       filter(.by = {{in_col}}, sum(n) > 0)
   } else if (by_cab_status == TRUE){
     temp <-  input_df |>
-      mutate(ever_on_cab = if_else(ever_on_cab == 0,"Never on LAI ART","Ever on LAI ART"),
-             ever_on_cab = factor(ever_on_cab,levels = c("Never on LAI ART","Ever on LAI ART"))) |>
       summarize(.by = c({{in_col}},ever_on_cab),
                 n = n()) |>
+      mutate(ever_on_cab = if_else(ever_on_cab == 0,"Never on LAI ART","Ever on LAI ART"),
+             ever_on_cab = factor(ever_on_cab,levels = c("Never on LAI ART","Ever on LAI ART"))) |>
       complete({{in_col}},ever_on_cab) |>
       filter({{in_col}}!="Unknown" | ({{in_col}}=="Unknown" & n > 0)) |>
       replace_na(list(n = 0)) |>
@@ -457,6 +457,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
   
   base_size <- base_size_in # set dynamically
   text_size <- base_size / 2.5
+  x_max <- max(100 * temp$pct, na.rm = TRUE) * 1.15
 
   if (by_cab_status == FALSE){
     p <- temp |>
@@ -466,7 +467,8 @@ demo_plot <- function(input_df, in_col, base_size_in,
                 size = text_size,
                 hjust = -0.1,
                 family = "Roboto") +
-      scale_y_discrete(labels = \(x) str_wrap(x, width = 70)) 
+      scale_y_discrete(labels = \(x) str_wrap(x, width = 70))  +
+      scale_x_continuous(limits = c(0,x_max))
   } else if (by_cab_status == TRUE){
     p <- temp |>
       ggplot(aes(x = 100*pct,y = axis_text)) + 
@@ -475,12 +477,13 @@ demo_plot <- function(input_df, in_col, base_size_in,
                 size = text_size,
                 hjust = -0.1,
                 family = "Roboto") +
-      scale_y_discrete(labels = \(x) str_wrap(x, width = 70)) +
+      scale_y_discrete(labels = \(x) str_wrap(x, width = 70)) + 
+      scale_x_continuous(limits = c(0,x_max)) +
       scale_fill_manual(values = c(
         "Never on LAI ART" = "#9ECAE1",
         "Ever on LAI ART" = "#08519C"
       )) +
-      facet_wrap(as.formula(paste("~", rlang::as_name(rlang::enquo(in_col)))), 
+      facet_wrap(vars(!!in_col), 
                  ncol = 1, scales = "free_y",
                  strip.position = "left")
   }
@@ -505,10 +508,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
           plot.caption = element_text(hjust = 0),
           legend.position = "none")
   
-  plot_data <- ggplot_build(p)$data
-  x_max <- max(plot_data[[1]]$x) * 1.15
-  
-  p + expand_limits(x =x_max)
+  p
   
 }
 
