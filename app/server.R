@@ -432,6 +432,59 @@ server <- function(input, output, session) {
   })
 
   # Time trends page
+  output$time_indicator <- renderUI({
+    req(input$file1)
+    if (input$assessed_choice == "Yes"){
+      choice_list <- c("Assessed",
+                       'Counseled',
+                       'Interested',
+                       'Screened',
+                       "Eligible",
+                       "Interested & Eligible",
+                       "Prescribed",
+                       "Initiated",
+                       "Sustained")
+    } else {
+      choice_list <- c("Prescribed",
+                       "Initiated",
+                       "Sustained")
+    }
+    selectInput("time_indicator",
+                "Select an indicator",
+                choices = choice_list,
+                selected = "Assessed")
+  })
+
+  output$time_demo_group <- renderUI({
+    req(input$file1)
+    choice_list <- c("Age" = "age_cat",
+                     "Sex" = "sex",
+                     "Race" = "race",
+                     "Ethnicity" = "ethnicity",
+                     "Insurance status" = "insurance_status",
+                     "Housing status" = "housing_status",
+                     "Risk MSM" = "risk_msm",
+                     "Risk IDU" = "risk_idu",
+                     "Risk Heterosex" = "risk_heterosex",
+                     "Employment status" = "employment_status",
+                     "Poverty level" = "poverty_level",
+                     "Immigration status" = "immigration_status_undoc",
+                     "Language" = "language",
+                     "Incarceration history" = "incarceration_history",
+                     "Recent CD4" = "cd4_recent_result",
+                     "SDOH Other 1" = "SDOH_other_1",
+                     "SDOH Other 2" = "SDOH_other_2",
+                      "SDOH Other 3" = "SDOH_other_3")
+
+    if (length(site_list()) > 1){
+      choice_list <- c(choice_list,c("Site" = "site"))
+    }
+
+    selectInput("time_demo_group",
+                "Comparison variable",
+                choices = choice_list,
+                selected = "age_cat")
+  })
   
   output$time_trends_page <- renderUI({
     req(input$file1)

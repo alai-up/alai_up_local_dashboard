@@ -87,12 +87,8 @@ ui <- dashboardPage(
                 conditionalPanel("input.sidebar === 'time_trends_page'",
                                  id = "time_filters",
                                  style = "padding: 15px; margin: 10px 0px; background-color: #2c3b41; border-top: 1px solid #4f5962; border-bottom: 1px solid #4f5962;",
-                                 selectInput("time_indicator",
-                                             "Select Indicator",
-                                             choices = NULL),
-                                 selectInput("time_group_var",
-                                             "Select variable",
-                                             choices = NULL)
+                                 uiOutput("time_indicator"),
+                                 uiOutput("time_demo_group")
                                  ),
                 menuItem(strong("Data Explorer"),tabName = 'page2'),
                 conditionalPanel(
