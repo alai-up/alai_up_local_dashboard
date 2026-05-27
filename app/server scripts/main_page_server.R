@@ -395,16 +395,6 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       mutate(x_order = row_number(),
              x_lab = fct_reorder(x_lab,x_order))
 
-    n_bars_caregap(nrow(ic_df))
-
-    return(ic_df)
-
-  })
-
-  output$lai_care_gap_plot <- renderPlot({
-
-    ic_df <- lai_plot_data()
-
     base_size <- 14
 
     bar_names <- ic_df$x_lab[-1]
@@ -454,14 +444,23 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     output$lai_care_gap_plot_download <- download_box("lai_care_gap",chart,nrow(chart$data))
     output$lai_care_gap_table_download <- download_table("lai_care_gap",chart$data)
-    output$lai_care_gap_download_ui <- renderUI({
-      tagList(
-        downloadButton(outputId = "lai_care_gap_plot_download", label = "Download plot"),
-        downloadButton(outputId = "lai_care_gap_table_download",
-                       label = "Download table",
-                       icon = icon("table"))
-      )
-    })
+
+    return(chart)
+
+  })
+  
+  output$lai_care_gap_download_ui <- renderUI({
+    tagList(
+      downloadButton(outputId = "lai_care_gap_plot_download", label = "Download plot"),
+      downloadButton(outputId = "lai_care_gap_table_download",
+                     label = "Download table",
+                     icon = icon("table"))
+    )
+  })
+
+  output$lai_care_gap_plot <- renderPlot({
+    chart <- lai_plot_data()
+    n_bars_caregap(nrow(chart$data))
     chart
   },height = function(){
     (50 * n_bars_caregap()) + 100
