@@ -95,16 +95,17 @@ ui <- dashboardPage(
                                              choices = NULL)
                                  ),
                 menuItem(strong("Data Explorer"),tabName = 'page2'),
-                div(id = "explorer_filters",
-                    conditionalPanel(
+                conditionalPanel(
                       "input.sidebar === 'page2'",
+                      id = "explorer_filters",
+                      style = "padding: 15px; margin: 10px 0px; background-color: #2c3b41; border-top: 1px solid #4f5962; border-bottom: 1px solid #4f5962;",
                       uiOutput("indicator"),
                       uiOutput("grouping_var"),
                       selectInput("filter_var",
                                   "Filter variable",
                                   choices = NULL),
-                      uiOutput("filter_select")),
-                ),
+                      uiOutput("filter_select")
+                    ),
                 uiOutput("full_report_download_ui")
     )
   ),
