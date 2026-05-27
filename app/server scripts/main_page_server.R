@@ -117,12 +117,14 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   lapply(names(demo_sections), function(id) {
     section <- demo_sections[[id]]
+    page_selected <- "demographics_page"
     var_str <- section$var
     label <- section$label
 
     n_bars[[id]] <- reactiveVal(1)
 
     output[[paste0(id, "_plot")]] <- renderPlot({
+      req(input$sidebar == page_selected)
       base_size <- 14
 
       p <- demo_plot(tbl(), var_str, base_size,
@@ -249,12 +251,14 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
   lapply(names(demo_sections_b), function(id) {
     section <- demo_sections_b[[id]]
+    page_selected <- "demo_by_lai"
     var_str <- section$var
     label <- section$label
 
     n_bars[[id]] <- reactiveVal(1)
 
     output[[paste0(id, "_plot")]] <- renderPlot({
+      req(input$sidebar == page_selected)
       base_size <- 14
 
       p <- demo_plot(tbl(), var_str, base_size,
@@ -1365,7 +1369,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
     p
   }, height = function() {
     50 * n_bars_prescribed_keypop() + 100
-  },res = 96)
+  })
 
   output$time7_plot <- renderPlot({
     base_size <- 14

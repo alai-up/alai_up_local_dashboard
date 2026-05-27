@@ -239,7 +239,7 @@ server <- function(input, output, session) {
     req(tbl(), interval_1(), interval_2())
     withProgress(message = "Processing data",
                  detail = "This may take a moment...",
-                 value = 0.8,
+                 value = 0.6,
                  {
                    prepare_cab_master_df(tbl(), interval_1(), interval_2())
                  })
@@ -249,7 +249,7 @@ server <- function(input, output, session) {
     req(tbl())
     withProgress(message = "Processing data",
                  detail = "This may take a moment...",
-                 value = 0.6,
+                 value = 0.8,
                  {
                    prepare_ic_summary(tbl())
                  })
