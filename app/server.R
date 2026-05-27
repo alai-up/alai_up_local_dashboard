@@ -300,7 +300,7 @@ server <- function(input, output, session) {
 
   # Initialize modules ONCE at top-level. 
   # Pass the reactive objects (e.g., tbl, NOT tbl()) so they manage their own invalidation.
-  main_page_server(input, output, tbl, ic_summary_df, selected_site_reactive, cab_master_df, session)
+  main_page_server(input, output, tbl, ic_summary_df, selected_site_reactive, cab_master_df, interval_1, interval_2, session)
   dynamic_filter_select(input, output, ic_summary_df, selected_site_reactive, session)
   data_explore_server(input, output, ic_summary_df, session)
 

@@ -1,6 +1,6 @@
 
 
-main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_master_df, session){
+main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_master_df, interval_1, interval_2, session){
 
   selected_year_val <- reactive({
     if (input$filter_by_year == FALSE){
