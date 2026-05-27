@@ -5,10 +5,10 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   selected_year_val <- reactive({
     if (input$filter_by_year == FALSE){
       NULL
-    } else if (input$active_year == "All data") {
+    } else if (is.null(input$all_data_or_year) || input$all_data_or_year == "all") {
       NULL
     } else {
-      input$active_year
+      paste(input$active_year, collapse = ", ")
     }
   })
 

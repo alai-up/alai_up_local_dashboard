@@ -192,24 +192,49 @@ server <- function(input, output, session) {
   ui_ready <- reactiveVal(TRUE)
   
   observeEvent(input$filter_by_year, {
-    if (isTRUE(input$filter_by_year)) ui_ready(FALSE) else ui_ready(TRUE)
+    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
+      ui_ready(FALSE) 
+    } else {
+      ui_ready(TRUE)
+    }
+  })
+  
+  observeEvent(input$all_data_or_year, {
+    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
+      ui_ready(FALSE)
+    } else {
+      ui_ready(TRUE)
+    }
   })
   
   observeEvent(input$active_year, {
-    if (isTRUE(input$filter_by_year)) ui_ready(FALSE)
+    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
+      ui_ready(FALSE)
+    }
   })
   
   observeEvent(input$date_filter, {
     ui_ready(TRUE)
   })
 
+  observeEvent(computed_end_date(), {
+    if (!is.null(input$date_filter)) {
+      if (identical(as.character(input$date_filter[2]), as.character(computed_end_date())) &&
+          identical(as.character(input$date_filter[1]), "2021-01-01")) {
+        ui_ready(TRUE)
+      }
+    }
+  })
+
   year_filtered_df <- reactive({
     req(df())
     
-    # Wait for active_year to exist if filtering is turned on
-    if (isTRUE(input$filter_by_year)) req(input$active_year)
+    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
+      req(input$active_year)
+      return(filter_active_year(df(), input$active_year))
+    }
     
-    filter_active_year(df(), input$active_year)
+    filter_active_year(df(), NULL)
   })
 
   tbl <- reactive({
@@ -318,16 +343,34 @@ server <- function(input, output, session) {
       year_choices <- as.character(active_year_options())
     }
 
-    choices <- c("All data",year_choices)
-
-    selectInput("active_year", "Active year of clients",
-                choices = choices,
-                selected = choices[1])
+    tagList(
+      radioButtons(inputId = "all_data_or_year",
+                  label = "Filter clients",
+                  choices = c("Use all data" = "all","Select active years" = "years"),
+                  selected = "all"),
+      conditionalPanel(
+        condition = "input.all_data_or_year == 'years'",
+        selectInput(
+          inputId = "active_year",
+          label = "Select active year of clients:",
+          choices = year_choices,
+          multiple = TRUE,
+          selectize = TRUE,
+          selected =  year_choices[length(year_choices)]
+        )
+      )
+    )
   })
 
   computed_end_date <- reactive({
     req(year_filtered_df())
-    get_max_event_date(year_filtered_df(), input$active_year)
+    
+    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
+      req(input$active_year)
+      return(get_max_event_date(year_filtered_df(), input$active_year))
+    }
+    
+    get_max_event_date(year_filtered_df(), NULL)
   })
 
   output$date_filter_ui <- renderUI({

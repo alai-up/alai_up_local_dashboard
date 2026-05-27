@@ -291,7 +291,7 @@ filter_data_by_site <- function(input_df, dataset_name = NULL){
 
   
 filter_active_year <- function(input_df, input_year) {
-  if (is.null(input_year) || input_year == "All data") {
+  if (is.null(input_year)) {
     return(input_df)
   }
   input_df |>
