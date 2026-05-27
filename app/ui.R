@@ -40,7 +40,11 @@ ui <- dashboardPage(
                 radioButtons("assessed_choice",
                              label = "Is Counseling/Screening consistently recorded?",
                              choices = c("Yes","No"),
-                             selected = "Yes"),
+                             selected = "Yes"),           
+                uiOutput('filter_by_year_ui'),
+                conditionalPanel("input.filter_by_year === true",
+                                 uiOutput('active_year_choice'),
+                                 uiOutput('date_filter_ui')),
                 menuItem(text = strong("Clinic Demographics"),
                          tabName = 'demographics_header',
                          menuItem(text = "Overall",
@@ -62,7 +66,7 @@ ui <- dashboardPage(
                          menuItem(text = strong("Sustained"),
                                   tabName = 'sustained_page')),
                 menuItem(text = strong("Clinical outcomes"),
-                         tabname = "clinical_page",
+                         tabName = "clinical_page",
                          menuItem(text = "On time injections",
                                   tabName = 'inj_page'),
                          conditionalPanel(id = "ontime_target",
@@ -79,6 +83,17 @@ ui <- dashboardPage(
                                                        label = "Choose VL cutoff",
                                                        choices = c("50 copies/mL","200 copies/mL"),
                                                        selected = "200 copies/mL"))),
+                menuItem(strong("Time trends"), tabName = "time_trends_page"),
+                conditionalPanel("input.sidebar === 'time_trends_page'",
+                                 id = "time_filters",
+                                 style = "padding: 15px; margin: 10px 0px; background-color: #2c3b41; border-top: 1px solid #4f5962; border-bottom: 1px solid #4f5962;",
+                                 selectInput("time_indicator",
+                                             "Select Indicator",
+                                             choices = NULL),
+                                 selectInput("time_group_var",
+                                             "Select variable",
+                                             choices = NULL)
+                                 ),
                 menuItem(strong("Data Explorer"),tabName = 'page2'),
                 div(id = "explorer_filters",
                     conditionalPanel(
@@ -89,10 +104,6 @@ ui <- dashboardPage(
                                   "Filter variable",
                                   choices = NULL),
                       uiOutput("filter_select")),
-                    uiOutput('filter_by_year_ui'),
-                    conditionalPanel("input.filter_by_year === true",
-                                     uiOutput('active_year_choice'),
-                                     uiOutput('date_filter_ui')),
                 ),
                 uiOutput("full_report_download_ui")
     )
@@ -172,6 +183,10 @@ ui <- dashboardPage(
       tabItem(
         tabName = 'vl_page',
         uiOutput('vl_page')
+      ),
+      tabItem(
+        tabName = 'time_trends_page',
+        uiOutput('time_trends_page')
       ),
       tabItem(
         tabName = 'page2',

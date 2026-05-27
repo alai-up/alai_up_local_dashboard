@@ -8,6 +8,7 @@ showtext_opts(dpi = 96)
 
 source("server scripts/main_page_server.R")
 source("server scripts/data_explore_server.R")
+source("server scripts/time_trend_server.R")
 source("server scripts/server_util.R")
 source("server scripts/render_scroll_page.R")
 source("server scripts/help_text.R")
@@ -430,6 +431,19 @@ server <- function(input, output, session) {
     }
   })
 
+  # Time trends page
+  
+  output$time_trends_page <- renderUI({
+    req(input$file1)
+    # req(input$grouping_var)
+    # req(input$filter_var)
+    # req(input$filter_select)
+    source(file='ui scripts/time_trend_ui.R', local= T)$value
+
+  })
+
+  
+  # Data explore page
   output$indicator <- renderUI({
     req(input$file1)
     if (input$assessed_choice == "Yes"){
