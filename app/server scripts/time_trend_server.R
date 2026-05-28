@@ -34,12 +34,65 @@ time_trend_server <- function(input, output, tbl, session){
       # May want something for sustained as well..
       character(0)
     )
-    temp <- tbl() |>
-      select(all_of(cols_to_select)) 
 
-    temp
+    base_size <- 14 
+    text_size <- base_size / 2.5
+
+    temp <- tbl() |>
+      select(alai_up_uid, !!demo_group, all_of(cols_to_select)) |>
+      pivot_longer(cols = -c(alai_up_uid,!!demo_group),
+                   names_to = c("event",".value"),
+                   names_pattern = "(.+)_(date|outcome)",
+                   values_drop_na = TRUE)
+    
+    if ("outcome" %in% names(temp)){
+      temp <- temp |>
+        mutate(outcome = case_when(
+        input$time_indicator == "Interested" & outcome == "1" ~ "0", # not interested
+        input$time_indicator == "Interested" & outcome == "3" ~ "1", # interested
+        input$time_indicator == "Interested" & outcome == "2" ~ "2", # maybe interested
+        .default = outcome
+      )) 
+    }
+
+    temp <- temp |>
+      mutate(.by = alai_up_uid,
+             first_date = min(date,na.rm = T),
+             last_date = max(date,na.rm = T),
+             first_date = data.table::fifelse(first_date == Inf, NA, first_date),
+             last_date = data.table::fifelse(last_date == -Inf, NA, last_date)) |>
+      filter(.by = alai_up_uid,
+             date == first_date) |>
+      select(-event,-date) |>
+      distinct() |>
+      mutate(period = floor_date(first_date,unit = "months")) 
+
+    if (input$time_indicator %in% c("Assessed","Counseled","Screened","Prescribed","Initiated")){
+      p <- temp |>
+        group_by(period,!!demo_group) |>
+        count() |>
+        ungroup() |>
+        drop_na() |>
+        ggplot(aes(x = period, y = n, fill = !!demo_group)) +
+        geom_bar(position = "dodge", stat = "identity") + 
+        labs(x = NULL, y = NULL)
+      
+    } else {
+      p <- temp |>
+        group_by(period, !!demo_group, outcome) |>
+        count() |>
+        ungroup() |>
+        drop_na() |>
+        filter(outcome == 1) |>
+        ggplot(aes(x = period, y = n, fill = !!demo_group)) +
+        geom_bar(position = "dodge", stat = "identity") + 
+        labs(x = NULL, y = NULL) 
+      
+    }
+
+    p
 
   })
   
-  output$time_trend_out1 <- renderDataTable(total_events_data() |> head())
+  output$time_trend_monthly <- renderPlot(total_events_data())
 }
