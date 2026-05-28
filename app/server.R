@@ -497,9 +497,6 @@ server <- function(input, output, session) {
   
   output$time_trends_page <- renderUI({
     req(input$file1)
-    # req(input$grouping_var)
-    # req(input$filter_var)
-    # req(input$filter_select)
     source(file='ui scripts/time_trend_ui.R', local= T)$value
 
   })
