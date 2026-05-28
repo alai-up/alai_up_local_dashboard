@@ -1,19 +1,19 @@
 help_text <- list(
   info1 = tagList(
     p("This page shows overall clinic demographics and client characteristics, 
-      for all people with HIV served at your clinic, regardless of LAI use."),
+      for all people with HIV served at your clinic, regardless of LAI ART use."),
     p("Use the Jump to Section navigator on the near left to jump to different
       sections of this page.")
   ),
   info1b = tagList(
     p("This page shows overall clinic demographics and client characteristics, 
-      for all people with HIV served at your clinic, stratified by LAI use."),
+      for all people with HIV served at your clinic, stratified by LAI ART use."),
     p("Use the Jump to Section navigator on the near left to jump to different
       sections of this page.")
   ),
   
   info0 = tagList(
-    p("This page provides an overview of the LAI care gap analysis. It also includes 
+    p("This page provides an overview of the LAI ART care gap analysis. It also includes 
       details about the documented counseling and screening outcomes for those assessed."),
     tags$ul(   
       tags$li('"Assessed" is a combined indicator representing the number of 
@@ -33,10 +33,10 @@ help_text <- list(
       as the denominator, "Row" for using the row total, and "Column" for using the
       column total. For example, to see the percentage eligible among those interested, 
       using the row percent is best. The highlighted cell shows the number of people who are interested and
-      eligible, as in the LAI care gap analysis.'),
+      eligible, as in the LAI ART care gap analysis.'),
     p('Use the Jump to Section navigator on the near left to jump to different 
       sections of this page.'),
-    p("To view details about each LAI care indicator, click the corresponding tab
+    p("To view details about each LAI ART care indicator, click the corresponding tab
       on the main sidebar on the left.")
   ),
   

@@ -716,7 +716,7 @@ server <- function(input, output, session) {
     })
   })
 
-# demographics by LAI page
+# demographics by LAI ART ART page
   demo_sections_info_b <- list(
     list(id = "top1b", title = "Home", plot = NULL, download = NULL),
     list(id = "sex1b", title = "Sex", plot = "sex1b_plot", download = "sex1b_download_ui"),
@@ -825,7 +825,7 @@ server <- function(input, output, session) {
   lai_overview_sections <- reactive({
     sections <- list(
       list(id = "top0",title = "Home",plot = NULL, download = NULL),
-      list(id = "care_gap", title = "LAI Care Gap Analysis", plot = "lai_care_gap_plot",
+      list(id = "care_gap", title = "LAI ART Care Gap Analysis", plot = "lai_care_gap_plot",
            download = "lai_care_gap_download_ui")
     )
 
