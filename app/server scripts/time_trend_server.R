@@ -90,16 +90,37 @@ time_trend_server <- function(input, output, ic_df, session){
         filter(outcome == 1)
     }
 
-    p <- temp |>
+    # TODO complete period by group so that everyone has 0's in numerator
+    # filter out 0's in denominator though (via join maybe)
+    out_df <- temp |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
-      mutate(pct = n/denominator) |>
+      mutate(pct = n/denominator) 
+      
+    return(out_df)
+
+  })
+
+
+  output$time_trend_total <- renderPlot({
+    
+    demo_group <- sym(input$time_demo_group)
+    
+    total_events_data() |>
+      arrange(!!demo_group, period) |>
+      mutate(.by = !!demo_group,
+             total = cumsum(n),
+             total_pct = total/denominator) |>
+      ggplot(aes(x = period, y = total_pct, color = !!demo_group)) + 
+      geom_line()
+  })
+  
+  output$time_trend_monthly <- renderPlot({
+
+    demo_group <- sym(input$time_demo_group)
+
+    total_events_data() |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
       labs(x = NULL, y = NULL) 
-      
-    p
-
   })
-  
-  output$time_trend_monthly <- renderPlot(total_events_data())
 }
