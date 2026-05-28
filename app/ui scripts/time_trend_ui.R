@@ -15,7 +15,7 @@ list(
            )
   ),
   fluidRow(
-    box(title = "cumulative events over time",
+    box(title = "Total events over time by group",
         width = 12,
         status = "primary", solidHeader = T,
         plotOutput("time_trend_total"),
@@ -25,7 +25,7 @@ list(
                        icon = icon("table")),
         size = "xs"
   ),
-  box(title = "events over time",
+  box(title = "Events over time by group",
         width = 12,
         status = "primary", solidHeader = T,
         plotOutput("time_trend_monthly"),

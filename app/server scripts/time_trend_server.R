@@ -1,6 +1,53 @@
 
 time_trend_server <- function(input, output, ic_df, session){
 
+    # Shared constants and helpers -------------------------------------------------
+  choice_list <- c(
+    "Age" = "age_cat",
+    "Sex" = "sex",
+    "Race" = "race",
+    "Ethnicity" = "ethnicity",
+    "Insurance status" = "insurance_status",
+    "Housing status" = "housing_status",
+    "Risk MSM" = "risk_msm",
+    "Risk IDU" = "risk_idu",
+    "Risk Heterosex" = "risk_heterosex",
+    "Employment status" = "employment_status",
+    "Poverty level" = "poverty_level",
+    "Immigration status" = "immigration_status_undoc",
+    "Language" = "language",
+    "Incarceration history" = "incarceration_history",
+    "Recent CD4" = "cd4_recent_result",
+    "SDOH Other 1" = "SDOH_other_1",
+    "SDOH Other 2" = "SDOH_other_2",
+    "SDOH Other 3" = "SDOH_other_3"
+  )
+
+  date_breaks_from_range <- function(first_date, last_date){
+    date_diff <- as.numeric(difftime(last_date, first_date, units = "days"))
+    if (date_diff <= 92) {
+      "1 month"
+    } else if (date_diff < 365*2) {
+      "3 months"
+    } else {
+      "6 months"
+    }
+  }
+
+  finalize_time_plot <- function(p){
+    first_date <- min(p$data$period, na.rm = TRUE)
+    last_date  <- max(p$data$period, na.rm = TRUE)
+    p +
+      theme_minimal(base_family = "Roboto") +
+      theme(text = element_text(size = 15), axis.text.x = element_text(size = 15, color = "black")) +
+      scale_x_date(date_labels = "%b %Y",
+                   date_breaks = date_breaks_from_range(first_date, last_date))
+  }
+
+  get_demo_label <- function(name_key) names(choice_list)[choice_list == name_key]
+
+  # ---------------------------------------------------------------------------
+  
   total_events_data <- reactive({
     req(input$time_indicator, input$time_demo_group, ic_df())
     
@@ -28,9 +75,6 @@ time_trend_server <- function(input, output, ic_df, session){
       # May want something for sustained as well..
       character(0)
     )
-
-    base_size <- 14 
-    text_size <- base_size / 2.5
 
     # get denominators
     denom_df <- ic_df() |>
@@ -99,6 +143,25 @@ time_trend_server <- function(input, output, ic_df, session){
     return(out_df)
 
   })
+
+  title_df <- reactive({
+    temp <- tibble(
+      numerator = c("Assessed","Counseled","Screened",
+                    "Interested","Eligible","Prescribed",
+                    "Initiated"),
+    ) |>
+      mutate(denominator = case_when(
+                    numerator %in% c("Assessed","Counseled","Screened") ~ "PWH",
+                    numerator == "Interested" ~ "Counseled",
+                    numerator == "Eligible" ~ "Screened",
+                    numerator == "Prescribed" & input$assessed_choice == "Yes" ~ "Interested & Eligible",
+                    numerator == "Prescribed" & input$assessed_choice == "No" ~ "PWH",
+                    numerator == "Initiated" ~ "Prescribed",
+                    .default = "PWH")) |>
+      expand_grid(plot = c("Total","Monthly")) |>
+      mutate(title_string = str_c(plot," percent ", numerator, " out of ", denominator, " by "))
+
+  })
   
   output$time_trend_date_filter <- renderUI({
     req(total_events_data())
@@ -133,7 +196,7 @@ time_trend_server <- function(input, output, ic_df, session){
     req(events_data_filtered())
     
     demo_group <- sym(input$time_demo_group)
-    
+
     p <- events_data_filtered() |>
       arrange(!!demo_group, period) |>
       mutate(.by = !!demo_group,
@@ -141,9 +204,28 @@ time_trend_server <- function(input, output, ic_df, session){
              total_pct = total/denominator) |>
       ggplot(aes(x = period, y = total_pct, color = !!demo_group,
              group = !!demo_group)) + 
-      geom_line()
+      geom_line() +
+      ggrepel::geom_text_repel(
+        data = \(d) d |>
+          filter(.by = !!demo_group, period == max(period)),
+        aes(label = !!demo_group),
+        nudge_x = 20,
+        direction = "y",
+        size = 5,
+        segment.linetype = "dashed",
+        box.padding = 0.6,
+        point.padding = 0.4,
+        min.segment.length = 0
+      ) + 
+      labs(x = NULL, y = NULL,
+           title = str_c(
+             title_df() |> filter(numerator == input$time_indicator, plot == "Total") |> pull(title_string),
+             get_demo_label(input$time_demo_group)
+           )) +
+      scale_y_continuous(labels = scales::percent)
 
-    p
+    finalize_time_plot(p) + 
+      theme(legend.position = "none")
 
   })
 
@@ -163,9 +245,16 @@ time_trend_server <- function(input, output, ic_df, session){
       mutate(pct = n/denominator) |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
-      labs(x = NULL, y = NULL) 
+      scale_y_continuous(labels = scales::percent) + 
+      labs(x = NULL, y = NULL,
+           fill = get_demo_label(input$time_demo_group),
+           title = str_c(
+             title_df() |> filter(numerator == input$time_indicator, plot == "Monthly") |> pull(title_string),
+             get_demo_label(input$time_demo_group)
+           ))
 
-    p
+    finalize_time_plot(p)
+
   })
 
   output$time_trend_monthly_plot_download <- download_box(paste0(input$time_demo_group,"_time_trend_monthly"), time_trend_monthly_plot())
