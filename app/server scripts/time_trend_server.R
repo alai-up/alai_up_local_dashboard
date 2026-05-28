@@ -27,7 +27,7 @@ time_trend_server <- function(input, output, ic_df, session){
     date_diff <- as.numeric(difftime(last_date, first_date, units = "days"))
     if (date_diff <= 92) {
       "1 month"
-    } else if (date_diff < 365*2) {
+    } else if (date_diff < 365) {
       "3 months"
     } else {
       "6 months"
@@ -40,8 +40,9 @@ time_trend_server <- function(input, output, ic_df, session){
     p +
       theme_minimal(base_family = "Roboto") +
       theme(text = element_text(size = 15), axis.text.x = element_text(size = 15, color = "black")) +
-      scale_x_date(date_labels = "%b %Y",
-                   date_breaks = date_breaks_from_range(first_date, last_date))
+      scale_x_date(date_labels = "%b %Y"
+                  #  date_breaks = date_breaks_from_range(first_date, last_date)
+                  )
   }
 
   get_demo_label <- function(name_key) names(choice_list)[choice_list == name_key]
@@ -116,7 +117,7 @@ time_trend_server <- function(input, output, ic_df, session){
              date == first_date) |>
       select(-event,-date) |>
       distinct() |>
-      mutate(period = floor_date(first_date,unit = "months")) 
+      mutate(period = floor_date(first_date,unit = str_c(input$time_trend_period_time_choice, " months"))) 
 
     if (input$time_indicator %in% c("Assessed","Counseled","Screened","Prescribed","Initiated")){
       temp <- temp |>
@@ -188,8 +189,8 @@ time_trend_server <- function(input, output, ic_df, session){
     req(total_events_data())
 
     total_events_data() |>
-      filter(period >= floor_date(input$time_trend_date_filter[1],unit = "months"),
-             period <= floor_date(input$time_trend_date_filter[2],unit = "months"))
+      filter(period >= floor_date(input$time_trend_date_filter[1],unit = str_c(input$time_trend_period_time_choice, " months")),
+             period <= floor_date(input$time_trend_date_filter[2],unit = str_c(input$time_trend_period_time_choice, " months")))
   })
 
   time_trend_total_plot <- reactive({

@@ -89,7 +89,12 @@ ui <- dashboardPage(
                                  style = "padding: 15px; margin: 10px 0px; background-color: #2c3b41; border-top: 1px solid #4f5962; border-bottom: 1px solid #4f5962;",
                                  uiOutput("time_indicator"),
                                  uiOutput("time_demo_group"),
-                                 uiOutput("time_trend_date_filter")
+                                 uiOutput("time_trend_date_filter"),
+                                 selectInput(
+                                  inputId = "time_trend_period_time_choice",
+                                  label = "Time period length, months", 
+                                  choices = c(1,3,6),
+                                  selected = 1)
                                  ),
                 menuItem(strong("Data Explorer"),tabName = 'page2'),
                 conditionalPanel(
