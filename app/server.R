@@ -282,6 +282,17 @@ server <- function(input, output, session) {
 
   })
 
+  ic_df <- reactive({
+    req(tbl())
+    withProgress(message = "Processing data",
+                 detail = "This may take a moment...",
+                 value = 0.9,
+                 {
+                   get_IC_df(tbl())
+                 })
+
+  })
+
   active_year_options <- reactive({
     req(df())
     df() |>
@@ -303,7 +314,7 @@ server <- function(input, output, session) {
   main_page_server(input, output, tbl, ic_summary_df, selected_site_reactive, cab_master_df, interval_1, interval_2, session)
   dynamic_filter_select(input, output, ic_summary_df, selected_site_reactive, session)
   data_explore_server(input, output, ic_summary_df, session)
-  time_trend_server(input, output, tbl, session)
+  time_trend_server(input, output, ic_df, session)
 
   observe({
     

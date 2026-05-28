@@ -1,32 +1,26 @@
 
-time_trend_server <- function(input, output, tbl, session){
-  
+time_trend_server <- function(input, output, ic_df, session){
+
   total_events_data <- reactive({
     req(input$time_indicator, input$time_demo_group)
     
     demo_group <- sym(input$time_demo_group)
 
-    if (input$assessed_choice == "Yes"){
-      prescribed_lag <- "Interested & Eligible"
-    } else {
-      prescribed_lag <- "PWH"
-    }
-
     cols_to_select <- switch(
       input$time_indicator,
-      "Assessed" = tbl() |> 
+      "Assessed" = ic_df() |> 
         select(contains("icab_rpv") & (contains("counsel") | contains("screen")) & contains("date")) |>
         names(),
-      "Counseled" = tbl() |> 
+      "Counseled" = ic_df() |> 
         select(contains("icab_rpv") & contains("counsel") & contains("date")) |>
         names(),
-      "Interested" = tbl() |> 
+      "Interested" = ic_df() |> 
         select(contains("icab_rpv") & contains("counsel")) |>
         names(),
-      "Screened" = tbl() |> 
+      "Screened" = ic_df() |> 
         select(contains("icab_rpv") & contains("screen") & contains("date")) |>
         names(),
-      "Eligible" = tbl() |> 
+      "Eligible" = ic_df() |> 
         select(contains("icab_rpv") & contains("screen")) |>
         names(),
       "Prescribed" = "icab_rpv_rx_date", # may want to also select shot 1?
@@ -38,7 +32,20 @@ time_trend_server <- function(input, output, tbl, session){
     base_size <- 14 
     text_size <- base_size / 2.5
 
-    temp <- tbl() |>
+    # get denominators
+    denom_df <- ic_df() |>
+      summarize(.by = !!demo_group,
+                denominator = case_when(
+                    input$time_indicator %in% c("Assessed","Counseled","Screened") ~ sum(PWH,na.rm = TRUE),
+                    input$time_indicator == "Interested" ~ sum(Counseled,na.rm = TRUE),
+                    input$time_indicator == "Eligible" ~ sum(Screened,na.rm = TRUE),
+                    input$time_indicator == "Prescribed" & input$assessed_choice == "Yes" ~ sum(`Interested & Eligible`,na.rm = TRUE),
+                    input$time_indicator == "Prescribed" & input$assessed_choice == "No" ~ sum(PWH,na.rm = TRUE),
+                    input$time_indicator == "Initiated" ~ sum(Prescribed,na.rm = TRUE),
+                    .default = sum(PWH, na.rm = TRUE)
+                ))
+
+    temp <- ic_df() |>
       select(alai_up_uid, !!demo_group, all_of(cols_to_select)) |>
       pivot_longer(cols = -c(alai_up_uid,!!demo_group),
                    names_to = c("event",".value"),
@@ -68,28 +75,28 @@ time_trend_server <- function(input, output, tbl, session){
       mutate(period = floor_date(first_date,unit = "months")) 
 
     if (input$time_indicator %in% c("Assessed","Counseled","Screened","Prescribed","Initiated")){
-      p <- temp |>
+      temp <- temp |>
         group_by(period,!!demo_group) |>
         count() |>
         ungroup() |>
-        drop_na() |>
-        ggplot(aes(x = period, y = n, fill = !!demo_group)) +
-        geom_bar(position = "dodge", stat = "identity") + 
-        labs(x = NULL, y = NULL)
-      
+        drop_na()
+
     } else {
-      p <- temp |>
+      temp <- temp |>
         group_by(period, !!demo_group, outcome) |>
         count() |>
         ungroup() |>
         drop_na() |>
-        filter(outcome == 1) |>
-        ggplot(aes(x = period, y = n, fill = !!demo_group)) +
-        geom_bar(position = "dodge", stat = "identity") + 
-        labs(x = NULL, y = NULL) 
-      
+        filter(outcome == 1)
     }
 
+    p <- temp |>
+      full_join(denom_df, by = join_by(!!demo_group)) |>
+      mutate(pct = n/denominator) |>
+      ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
+      geom_bar(position = "dodge", stat = "identity") + 
+      labs(x = NULL, y = NULL) 
+      
     p
 
   })
