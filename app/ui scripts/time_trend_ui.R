@@ -19,20 +19,20 @@ list(
         width = 12,
         status = "primary", solidHeader = T,
         plotOutput("time_trend_total"),
-        # downloadButton(outputId = "data_explore_plot_download", label = "Download plot"),
-        # downloadButton(outputId = "data_explore_table_download",  
-        #                label = "Download table",
-        #                icon = icon("table")),
+        downloadButton(outputId = "time_trend_total_plot_download", label = "Download plot"),
+        downloadButton(outputId = "time_trend_total_table_download",  
+                       label = "Download table",
+                       icon = icon("table")),
         size = "xs"
   ),
   box(title = "events over time",
         width = 12,
         status = "primary", solidHeader = T,
         plotOutput("time_trend_monthly"),
-        # downloadButton(outputId = "data_explore_plot_download", label = "Download plot"),
-        # downloadButton(outputId = "data_explore_table_download",  
-        #                label = "Download table",
-        #                icon = icon("table")),
+        downloadButton(outputId = "time_trend_monthly_plot_download", label = "Download plot"),
+        downloadButton(outputId = "time_trend_monthly_table_download",  
+                       label = "Download table",
+                       icon = icon("table")),
         size = "xs"
   )
 )

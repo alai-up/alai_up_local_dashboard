@@ -129,12 +129,12 @@ time_trend_server <- function(input, output, ic_df, session){
              period <= floor_date(input$time_trend_date_filter[2],unit = "months"))
   })
 
-  output$time_trend_total <- renderPlot({
+  time_trend_total_plot <- reactive({
     req(events_data_filtered())
     
     demo_group <- sym(input$time_demo_group)
     
-    events_data_filtered() |>
+    p <- events_data_filtered() |>
       arrange(!!demo_group, period) |>
       mutate(.by = !!demo_group,
              total = cumsum(n),
@@ -143,17 +143,36 @@ time_trend_server <- function(input, output, ic_df, session){
              group = !!demo_group)) + 
       geom_line()
 
+    p
+
   })
-  
-  output$time_trend_monthly <- renderPlot({
+
+  output$time_trend_total_plot_download <- download_box(paste0(input$time_demo_group,"_time_trend_total"), time_trend_total_plot())
+  output$time_trend_total_table_download <- download_table(paste0(input$time_demo_group,"_time_trend_total"), time_trend_total_plot()$data)
+
+  output$time_trend_total <- renderPlot({
+    time_trend_total_plot()
+  })
+
+  time_trend_monthly_plot <- reactive({
     req(events_data_filtered())
 
     demo_group <- sym(input$time_demo_group)
 
-    events_data_filtered() |>
+    p <- events_data_filtered() |>
       mutate(pct = n/denominator) |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
       labs(x = NULL, y = NULL) 
+
+    p
+  })
+
+  output$time_trend_monthly_plot_download <- download_box(paste0(input$time_demo_group,"_time_trend_monthly"), time_trend_monthly_plot())
+  output$time_trend_monthly_table_download <- download_table(paste0(input$time_demo_group,"_time_trend_monthly"), time_trend_monthly_plot()$data)
+
+  
+  output$time_trend_monthly <- renderPlot({
+    time_trend_monthly_plot()
   })
 }
