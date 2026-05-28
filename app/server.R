@@ -303,6 +303,7 @@ server <- function(input, output, session) {
   main_page_server(input, output, tbl, ic_summary_df, selected_site_reactive, cab_master_df, interval_1, interval_2, session)
   dynamic_filter_select(input, output, ic_summary_df, selected_site_reactive, session)
   data_explore_server(input, output, ic_summary_df, session)
+  time_trend_server(input, output, tbl, session)
 
   observe({
     
@@ -440,14 +441,11 @@ server <- function(input, output, session) {
                        'Interested',
                        'Screened',
                        "Eligible",
-                       "Interested & Eligible",
                        "Prescribed",
-                       "Initiated",
-                       "Sustained")
+                       "Initiated")
     } else {
       choice_list <- c("Prescribed",
-                       "Initiated",
-                       "Sustained")
+                       "Initiated")
     }
     selectInput("time_indicator",
                 "Select an indicator",
@@ -474,7 +472,7 @@ server <- function(input, output, session) {
                      "Recent CD4" = "cd4_recent_result",
                      "SDOH Other 1" = "SDOH_other_1",
                      "SDOH Other 2" = "SDOH_other_2",
-                      "SDOH Other 3" = "SDOH_other_3")
+                     "SDOH Other 3" = "SDOH_other_3")
 
     if (length(site_list()) > 1){
       choice_list <- c(choice_list,c("Site" = "site"))

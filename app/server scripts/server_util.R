@@ -56,10 +56,6 @@ load_and_process_data <- function(input_df) {
                     "SDOH_other_1","SDOH_other_2","SDOH_other_3") |>
     select(-any_of(c("date","index","event"))) |> 
     filter(vital_status_alive == 1 | is.na(vital_status_alive)) |> 
-    # mutate(
-    #   hiv_dx_date = case_when(str_length(hiv_dx_date)==4 ~ as.Date(paste0(hiv_dx_date,"-01-01"),format = "%Y-%m-%d"),
-    #                           str_detect(hiv_dx_date,"/") ~ as.Date(paste0(str_sub(hiv_dx_date,1,4),"-01-01"),format = "%Y-%m-%d"),
-    #                           .default = as.Date(as.numeric(hiv_dx_date),origin = "1899-12-30"))) |>
     mutate(across(contains("date"),
                   \(x) case_when(is.POSIXct(x) ~ as.Date(x,format = "%Y-%m-%d"),
                                  is.Date(x) ~ as.Date(x,format = "%Y-%m-%d"),

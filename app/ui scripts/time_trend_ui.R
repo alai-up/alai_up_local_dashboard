@@ -18,7 +18,7 @@ list(
     box(title = "cumulative events over time",
         width = 12,
         status = "primary", solidHeader = T,
-        # plotOutput("data_explore_plot"),
+        dataTableOutput("time_trend_out1"),
         # downloadButton(outputId = "data_explore_plot_download", label = "Download plot"),
         # downloadButton(outputId = "data_explore_table_download",  
         #                label = "Download table",
