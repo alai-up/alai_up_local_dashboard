@@ -2,7 +2,7 @@
 time_trend_server <- function(input, output, ic_df, session){
 
   total_events_data <- reactive({
-    req(input$time_indicator, input$time_demo_group)
+    req(input$time_indicator, input$time_demo_group, ic_df())
     
     demo_group <- sym(input$time_demo_group)
 
@@ -93,8 +93,10 @@ time_trend_server <- function(input, output, ic_df, session){
     # TODO complete period by group so that everyone has 0's in numerator
     # filter out 0's in denominator though (via join maybe)
     out_df <- temp |>
+      complete(period, !!demo_group, fill = list(n = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
-      mutate(pct = n/denominator) 
+      filter(.by = !!demo_group, denominator > 0)
+
       
     return(out_df)
 
@@ -102,6 +104,7 @@ time_trend_server <- function(input, output, ic_df, session){
 
 
   output$time_trend_total <- renderPlot({
+    req(total_events_data())
     
     demo_group <- sym(input$time_demo_group)
     
@@ -110,15 +113,19 @@ time_trend_server <- function(input, output, ic_df, session){
       mutate(.by = !!demo_group,
              total = cumsum(n),
              total_pct = total/denominator) |>
-      ggplot(aes(x = period, y = total_pct, color = !!demo_group)) + 
+      ggplot(aes(x = period, y = total_pct, color = !!demo_group,
+             group = !!demo_group)) + 
       geom_line()
+
   })
   
   output$time_trend_monthly <- renderPlot({
+    req(total_events_data())
 
     demo_group <- sym(input$time_demo_group)
 
     total_events_data() |>
+      mutate(pct = n/denominator) |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
       labs(x = NULL, y = NULL) 
