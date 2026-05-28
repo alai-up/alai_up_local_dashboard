@@ -436,7 +436,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
       mutate(.by = ever_on_cab,
              pct = n/sum(n,na.rm = T),
              bar_text = str_c(round(100*pct,0),"%"),
-             axis_text = str_c(ever_on_cab," (",n," out of ",sum(n)," PWH)"),
+             axis_text = str_c({{in_col}}," (",n," out of ",sum(n)," PWH)"),
              axis_text = fct_rev(axis_text)) |>
       filter(.by = {{in_col}}, sum(n) > 0)
   }
@@ -479,7 +479,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
         "Never on LAI ART" = "#9ECAE1",
         "Ever on LAI ART" = "#08519C"
       )) +
-      facet_wrap(vars(!!in_col), 
+      facet_wrap(~ever_on_cab, 
                  ncol = 1, scales = "free_y",
                  strip.position = "left")
   }
