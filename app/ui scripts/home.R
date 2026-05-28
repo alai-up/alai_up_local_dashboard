@@ -25,25 +25,25 @@ list(
      continue below."),
   tags$ol(   
     tags$li('Clinic Demographics. This page shows clinic demographic data for 
-            clients overall and by client characteristics, overall and stratified by LAI use. 
+            clients overall and by client characteristics, overall and stratified by LAI ART use. 
             To view demographic data, click on 
             "Clinic Demographics" in the menu on the left of the page.'),
     br(),
-    tags$li('LAI Indicators. This section shows the LAI care gaps throughout 
+    tags$li('LAI Indicators. This section shows the LAI ART care gaps throughout 
             the care continuum: number and percent assessed, eligible, prescribed,
             initiated, sustained. 
-            To view the LAI care indicator, click on "LAI Indicators" on the left of the page. 
-            Once you click on LAI indicators in the menu, a new menu will open with a 
+            To view the LAI ART care indicator, click on "LAI Indicators" on the left of the page. 
+            Once you click on LAI ART indicators in the menu, a new menu will open with a 
             column on the left showing all the indicators you can look at for
             your site.'),
     br(),
-    tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI clients: 
-            number and percent of PWH on LAI who received LAI 
+    tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI ART clients: 
+            number and percent of PWH on LAI ART who received LAI ART 
             early, on time, or late, and time to viral suppression and viral failure.
             There is also data on clinic-level viral load, including clients on oral ART.'),
     br(),    
     tags$li('Data Explore. This page allows you to dive deeper into your data,
-            by viewing LAI indicators disaggregated by up to two variables at 
+            by viewing LAI ART indicators disaggregated by up to two variables at 
             once. If you want to view more detailed data subset by two variables
             at once, click on the "Data Explorer" tab. There are detailed 
             instructions there for using the data explorer.')

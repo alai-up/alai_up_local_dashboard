@@ -9,7 +9,7 @@ list(
                    solidHeader = TRUE,
                    tagList(
                      p("The data explorer allows you to dive deeper into your data,
-                       by showing LAI indicators across two variables at once."),
+                       by showing LAI ART indicators across two variables at once."),
                      p("First, select an indicator of interest from the dropdown list."),
                      p("Second, select a comparison variable. This variable will
                        appear at the base of the bar."),
