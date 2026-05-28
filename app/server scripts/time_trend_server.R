@@ -90,8 +90,6 @@ time_trend_server <- function(input, output, ic_df, session){
         filter(outcome == 1)
     }
 
-    # TODO complete period by group so that everyone has 0's in numerator
-    # filter out 0's in denominator though (via join maybe)
     out_df <- temp |>
       complete(period, !!demo_group, fill = list(n = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
@@ -101,14 +99,42 @@ time_trend_server <- function(input, output, ic_df, session){
     return(out_df)
 
   })
+  
+  output$time_trend_date_filter <- renderUI({
+    req(total_events_data())
 
+    min_date <- total_events_data() |>
+      pull(period) |>
+      min(na.rm = TRUE)
+
+    max_date <- total_events_data() |>
+      pull(period) |>
+      max(na.rm = TRUE)
+    
+    dateRangeInput(
+      inputId = 'time_trend_date_filter',
+      label = "Range of dates",
+      start = min_date,
+      end = max_date,
+      min = min_date,
+      max = max_date
+    )
+  })
+
+  events_data_filtered <- reactive({
+    req(total_events_data())
+
+    total_events_data() |>
+      filter(period >= floor_date(input$time_trend_date_filter[1],unit = "months"),
+             period <= floor_date(input$time_trend_date_filter[2],unit = "months"))
+  })
 
   output$time_trend_total <- renderPlot({
-    req(total_events_data())
+    req(events_data_filtered())
     
     demo_group <- sym(input$time_demo_group)
     
-    total_events_data() |>
+    events_data_filtered() |>
       arrange(!!demo_group, period) |>
       mutate(.by = !!demo_group,
              total = cumsum(n),
@@ -120,11 +146,11 @@ time_trend_server <- function(input, output, ic_df, session){
   })
   
   output$time_trend_monthly <- renderPlot({
-    req(total_events_data())
+    req(events_data_filtered())
 
     demo_group <- sym(input$time_demo_group)
 
-    total_events_data() |>
+    events_data_filtered() |>
       mutate(pct = n/denominator) |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
