@@ -177,120 +177,99 @@ server <- function(input, output, session) {
 
   df <- reactive({
     req(raw_data())
-    withProgress(message = "Processing data",
-                 detail = "This may take a moment...",
-                 {
-                   if (trigger_site_filter() == FALSE) {
-                     return(raw_data())
-                   } else if (trigger_site_filter() == TRUE){
-                     return(raw_data() |>
-                              filter(site == input$site_choice_input))
-                   }
-                 })
-  })
-
-  # Gatekeeper to prevent double-recalculation during UI updates
-  ui_ready <- reactiveVal(TRUE)
-  
-  observeEvent(input$filter_by_year, {
-    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
-      ui_ready(FALSE) 
-    } else {
-      ui_ready(TRUE)
-    }
-  })
-  
-  observeEvent(input$all_data_or_year, {
-    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
-      ui_ready(FALSE)
-    } else {
-      ui_ready(TRUE)
-    }
-  })
-  
-  observeEvent(input$active_year, {
-    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
-      ui_ready(FALSE)
-    }
-  })
-  
-  observeEvent(input$date_filter, {
-    ui_ready(TRUE)
-  })
-
-  observeEvent(computed_end_date(), {
-    if (!is.null(input$date_filter)) {
-      if (identical(as.character(input$date_filter[2]), as.character(computed_end_date())) &&
-          identical(as.character(input$date_filter[1]), "2021-01-01")) {
-        ui_ready(TRUE)
-      }
+    if (trigger_site_filter() == FALSE) {
+      return(raw_data())
+    } else if (trigger_site_filter() == TRUE){
+      return(raw_data() |>
+        filter(site == input$site_choice_input))
     }
   })
 
-  year_filtered_df <- reactive({
-    req(df())
+  # Track the substantive filtering state to prevent reactive ping-ponging
+  current_filter_state <- reactiveVal(list(active = FALSE, years = NULL))
+  
+  observe({
+    is_filtering <- isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")
     
-    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
-      req(input$active_year)
-      return(filter_active_year(df(), input$active_year))
+    # If they want filtering but the UI hasn't provided the year input yet, wait
+    if (is_filtering && is.null(input$active_year)) {
+      return()
     }
     
-    filter_active_year(df(), NULL)
+    new_state <- list(
+      active = is_filtering,
+      years = if (is_filtering) input$active_year else NULL
+    )
+    
+    # Only push an update to trigger the pipeline if the SEMANTIC state actually changed
+    if (!identical(current_filter_state(), new_state)) {
+      current_filter_state(new_state)
+    }
   })
 
   tbl <- reactive({
-    req(df(), ui_ready())
+    req(df())
+    state <- current_filter_state()
     
-    withProgress(message = "Processing data",
-                 detail = "This may take a moment...",
-                 value = 0.4,
-                 {
-                   # If filter is NOT active, return full data immediately
-                   if (!isTRUE(input$filter_by_year)) {
-                     return(df())
-                   }
-
-                   # If filter IS active, require the dependent inputs.
-                   req(year_filtered_df(), input$date_filter, length(input$date_filter) == 2)
-
-                   time_period_filter(
-                     year_filtered_df(),
-                     start_date = as.Date(input$date_filter[1]),
-                     end_date = as.Date(input$date_filter[2])
-                   )
-                 })
-  })
+    if (state$active) {
+      req(state$years)
+      return(filter_active_year(df(), state$years))
+    } else {
+      return(df())
+    }
+  }) |>
+    bindEvent(df(), current_filter_state(), ignoreNULL = TRUE)
 
   cab_master_df <- reactive({
     req(tbl(), interval_1(), interval_2())
-    withProgress(message = "Processing data",
-                 detail = "This may take a moment...",
-                 value = 0.6,
-                 {
-                   prepare_cab_master_df(tbl(), interval_1(), interval_2())
-                 })
+    
+    prepare_cab_master_df(tbl(), interval_1(), interval_2())
+
   })
 
   ic_summary_df <- reactive({
     req(tbl())
-    withProgress(message = "Processing data",
-                 detail = "This may take a moment...",
-                 value = 0.8,
-                 {
-                   prepare_ic_summary(tbl())
-                 })
+    
+    prepare_ic_summary(tbl())
 
   })
 
   ic_df <- reactive({
     req(tbl())
-    withProgress(message = "Processing data",
-                 detail = "This may take a moment...",
-                 value = 0.9,
-                 {
-                   get_IC_df(tbl())
-                 })
+    
+    get_IC_df(tbl())
 
+  })
+
+  pipeline_status <- reactive({
+  req(df())
+  
+  withProgress(message = "Processing data",
+               detail = "Preparing data...",
+               value = 0.2,
+               {
+                 # Step 1: Filter data
+                 incProgress(0.2, detail = "Filtering...")
+                 tbl_data <- tbl()
+                 
+                 # Step 2: Prepare CAB data
+                 incProgress(0.2, detail = "Computing iCAB/RPV metrics...")
+                 cab_data <- cab_master_df()
+                 
+                 # Step 3: Prepare IC data
+                 incProgress(0.2, detail = "Computing summaries...")
+                 ic_data <- ic_summary_df()
+                 
+                 # Step 4: Create IC df
+                 incProgress(0.2, detail = "Finalizing...")
+                 ic_final <- ic_df()
+                 
+                 list(tbl = tbl_data, cab = cab_data, ic_summary = ic_data, ic = ic_final)
+               })
+  })
+  
+  observe({
+    pipeline_status()
   })
 
   active_year_options <- reactive({
@@ -318,7 +297,7 @@ server <- function(input, output, session) {
 
   observe({
     
-    req(tbl(), ic_summary_df(), cab_master_df())
+    req(tbl(), ic_summary_df(), cab_master_df(), ic_df())
 
       updateActionButton(session, "go_button",
                          label = "Data is ready",
@@ -343,7 +322,7 @@ server <- function(input, output, session) {
 
   output$filter_by_year_ui <- renderUI({
     req(input$file1)
-    checkboxInput('filter_by_year',label = "Filter clients and time period",value = FALSE)
+    checkboxInput('filter_by_year',label = "Filter clients by active year",value = FALSE)
   })
 
   output$active_year_choice <- renderUI({
@@ -373,34 +352,11 @@ server <- function(input, output, session) {
         )
       )
     )
-  })
+  }) 
 
-  computed_end_date <- reactive({
-    req(year_filtered_df())
-    
-    if (isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")) {
-      req(input$active_year)
-      return(get_max_event_date(year_filtered_df(), input$active_year))
-    }
-    
-    get_max_event_date(year_filtered_df(), NULL)
-  })
-
-  output$date_filter_ui <- renderUI({
-    req(input$file1, computed_end_date())
-
-    dateRangeInput(
-      inputId = 'date_filter',
-      label = "Range of event dates",
-      start = as.Date("2021-01-01"),
-      end = computed_end_date(),
-      min = as.Date("2021-01-01"),
-      max = computed_end_date()
-    )
-  })
 
   observeEvent(input$sidebarItemExpanded, {
-    if (input$sidebarItemExpanded == "<strong>LAIindicators</strong>") {
+    if (input$sidebarItemExpanded == "<strong>LAIARTindicators</strong>") {
       updateTabItems(session, inputId = "sidebar", selected = "lai_overview")
     }
     if (input$sidebarItemExpanded == "<strong>ClinicDemographics</strong>") {
