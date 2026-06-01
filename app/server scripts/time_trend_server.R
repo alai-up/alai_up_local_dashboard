@@ -138,7 +138,16 @@ time_trend_server <- function(input, output, ic_df, session){
     out_df <- temp |>
       complete(period, !!demo_group, fill = list(n = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
-      filter(.by = !!demo_group, denominator > 0)
+      filter(.by = !!demo_group, denominator > 0) |>
+      bind_rows(bind_rows(
+        temp |>
+          distinct(!!demo_group) |>
+          mutate(
+            period = min(temp$period) - months(1),
+            n = 0
+          )
+        )
+      )
 
       
     return(out_df)
@@ -175,18 +184,18 @@ time_trend_server <- function(input, output, ic_df, session){
       pull(period) |>
       max(na.rm = TRUE)
     
-    dateRangeInput(
+    sliderInput(
       inputId = 'time_trend_date_filter',
       label = "Range of dates",
-      start = min_date,
-      end = max_date,
       min = min_date,
-      max = max_date
+      max = max_date,
+      value = c(min_date,max_date),
+      timeFormat = "%b-%Y"
     )
   })
 
   events_data_filtered <- reactive({
-    req(total_events_data())
+    req(total_events_data(), input$time_trend_date_filter)
 
     total_events_data() |>
       filter(period >= floor_date(input$time_trend_date_filter[1],unit = str_c(input$time_trend_period_time_choice, " months")),
@@ -194,7 +203,7 @@ time_trend_server <- function(input, output, ic_df, session){
   })
 
   time_trend_total_plot <- reactive({
-    req(events_data_filtered())
+    validate(need(events_data_filtered(), "Preparing plots..."))
     
     demo_group <- sym(input$time_demo_group)
 
@@ -238,7 +247,7 @@ time_trend_server <- function(input, output, ic_df, session){
   })
 
   time_trend_monthly_plot <- reactive({
-    req(events_data_filtered())
+    validate(need(events_data_filtered(), "Preparing plots..."))
 
     demo_group <- sym(input$time_demo_group)
 
