@@ -34,7 +34,7 @@ list(
             initiated, sustained. 
             To view the LAI ART care indicator, click on "LAI Indicators" on the left of the page. 
             Once you click on LAI ART indicators in the menu, a new menu will open with a 
-            column on the left showing all the indicators you can look at for
+            column on the left showing all the indicators and subindicators you can look at for
             your site.'),
     br(),
     tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI ART clients: 
@@ -42,6 +42,11 @@ list(
             early, on time, or late, and time to viral suppression and viral failure.
             There is also data on clinic-level viral load, including clients on oral ART.'),
     br(),    
+    tags$li("Time Trneds. This page allows you to explore how indicators have changed over
+              time, stratified by demographics and social determinants of health. This can
+              be particularly helpful for assessing the impact of a new intervention or policy
+              at your clinic. There are detailed instructions there for using the time trends page."),
+    br(),
     tags$li('Data Explore. This page allows you to dive deeper into your data,
             by viewing LAI ART indicators disaggregated by up to two variables at 
             once. If you want to view more detailed data subset by two variables
