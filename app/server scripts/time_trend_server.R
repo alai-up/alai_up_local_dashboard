@@ -20,7 +20,8 @@ time_trend_server <- function(input, output, ic_df, session){
     "Recent CD4" = "cd4_recent_result",
     "SDOH Other 1" = "SDOH_other_1",
     "SDOH Other 2" = "SDOH_other_2",
-    "SDOH Other 3" = "SDOH_other_3"
+    "SDOH Other 3" = "SDOH_other_3",
+    "Site" = "site"
   )
 
   date_breaks_from_range <- function(first_date, last_date){
@@ -34,13 +35,14 @@ time_trend_server <- function(input, output, ic_df, session){
     }
   }
 
-  finalize_time_plot <- function(p){
+  finalize_time_plot <- function(p, expand_x = waiver()){
     first_date <- min(p$data$period, na.rm = TRUE)
     last_date  <- max(p$data$period, na.rm = TRUE)
     p +
       theme_minimal(base_family = "Roboto") +
       theme(text = element_text(size = 15), axis.text.x = element_text(size = 15, color = "black")) +
-      scale_x_date(date_labels = "%b %Y"
+      scale_x_date(date_labels = "%b %Y",
+                   expand = expand_x
                   #  date_breaks = date_breaks_from_range(first_date, last_date)
                   )
   }
@@ -221,11 +223,13 @@ time_trend_server <- function(input, output, ic_df, session){
         aes(label = !!demo_group),
         nudge_x = 20,
         direction = "y",
+        hjust = 0,
         size = 5,
         segment.linetype = "dashed",
         box.padding = 0.6,
         point.padding = 0.4,
-        min.segment.length = 0
+        min.segment.length = 0,
+        max.overlaps = Inf
       ) + 
       labs(x = NULL, y = NULL,
            title = str_c(
@@ -234,7 +238,7 @@ time_trend_server <- function(input, output, ic_df, session){
            )) +
       scale_y_continuous(labels = scales::percent)
 
-    finalize_time_plot(p) + 
+    finalize_time_plot(p, expand_x = expansion(mult = c(0.05, 0.1))) + 
       theme(legend.position = "none")
 
   })

@@ -79,6 +79,7 @@ load_and_process_data <- function(input_df) {
     mutate(age = floor(interval(birth_date, today())/years(1)),
       age_cat=factor(
       case_when( 
+        age <= 17 ~ "<18",
         age>=18 & age<=24 ~ "18-24",
         age>=25 & age<=34 ~ "25-34",
         age>=35 & age<=44 ~ "35-44",
@@ -87,7 +88,7 @@ load_and_process_data <- function(input_df) {
         age>=65 ~ "65+",
         .default = "Unknown",
       ),
-      levels = c("18-24","25-34","35-44","45-54","55-64","65+","Unknown"))) |>
+      levels = c("<18","18-24","25-34","35-44","45-54","55-64","65+","Unknown"))) |>
     mutate(
       sex = factor(
         case_when(sex == 1 ~ "Male",
@@ -434,23 +435,25 @@ demo_plot <- function(input_df, in_col, base_size_in,
 get_IC_df <-function(input_df){
   
   basic_df <- input_df |>
-    # 1 assessed
-    mutate(Assessed=case_when(
-      icab_rpv_counsel_ever==1 | icab_rpv_screen_ever==1 ~1,
-      icab_rpv_counsel_ever==0 & icab_rpv_screen_ever==0 ~0,
-      .default=0
-    ),
-    # 1a counseled
-    Counseled = data.table::fifelse(icab_rpv_counsel_ever == 1,1,0),
-    # 1c screened
-    Screened = data.table::fifelse(icab_rpv_screen_ever == 1,1,0),
+    mutate(
     # 3 prescribed
     Prescribed=case_when(
       icab_rpv_rx==1 ~ 1,
       !is.na(icab_rpv_shot1_date) | 
         !is.na(icab_rpv_shot2_date) ~1,
-      .default = 0
+      .default = 0),
+    # 1 assessed
+    Assessed=case_when(
+      icab_rpv_counsel_ever==1 ~ 1,
+      icab_rpv_screen_ever==1 ~ 1,
+      Prescribed == 1 ~ 1,
+      icab_rpv_counsel_ever==0 & icab_rpv_screen_ever==0 ~0,
+      .default=0
     ),
+    # 1a counseled
+    Counseled = data.table::fifelse(icab_rpv_counsel_ever == 1 | Prescribed == 1,1,0),
+    # 1c screened
+    Screened = data.table::fifelse(icab_rpv_screen_ever == 1 | Prescribed == 1,1,0),
     # 4 initiated
     Initiated=case_when(
       !is.na(icab_rpv_shot1_date) | 
@@ -1468,16 +1471,20 @@ int_elig_table_func <- function(input_df, percent_type){
     mutate(
       Counseled = case_when(
         Counseled == 1 ~ 1,
+        Prescribed == 1 ~ 1,
         .default = 0),
       Interested = case_when(
         Interested == 1 ~ 1,
+        Prescribed == 1 ~ 1,
         Interested == 2 ~ 2,
         .default = 0),
       Screened = case_when(
         Screened == 1 ~ 1,
+        Prescribed == 1 ~ 1,
         .default = 0),
       Eligible = case_when(
         Eligible == 1 ~ 1,
+        Prescribed == 1 ~ 1,
         .default = 0)) |>
     filter(Assessed == 1) |> 
     mutate(Eligible = if_else(Screened == 1, Eligible,NA),
