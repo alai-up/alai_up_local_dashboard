@@ -12,16 +12,16 @@ list(
                         subindicators over time stratified by demographics and social determinants of health.
                         This facilitates comparison across subgroups to determine if care gaps have
                         changed over time at your clinic."),
-                     p("The first plot shows the cumulative percentage of a given indicator over time
-                        for each group within a demographic group. For example, if the indicator is 'Assessed' 
-                        and the demographic group is age, the plot will show the total percentage
-                        assessed for each age group over time. The denominator for each line is the total
-                        number of people in that age group."),
-                     p("The second plot shows the monthly percentage of a given indicator over time
-                        for each group within a demographic group. For example, if the indicator is 'Assessed' 
-                        and the demographic group is age, the plot will show the total percentage
-                        assessed for each age group in each month over time. The denominator for each line is the total
-                        number of people in that age group."),
+                     p("The first plot shows the cumulative percentage of a given indicator over time each group
+                      within a demographic group. For example, if the indicator is 'Assessed' the demographic 
+                      group is age, the plot will show the total percentage assessed for each age group over time. 
+                      The denominator in this case would be the total number of people in that age group. 
+                      Note that this reflects the first date when an event occurred."),
+                     p("The second plot shows the monthly percentage of a given indicator over time for each group 
+                     within a demographic group. For example, if the indicator is ‘Interested’ and the demographic 
+                     group is sex, the plot will show the total percentage interested for each sex in each month 
+                     out of those ever counseled over time. The denominator for each line is the total number of 
+                     people ever counseled in that age group."),
                      p("There are several inputs you can modify:"),
                      tags$ul(
                         tags$li('Indicator: the indicator shown in the plots'),
