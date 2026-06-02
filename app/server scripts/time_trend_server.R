@@ -85,6 +85,9 @@ time_trend_server <- function(input, output, ic_df, session){
       "Initiated" = ic_df() |> 
         select(contains("icab_rpv_shot") & contains("date")) |>
         names(), 
+      "Sustained" = ic_df() |> 
+        select((contains("icab_rpv_shot") & contains("date")) | contains("icab_rpv_discontinued_date")) |>
+        names(), 
       # May want something for sustained as well..
       character(0)
     )
@@ -112,34 +115,52 @@ time_trend_server <- function(input, output, ic_df, session){
       )) 
     }
 
-    temp <- temp |>
-      mutate(.by = alai_up_uid,
-             first_date = min(date,na.rm = T),
-             last_date = max(date,na.rm = T),
-             first_date = data.table::fifelse(first_date == Inf, NA, first_date),
-             last_date = data.table::fifelse(last_date == -Inf, NA, last_date)) |>
-      filter(.by = alai_up_uid,
-             date == first_date) |>
-      select(-event,-date) |>
-      distinct() |>
-      mutate(period = floor_date(first_date,unit = str_c(input$time_trend_period_time_choice, " months"))) 
-
-    if (input$time_indicator %in% c("Assessed","Counseled","Screened","Prescribed","Initiated")){
+    if (input$time_indicator == "Sustained") {
       temp <- temp |>
-        group_by(period,!!demo_group) |>
-        count() |>
-        ungroup() |>
+        mutate(
+          n_val = if_else(str_detect(event, "discontinued"), -1, 1),
+          event_type = if_else(str_detect(event, "discontinued"), "disc", "shot")
+        ) |>
+        mutate(.by = alai_up_uid,
+               first_init_date = suppressWarnings(min(date[event_type == "shot"], na.rm = TRUE)),
+               first_disc_date = suppressWarnings(min(date[event_type == "disc"], na.rm = TRUE))) |>
+        filter((event_type == "shot" & date == first_init_date) | 
+               (event_type == "disc" & date == first_disc_date)) |>
+        distinct(alai_up_uid, event_type, n_val, !!demo_group, .keep_all = TRUE) |>
+        mutate(period = floor_date(date, unit = str_c(input$time_trend_period_time_choice, " months"))) |>
+        group_by(period, !!demo_group) |>
+        summarize(n = sum(n_val), .groups = "drop") |>
         drop_na()
-
     } else {
       temp <- temp |>
-        group_by(period, !!demo_group, outcome) |>
-        count() |>
-        group_by(period, !!demo_group) |>
-        mutate(monthly_total = sum(n)) |>
-        ungroup() |>
-        drop_na() |>
-        filter(outcome == 1)
+        mutate(.by = alai_up_uid,
+               first_date = min(date,na.rm = T),
+               last_date = max(date,na.rm = T),
+               first_date = data.table::fifelse(first_date == Inf, NA, first_date),
+               last_date = data.table::fifelse(last_date == -Inf, NA, last_date)) |>
+        filter(.by = alai_up_uid,
+               date == first_date) |>
+        select(-event,-date) |>
+        distinct() |>
+        mutate(period = floor_date(first_date,unit = str_c(input$time_trend_period_time_choice, " months"))) 
+  
+      if (input$time_indicator %in% c("Assessed","Counseled","Screened","Prescribed","Initiated")){
+        temp <- temp |>
+          group_by(period,!!demo_group) |>
+          count() |>
+          ungroup() |>
+          drop_na()
+  
+      } else {
+        temp <- temp |>
+          group_by(period, !!demo_group, outcome) |>
+          count() |>
+          group_by(period, !!demo_group) |>
+          mutate(monthly_total = sum(n)) |>
+          ungroup() |>
+          drop_na() |>
+          filter(outcome == 1)
+      }
     }
 
     out_df <- temp |>
@@ -165,7 +186,7 @@ time_trend_server <- function(input, output, ic_df, session){
     temp <- tibble(
       numerator = c("Assessed","Counseled","Screened",
                     "Interested","Eligible","Prescribed",
-                    "Initiated"),
+                    "Initiated","Sustained"),
     ) |>
       mutate(denominator = "PWH") |>
       expand_grid(plot = c("Total","Monthly")) |>

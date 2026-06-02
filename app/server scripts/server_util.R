@@ -79,7 +79,6 @@ load_and_process_data <- function(input_df) {
     mutate(age = floor(interval(birth_date, today())/years(1)),
       age_cat=factor(
       case_when( 
-        age <= 17 ~ "<18",
         age>=18 & age<=24 ~ "18-24",
         age>=25 & age<=34 ~ "25-34",
         age>=35 & age<=44 ~ "35-44",
@@ -88,7 +87,7 @@ load_and_process_data <- function(input_df) {
         age>=65 ~ "65+",
         .default = "Unknown",
       ),
-      levels = c("<18","18-24","25-34","35-44","45-54","55-64","65+","Unknown"))) |>
+      levels = c("18-24","25-34","35-44","45-54","55-64","65+","Unknown"))) |>
     mutate(
       sex = factor(
         case_when(sex == 1 ~ "Male",

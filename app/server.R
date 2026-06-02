@@ -402,10 +402,12 @@ server <- function(input, output, session) {
                        'Screened',
                        "Eligible",
                        "Prescribed",
-                       "Initiated")
+                       "Initiated",
+                       "Sustained")
     } else {
       choice_list <- c("Prescribed",
-                       "Initiated")
+                       "Initiated",
+                       "Sustained")
     }
     selectInput("time_indicator",
                 "Select an indicator",

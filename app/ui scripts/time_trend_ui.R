@@ -14,13 +14,15 @@ list(
                         changed over time at your clinic."),
                      p("The first plot shows the cumulative percentage of a given indicator over time each group
                       within a demographic group. For example, if the indicator is 'Assessed' the demographic 
-                      group is age, the plot will show the total percentage assessed for each age group over time. 
+                      group is age, the plot will show the total percentage ever assessed for each age group over time. 
                       The denominator in this case would be the total number of people in that age group. 
                       Note that this reflects the first date when an event occurred."),
                      p("The second plot shows the monthly percentage of a given indicator over time for each group 
-                     within a demographic group. For example, if the indicator is ‘Interested’ and the demographic 
+                     within a demographic group. For example, if the indicator is 'Interested' and the demographic 
                      group is sex, the plot will show the total percentage interested for each sex over time. 
-                     The denominator for each line is the total number of people in that age group."),
+                     The denominator for each line is the total number of people in that age group.
+                     Note that if 'Sustained' is chosen as the indicator, a negative percentage would indicate
+                     discontinuation."),
                      p("There are several inputs you can modify:"),
                      tags$ul(
                         tags$li('Indicator: the indicator shown in the plots'),
