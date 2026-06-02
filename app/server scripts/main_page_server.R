@@ -540,7 +540,9 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       req(input$sidebar == page_selected)
 
       base_size <- 14
-      p <- ic_var_plot(ic_summary_df(), input_var, by_group = T, group_var = var_str, base_size_in = base_size, selected_site = selected_site(), selected_year = selected_year_val())
+      p <- ic_var_plot(ic_summary_df(), input_var, by_group = T, group_var = var_str, 
+                       base_size_in = base_size, selected_site = selected_site(), 
+                       selected_year = selected_year_val(),assessed_choice = input$assessed_choice)
 
       output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
       output[[paste0(id, "_table_download")]] <- download_table(label, p$data)
@@ -1374,7 +1376,8 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
 
     p <- ic_var_plot(ic_summary_df(), "prescribed", by_group = T,
                      group_var = var_str, base_size_in = base_size,
-                     selected_site = selected_site(), selected_year = selected_year_val())
+                     selected_site = selected_site(), selected_year = selected_year_val(),
+                     assessed_choice = input$assessed_choice)
 
     output$keypop7_plot_download <- download_box(paste0("prescribed_",var_str), p,nrow(p$data))
     output$keypop7_table_download <- download_table(paste0("prescribed_",var_str), p$data)

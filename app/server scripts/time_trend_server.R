@@ -73,8 +73,12 @@ time_trend_server <- function(input, output, ic_df, session){
       "Eligible" = ic_df() |> 
         select(contains("icab_rpv") & contains("screen")) |>
         names(),
-      "Prescribed" = "icab_rpv_rx_date", # may want to also select shot 1?
-      "Initiated" = "icab_rpv_shot1_date", # may want to select more shots...
+      "Prescribed" = ic_df() |> 
+        select(contains("icab_rpv_rx_date") | (contains("icab_rpv_shot") & contains("date"))) |>
+        names(), 
+      "Initiated" = ic_df() |> 
+        select(contains("icab_rpv_shot") & contains("date")) |>
+        names(), 
       # May want something for sustained as well..
       character(0)
     )
@@ -84,8 +88,6 @@ time_trend_server <- function(input, output, ic_df, session){
       summarize(.by = !!demo_group,
                 denominator = case_when(
                     input$time_indicator %in% c("Assessed","Counseled","Screened") ~ sum(PWH,na.rm = TRUE),
-                    input$time_indicator == "Interested" ~ sum(Counseled,na.rm = TRUE),
-                    input$time_indicator == "Eligible" ~ sum(Screened,na.rm = TRUE),
                     input$time_indicator == "Prescribed" & input$assessed_choice == "Yes" ~ sum(`Interested & Eligible`,na.rm = TRUE),
                     input$time_indicator == "Prescribed" & input$assessed_choice == "No" ~ sum(PWH,na.rm = TRUE),
                     input$time_indicator == "Initiated" ~ sum(Prescribed,na.rm = TRUE),

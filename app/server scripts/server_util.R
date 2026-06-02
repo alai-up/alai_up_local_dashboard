@@ -645,12 +645,12 @@ ic_var_plot <- function(input_df,
       if (is.null(selected_year)){
         title_text = str_c(str_to_title(unique(ic_df$Variable)), 
                            " at ",selected_site,
-                           " among ",unique(ic_df$prev_lab), 
+                           " among ",str_remove(unique(ic_df$prev_lab),"PWH"), 
                            " PWH")
       } else {
         title_text = str_c(str_to_title(unique(ic_df$Variable)), 
                            " at ",selected_site,
-                           " among ",unique(ic_df$prev_lab), 
+                           " among ",str_remove(unique(ic_df$prev_lab),"PWH"), 
                            " PWH active in ",selected_year)
       }
       
@@ -756,12 +756,12 @@ ic_var_plot <- function(input_df,
       if (is.null(selected_year)){
         title_text = str_c(str_to_title(unique(ic_df$Variable)), 
                            " at ",selected_site,
-                           " among ",unique(ic_df$prev_lab), 
+                           " among ",str_remove(unique(ic_df$prev_lab),"PWH"), 
                            " PWH by ", title)
       } else {
         title_text = str_c(str_to_title(unique(ic_df$Variable)), 
                            " at ",selected_site,
-                           " among ",unique(ic_df$prev_lab), 
+                           " among ",str_remove(unique(ic_df$prev_lab),"PWH"), 
                            " PWH active in ",selected_year,
                            " by ", title)
       }
