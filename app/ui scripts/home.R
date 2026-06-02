@@ -70,7 +70,7 @@ list(
     (HHS) U1SHA46532. The award provided 100% 
     of total costs and totaled $7,450,000. The contents are those of the developers. 
     They may not reflect the policies of HRSA, HHS, or the U.S. Government.'),
-  p('This Version 1.0 was completed on 3/20/2026.')
+  p('This Version 1.0 was completed on 6/2/2026.')
   
 )
   
