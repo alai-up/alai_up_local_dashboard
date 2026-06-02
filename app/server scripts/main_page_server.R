@@ -1,6 +1,6 @@
 
 
-main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_master_df, interval_1, interval_2, session){
+main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_site,cab_master_df, interval_1, interval_2, session){
 
   selected_year_val <- reactive({
     if (input$filter_by_year == FALSE){
@@ -467,7 +467,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
   }, res = 72)
 
   output$int_elig_table <- render_gt({
-    gt_tbl <- int_elig_table_func(tbl(), input$int_elig_pct)
+    gt_tbl <- int_elig_table_func(ic_df(), input$int_elig_pct)
 
     output$int_elig_table_download <- download_table("assessed_outcomes",gt_tbl$`_data`)
     gt_tbl
@@ -2553,7 +2553,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
       filter(period >= "2023-01-01") |>
       mutate(most_recent_vl = {
         if (input$vl_cutoff_input == "50 copies/mL"){
-          case_match(
+          recode_values(
             most_recent_vl,
             1 ~ "<50",
             2 ~ "<50",
@@ -2562,7 +2562,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
             5 ~ "\u226550",
             6 ~ "\u226550")
         } else if (input$vl_cutoff_input == "200 copies/mL"){
-          case_match(
+          recode_values(
             most_recent_vl,
             1 ~ "<200",
             2 ~ "<200",
@@ -2573,7 +2573,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
         }
       },
       most_recent_vl = factor(most_recent_vl, levels = c(val2(),val1())),
-      on_cab_in_period = case_match(
+      on_cab_in_period = recode_values(
         on_cab_in_period,
         0 ~ "Oral ART",
         1 ~ "LAI ART"

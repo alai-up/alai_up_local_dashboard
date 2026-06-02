@@ -94,26 +94,30 @@ server <- function(input, output, session) {
   raw_data <- eventReactive(input$go_button, {
     req(input$file1,input$select_sheet)
 
-    result <- tryCatch({
-      data <- read_excel(input$file1$datapath,
-                         sheet = input$select_sheet,
-                         col_types = "text",
-                         na = c("NA","UNK", ".", "C","888888","999999")) |>
-        load_and_process_data()
-
-      data
-
-    }, error = function(e) {
-      showNotification(
-        paste("Error processing data. Please check your data carefully.\n
-              The R error message was:", conditionMessage(e)),
-        type = "error",
-        duration = 10,
-        id = "processing_error" # Prevents duplicate notifications
-      )
-
-      return(NULL)
-    })
+     withProgress(message = "Initial Processing", detail = "Reading Excel file...", value = 0.3, {
+       result <- tryCatch({
+         data <- read_excel(input$file1$datapath,
+                            sheet = input$select_sheet,
+                            col_types = "text",
+                            na = c("NA","UNK", ".", "C","888888","999999"))
+        
+         incProgress(0.3, detail = "Loading and processing data...")
+         data <- load_and_process_data(data)
+  
+         data
+       
+       }, error = function(e) {
+         showNotification(
+           paste("Error processing data. Please check your data carefully.\n
+                 The R error message was:", conditionMessage(e)),
+           type = "error",
+           duration = 10,
+           id = "processing_error" # Prevents duplicate notifications
+           )
+  
+         return(NULL)
+       })
+     })
 
     req(result)
     return(result)
@@ -290,7 +294,7 @@ server <- function(input, output, session) {
 
   # Initialize modules ONCE at top-level. 
   # Pass the reactive objects (e.g., tbl, NOT tbl()) so they manage their own invalidation.
-  main_page_server(input, output, tbl, ic_summary_df, selected_site_reactive, cab_master_df, interval_1, interval_2, session)
+  main_page_server(input, output, tbl, ic_df, ic_summary_df, selected_site_reactive, cab_master_df, interval_1, interval_2, session)
   dynamic_filter_select(input, output, ic_summary_df, selected_site_reactive, session)
   data_explore_server(input, output, ic_summary_df, session)
   time_trend_server(input, output, ic_df, session)
@@ -300,7 +304,7 @@ server <- function(input, output, session) {
     req(tbl(), ic_summary_df(), cab_master_df(), ic_df())
 
       updateActionButton(session, "go_button",
-                         label = "Data is ready",
+                         label = "Data are ready",
                          icon = icon("check"))
   })
 

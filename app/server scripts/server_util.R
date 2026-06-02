@@ -1467,7 +1467,7 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
 
 int_elig_table_func <- function(input_df, percent_type){
   
-  temp <- get_IC_df(input_df) |>
+  temp <- input_df |>
     mutate(
       Counseled = case_when(
         Counseled == 1 ~ 1,
@@ -1489,27 +1489,27 @@ int_elig_table_func <- function(input_df, percent_type){
     filter(Assessed == 1) |> 
     mutate(Eligible = if_else(Screened == 1, Eligible,NA),
            Interested = if_else(Counseled == 1,Interested,NA),
-           Interest_label = case_match(
+           Interest_label = recode_values(
              Interested,
              0 ~ "Not interested",
              1 ~ "Interested",
              2 ~ "Maybe interested",
-             .default = "Not counseled"
+             default = "Not counseled"
            ),
-           interest_order = case_match(
+           interest_order = recode_values(
              Interest_label,
              "Not counseled" ~ 1,
              "Not interested" ~ 2,
              "Maybe interested" ~ 3,
              "Interested" ~ 4
            ),
-           Eligibility_label = case_match(
+           Eligibility_label = recode_values(
              Eligible,
              0 ~ "Not eligible",
              1 ~ "Eligible",
-             .default = "Not screened"
+             default = "Not screened"
            ),
-           elig_order = case_match(
+           elig_order = recode_values(
              Eligibility_label,
              "Not screened" ~ 1,
              "Not eligible" ~ 2,
