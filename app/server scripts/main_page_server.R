@@ -1871,7 +1871,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                                    "late" = "#fE5000"),
                         labels = c("ontime" = "No late injections",
                                    "late" = "Late")) +
-      ylim(0,max_y + 30) +
+      ylim(0,max_y*1.15) +
       theme_minimal(base_size = base_size,
                     base_family = "Roboto") +
       theme(legend.position = "none",
@@ -1920,7 +1920,7 @@ main_page_server <- function(input, output, tbl,ic_summary_df,selected_site,cab_
                                    "late" = "#fE5000"),
                         labels = c("ontime" = "No early injections",
                                    "early" = "Early")) +
-      ylim(0,max_y + 30) +
+      ylim(0,max_y*1.15) +
       theme_minimal(base_size = base_size,
                     base_family = "Roboto") +
       theme(legend.position = "none",
