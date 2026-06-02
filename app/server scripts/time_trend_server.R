@@ -25,17 +25,6 @@ time_trend_server <- function(input, output, ic_df, session){
     "Site" = "site"
   )
 
-  date_breaks_from_range <- function(first_date, last_date){
-    date_diff <- as.numeric(difftime(last_date, first_date, units = "days"))
-    if (date_diff <= 92) {
-      "1 month"
-    } else if (date_diff < 365) {
-      "3 months"
-    } else {
-      "6 months"
-    }
-  }
-
   finalize_time_plot <- function(p, expand_x = waiver()){
     first_date <- min(p$data$period, na.rm = TRUE)
     last_date  <- max(p$data$period, na.rm = TRUE)
@@ -44,7 +33,6 @@ time_trend_server <- function(input, output, ic_df, session){
       theme(text = element_text(size = 15), axis.text.x = element_text(size = 15, color = "black")) +
       scale_x_date(date_labels = "%b %Y",
                    expand = expand_x
-                  #  date_breaks = date_breaks_from_range(first_date, last_date)
                   )
   }
 
@@ -166,16 +154,8 @@ time_trend_server <- function(input, output, ic_df, session){
     out_df <- temp |>
       complete(period, !!demo_group, fill = list(n = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
-      filter(.by = !!demo_group, denominator > 0) |>
-      bind_rows(bind_rows(
-        temp |>
-          distinct(!!demo_group) |>
-          mutate(
-            period = min(temp$period) - months(1),
-            n = 0
-          )
-        )
-      )
+      filter(.by = !!demo_group, denominator > 0) 
+      
 
       
     return(out_df)
@@ -278,6 +258,13 @@ time_trend_server <- function(input, output, ic_df, session){
       mutate(pct = n/denominator) |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
+      geom_rect(aes(xmin = period - 15 * as.numeric(input$time_trend_period_time_choice), 
+                    xmax = period + 15 * as.numeric(input$time_trend_period_time_choice)), 
+                ymin = -Inf, 
+                ymax = Inf, 
+                color = "gray90", 
+                fill = NA, 
+                size = 1) +
       scale_y_continuous(labels = scales::percent) + 
       labs(x = NULL, y = NULL,
            fill = if (input$time_demo_group == "none") NULL else get_demo_label(input$time_demo_group),

@@ -21,8 +21,9 @@ list(
                      within a demographic group. For example, if the indicator is 'Interested' and the demographic 
                      group is sex, the plot will show the total percentage interested for each sex over time. 
                      The denominator for each line is the total number of people in that age group.
-                     Note that if 'Sustained' is chosen as the indicator, a negative percentage would indicate
-                     discontinuation."),
+                      Note that if 'Sustained' is chosen as the indicator, the percentages show the net number 
+                      sustained (initiated minus discontinued) in any given month, meaning a negative percentage 
+                      is possible."),
                      p("There are several inputs you can modify:"),
                      tags$ul(
                         tags$li('Indicator: the indicator shown in the plots'),
