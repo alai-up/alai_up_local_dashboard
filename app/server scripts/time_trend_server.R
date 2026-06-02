@@ -3,6 +3,7 @@ time_trend_server <- function(input, output, ic_df, session){
 
     # Shared constants and helpers -------------------------------------------------
   choice_list <- c(
+    "None" = "none",
     "Age" = "age_cat",
     "Sex" = "sex",
     "Race" = "race",
@@ -55,6 +56,11 @@ time_trend_server <- function(input, output, ic_df, session){
     req(input$time_indicator, input$time_demo_group, ic_df())
     
     demo_group <- sym(input$time_demo_group)
+    
+    input_df <- ic_df()
+    if (input$time_demo_group == "none") {
+      input_df <- input_df |> mutate(none = "Overall")
+    }
 
     cols_to_select <- switch(
       input$time_indicator,
@@ -84,17 +90,12 @@ time_trend_server <- function(input, output, ic_df, session){
     )
 
     # get denominators
-    denom_df <- ic_df() |>
+    denom_df <- input_df |>
       summarize(.by = !!demo_group,
-                denominator = case_when(
-                    input$time_indicator %in% c("Assessed","Counseled","Screened") ~ sum(PWH,na.rm = TRUE),
-                    input$time_indicator == "Prescribed" & input$assessed_choice == "Yes" ~ sum(`Interested & Eligible`,na.rm = TRUE),
-                    input$time_indicator == "Prescribed" & input$assessed_choice == "No" ~ sum(PWH,na.rm = TRUE),
-                    input$time_indicator == "Initiated" ~ sum(Prescribed,na.rm = TRUE),
-                    .default = sum(PWH, na.rm = TRUE)
-                ))
+                denominator = sum(PWH, na.rm = TRUE)
+                )
 
-    temp <- ic_df() |>
+    temp <- input_df |>
       select(alai_up_uid, !!demo_group, all_of(cols_to_select)) |>
       pivot_longer(cols = -c(alai_up_uid,!!demo_group),
                    names_to = c("event",".value"),
@@ -166,16 +167,9 @@ time_trend_server <- function(input, output, ic_df, session){
                     "Interested","Eligible","Prescribed",
                     "Initiated"),
     ) |>
-      mutate(denominator = case_when(
-                    numerator %in% c("Assessed","Counseled","Screened") ~ "PWH",
-                    numerator == "Interested" ~ "Counseled",
-                    numerator == "Eligible" ~ "Screened",
-                    numerator == "Prescribed" & input$assessed_choice == "Yes" ~ "Interested & Eligible",
-                    numerator == "Prescribed" & input$assessed_choice == "No" ~ "PWH",
-                    numerator == "Initiated" ~ "Prescribed",
-                    .default = "PWH")) |>
+      mutate(denominator = "PWH") |>
       expand_grid(plot = c("Total","Monthly")) |>
-      mutate(title_string = str_c(plot," percent ", numerator, " out of ", denominator, " by "))
+      mutate(title_string = str_c(plot," percent ", numerator, " out of ", denominator))
 
   })
   
@@ -238,7 +232,7 @@ time_trend_server <- function(input, output, ic_df, session){
       labs(x = NULL, y = NULL,
            title = str_c(
              title_df() |> filter(numerator == input$time_indicator, plot == "Total") |> pull(title_string),
-             get_demo_label(input$time_demo_group)
+             if (input$time_demo_group == "none") "" else str_c(" by ", get_demo_label(input$time_demo_group))
            )) +
       scale_y_continuous(labels = scales::percent)
 
@@ -265,13 +259,17 @@ time_trend_server <- function(input, output, ic_df, session){
       geom_bar(position = "dodge", stat = "identity") + 
       scale_y_continuous(labels = scales::percent) + 
       labs(x = NULL, y = NULL,
-           fill = get_demo_label(input$time_demo_group),
+           fill = if (input$time_demo_group == "none") NULL else get_demo_label(input$time_demo_group),
            title = str_c(
              title_df() |> filter(numerator == input$time_indicator, plot == "Monthly") |> pull(title_string),
-             get_demo_label(input$time_demo_group)
+             if (input$time_demo_group == "none") "" else str_c(" by ", get_demo_label(input$time_demo_group))
            ))
 
-    finalize_time_plot(p)
+    p <- finalize_time_plot(p)
+    if (input$time_demo_group == "none") {
+      p <- p + theme(legend.position = "none")
+    }
+    p
 
   })
 

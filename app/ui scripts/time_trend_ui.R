@@ -19,9 +19,8 @@ list(
                       Note that this reflects the first date when an event occurred."),
                      p("The second plot shows the monthly percentage of a given indicator over time for each group 
                      within a demographic group. For example, if the indicator is ‘Interested’ and the demographic 
-                     group is sex, the plot will show the total percentage interested for each sex in each month 
-                     out of those ever counseled over time. The denominator for each line is the total number of 
-                     people ever counseled in that age group."),
+                     group is sex, the plot will show the total percentage interested for each sex over time. 
+                     The denominator for each line is the total number of people in that age group."),
                      p("There are several inputs you can modify:"),
                      tags$ul(
                         tags$li('Indicator: the indicator shown in the plots'),

@@ -415,7 +415,8 @@ server <- function(input, output, session) {
 
   output$time_demo_group <- renderUI({
     req(input$file1)
-    choice_list <- c("Age" = "age_cat",
+    choice_list <- c("None" = "none",
+                     "Age" = "age_cat",
                      "Sex" = "sex",
                      "Race" = "race",
                      "Ethnicity" = "ethnicity",
