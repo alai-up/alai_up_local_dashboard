@@ -7,3 +7,5 @@ The Dashboard can be used by clinic leadership, LAI ART program leads, data mana
 - Track progress toward their implementation goals for their LAI ART program.
 - Identify gaps in LAI ART care delivery across different social determinants of health.
 - Guide efforts to address gaps and improve the quality of services for all clients.
+
+Simulated data for testing out the dashboard is available in [`data/simulated_data.xlsx`](data/simulated_data.xlsx)
