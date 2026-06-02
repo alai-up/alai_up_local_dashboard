@@ -49,7 +49,7 @@ list(
             early, on time, or late, and time to viral suppression and viral failure.
             There is also data on clinic-level viral load, including clients on oral ART.'),
     br(),    
-    tags$li("Time Trneds. This page allows you to explore how indicators have changed over
+    tags$li("Time Trends. This page allows you to explore how indicators have changed over
               time, stratified by demographics and social determinants of health. This can
               be particularly helpful for assessing the impact of a new intervention or policy
               at your clinic. There are detailed instructions there for using the time trends page."),

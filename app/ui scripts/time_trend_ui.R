@@ -9,7 +9,7 @@ list(
                    solidHeader = TRUE,
                    tagList(
                      p("The Time Trends page allows you to explore changes in indicators and 
-                        subindicators over time stratified by demographics and social deteminants of health.
+                        subindicators over time stratified by demographics and social determinants of health.
                         This facilitates comparison across subgroups to determine if care gaps have
                         changed over time at your clinic."),
                      p("The first plot shows the cumulative percentage of a given indicator over time
