@@ -193,7 +193,7 @@ server <- function(input, output, session) {
   current_filter_state <- reactiveVal(list(active = FALSE, years = NULL))
   
   observe({
-    is_filtering <- isTRUE(input$filter_by_year) && identical(input$all_data_or_year, "years")
+    is_filtering <- isTRUE(input$filter_by_year) && length(input$active_year) > 0
     
     # If they want filtering but the UI hasn't provided the year input yet, wait
     if (is_filtering && is.null(input$active_year)) {
@@ -339,22 +339,11 @@ server <- function(input, output, session) {
       year_choices <- as.character(active_year_options())
     }
 
-    tagList(
-      radioButtons(inputId = "all_data_or_year",
-                  label = "Filter clients",
-                  choices = c("Use all data" = "all","Select active years" = "years"),
-                  selected = "all"),
-      conditionalPanel(
-        condition = "input.all_data_or_year == 'years'",
-        selectInput(
-          inputId = "active_year",
-          label = "Select active year of clients:",
-          choices = year_choices,
-          multiple = TRUE,
-          selectize = TRUE,
-          selected =  year_choices[length(year_choices)]
-        )
-      )
+    checkboxGroupInput(
+      inputId = "active_year",
+      label = "Select active year(s) of clients:",
+      choices = year_choices,
+      selected =  year_choices[length(year_choices)]
     )
   }) 
 
