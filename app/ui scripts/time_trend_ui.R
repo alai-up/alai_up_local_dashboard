@@ -27,7 +27,7 @@ list(
                         tags$li('Indicator: the indicator shown in the plots'),
                         tags$li('Comparison variable: the demographic or social determinant of health category
                                  you are interested in comparing'),
-                        tags$li('Range of date: the range of dates to focus on in the graphs, allowing you to 
+                        tags$li('Range of dates: the range of dates to focus on in the graphs, allowing you to 
                                  zoom in on a particular period'),
                         tags$li('Time period length: controls whether the data are aggregated monthly (1 month),
                                  quarterly (3 months) or biannually (6 months)')
