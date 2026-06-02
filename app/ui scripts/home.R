@@ -12,7 +12,14 @@ list(
     tags$li('Identify gaps in LAI ART care delivery across different social determinants of health.'),
     tags$li('Guide efforts to address gaps and improve the quality of services for all clients.')
   ),
-  p('Please refer to the Dashboard Toolkit for detailed instructions on preparing your data and using the dashboard.'),
+  p('Please refer to the Dashboard Toolkit for detailed instructions on preparing your data and using the dashboard. 
+     A file with simulated data for testing out the dashboard is available for download by clicking ',
+     list((function() {
+      tag <- tags$a("here.", href = "simulated_data.xlsx")
+      tag$attribs$download <- NULL
+      tag})()
+    )
+  ),
   h3('Instructions'),
   p(strong('The Dashboard is organized into the following sections designed to support
     at-a-glance data review, and more in-depth data exploration. If you have multiple

@@ -134,6 +134,8 @@ time_trend_server <- function(input, output, ic_df, session){
       temp <- temp |>
         group_by(period, !!demo_group, outcome) |>
         count() |>
+        group_by(period, !!demo_group) |>
+        mutate(monthly_total = sum(n)) |>
         ungroup() |>
         drop_na() |>
         filter(outcome == 1)

@@ -297,4 +297,8 @@ write to dataframe
 ```{r}
 writexl::write_xlsx(filled_df,
                     path = "data/simulated_data.xlsx")
+
+                    
+writexl::write_xlsx(filled_df,
+                    path = "app/www/simulated_data.xlsx")
 ```
