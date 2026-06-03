@@ -400,7 +400,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
     bar_names <- ic_df$x_lab[-1]
     if (length(unique(ic_summary_df()$site)) > 1) {
       max_y = min(2,max(ic_df$high_pct,na.rm = T))
-      caption = str_wrap("Error bars have been used to show range of values from lowest to highest by site. A narrow interval means less variability by site. Prescribed may be above 100% if clients not clinically eligible are prescribed. Initiated may be above 100% if clients switched into the clinic while on LAI ART.",
+      caption = str_wrap("Error bars have been used to show range of values from lowest to highest by site. A narrow interval means less variability by site.",
                               width = 150)
     } else {
       max_y = min(2,max(ic_df$Percent,na.rm = T))
