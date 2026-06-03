@@ -526,6 +526,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
   )
 
   n_bars <- list()
+  ic_var_plot_data <- list()
 
   map(names(plot_sections), function(id) {
     section <- plot_sections[[id]]
@@ -536,7 +537,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
 
     n_bars[[id]] <- reactiveVal(1)
 
-    output[[paste0(id, "_plot")]] <- renderPlot({
+    ic_var_plot_data[[id]] <- reactive({
       req(input$sidebar == page_selected)
 
       base_size <- 14
@@ -546,7 +547,20 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
 
       output[[paste0(id, "_plot_download")]] <- download_box(label, p,nrow(p$data))
       output[[paste0(id, "_table_download")]] <- download_table(label, p$data)
-      output[[paste0(id,"_download_ui")]] <- renderUI({
+
+      p
+    })
+
+    output[[paste0(id, "_plot")]] <- renderPlot({
+      p <- ic_var_plot_data[[id]]()
+
+      n_bars[[id]](nrow(p$data))
+      p
+    }, height = function() {
+      50 * n_bars[[id]]() + 100
+    })
+
+   output[[paste0(id,"_download_ui")]] <- renderUI({
         tagList(
           downloadButton(outputId = paste0(id, "_plot_download"), label = "Download plot"),
           downloadButton(outputId = paste0(id, "_table_download"),
@@ -554,13 +568,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                          icon = icon("table"))
         )
       })
-
-      n_bars[[id]](nrow(p$data))
-      p
-    }, height = function() {
-      50 * n_bars[[id]]() + 100
     })
-  })
 
   output$assessed_n <-  renderUI({
     if (is.null(selected_year_val())){
@@ -584,7 +592,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
   })
 
   n_bars_assessed_overall <<- reactiveVal(1)
-  output$assessed_overall_plot <- renderPlot({
+  assessed_overall_plot_data <- reactive({
     base_size <- 14
 
     p <- ic_var_plot(ic_summary_df(), "assessed",by_group = F, base_size_in = base_size,
@@ -592,7 +600,19 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
 
     output$assessed_overall_plot_download <- download_box("assessed_overall", p,nrow(p$data))
     output$assessed_overall_table_download <- download_table("assessed_overall", p$data)
-    output$assessed_overall_download_ui <- renderUI({
+
+    p
+  })
+  output$assessed_overall_plot <- renderPlot({
+    p <- assessed_overall_plot_data()
+
+    n_bars_assessed_overall(nrow(p$data))
+    p
+  }, height = function() {
+    50 * n_bars_assessed_overall() + 50
+  })
+
+   output$assessed_overall_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "assessed_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "assessed_overall_table_download",
@@ -601,14 +621,9 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       )
     })
 
-    n_bars_assessed_overall(nrow(p$data))
-    p
-  }, height = function() {
-    50 * n_bars_assessed_overall() + 50
-  })
-
   n_bars_assessed_keypop <<- reactiveVal(1)
-  output$keypop2_plot <- renderPlot({
+
+  keypop2_plot_data <- reactive({
     base_size <- 14
 
     var_name <- input$keypop2_choice
@@ -633,7 +648,18 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
 
     output$keypop2_plot_download <- download_box(paste0("assessed_",var_str), p,nrow(p$data))
     output$keypop2_table_download <- download_table(paste0("assessed_",var_str), p$data)
-    output$keypop2_download_ui <- renderUI({
+
+    p
+  })
+  output$keypop2_plot <- renderPlot({
+    p <- keypop2_plot_data()
+    n_bars_assessed_keypop(nrow(p$data))
+    p
+  }, height = function() {
+    50 * n_bars_assessed_keypop() + 100
+  })
+  
+  output$keypop2_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "keypop2_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop2_table_download",
@@ -641,11 +667,6 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                        icon = icon("table"))
       )
     })
-    n_bars_assessed_keypop(nrow(p$data))
-    p
-  }, height = function() {
-    50 * n_bars_assessed_keypop() + 100
-  })
 
   output$time2_plot <- renderPlot({
     base_size <- 14
