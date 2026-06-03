@@ -106,7 +106,8 @@ time_trend_server <- function(input, output, ic_df, session){
     if (input$time_indicator == "Sustained") {
       temp <- temp |>
         mutate(
-          n_val = if_else(str_detect(event, "discontinued"), -1, 1),
+          n_disc = if_else(str_detect(event, "discontinued"), 1, 0),
+          n_init = if_else(str_detect(event, "shot"), 1, 0),
           event_type = if_else(str_detect(event, "discontinued"), "disc", "shot")
         ) |>
         mutate(.by = alai_up_uid,
@@ -114,10 +115,12 @@ time_trend_server <- function(input, output, ic_df, session){
                first_disc_date = suppressWarnings(min(date[event_type == "disc"], na.rm = TRUE))) |>
         filter((event_type == "shot" & date == first_init_date) | 
                (event_type == "disc" & date == first_disc_date)) |>
-        distinct(alai_up_uid, event_type, n_val, !!demo_group, .keep_all = TRUE) |>
+        distinct(alai_up_uid, event_type, n_disc,n_init, !!demo_group, .keep_all = TRUE) |>
         mutate(period = floor_date(date, unit = str_c(input$time_trend_period_time_choice, " months"))) |>
         group_by(period, !!demo_group) |>
-        summarize(n = sum(n_val), .groups = "drop") |>
+        summarize(n_on_cab = sum(n_init),
+                  n_discontinue = sum(n_disc), .groups = "drop") |>
+        mutate(n = n_on_cab - n_discontinue) |>
         drop_na()
     } else {
       temp <- temp |>
