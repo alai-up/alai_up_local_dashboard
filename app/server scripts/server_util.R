@@ -103,16 +103,15 @@ load_and_process_data <- function(input_df) {
       levels = c("Hispanic","Not hispanic","Unknown"))) |>
     mutate(insurance_status = factor(
       case_when(
-        insurance_status == 1 ~ "Private Employer",
-        insurance_status == 2 ~ "Private Individual",
-        insurance_status == 3 ~ "Medicare",
-        insurance_status == 4 ~ "Medicaid",
-        insurance_status == 5 ~ "Veterans Health Administration",
-        insurance_status == 6 ~ "Indian Health Service",
-        insurance_status == 7 ~ "Other",
-        insurance_status == 8 ~ "Uninsured",
+        insurance_status == 1 ~ "Private Insurance",
+        insurance_status == 2 ~ "Medicare",
+        insurance_status == 3 ~ "Medicaid",
+        insurance_status == 4 ~ "Veterans Health Administration",
+        insurance_status == 5 ~ "Indian Health Service",
+        insurance_status == 6 ~ "Other",
+        insurance_status == 7 ~ "Uninsured",
         .default = "Unknown"),
-      levels = c("Private Employer","Private Individual","Medicare",
+      levels = c("Private Insurance","Medicare",
                  "Medicaid","Veterans Health Administration",
                  "Indian Health Service", "Other","Uninsured","Unknown")
     )) |>
