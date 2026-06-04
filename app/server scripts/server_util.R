@@ -548,6 +548,8 @@ get_IC_df <-function(input_df){
     mutate(
       PWH = 1,
       PWH1 = 1,
+      Interested = data.table::fifelse(Interested == 1 | Prescribed == 1, 1, 0),
+      Eligible = data.table::fifelse(Eligible == 1 | Prescribed == 1, 1, 0),
       `Interested & Eligible` = data.table::fifelse((Interested == 1 & Eligible == 1) | Prescribed == 1,1,0)
     )
   
