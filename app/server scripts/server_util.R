@@ -1034,7 +1034,6 @@ not_eligible_reason_func <- function(input_df,base_size_in){
         not_elig_reason == 7 ~ "History of oral ART non-adherence",
         not_elig_reason == 8 ~ "Buttocks implant",
         not_elig_reason == 9 ~ "Pregnancy/Family planning",
-        not_elig_reason == 10 ~ "Not covered by insurance/payor",
         not_elig_reason == 20 ~ "Other",
         .default = "Unknown"
       ),
@@ -1047,7 +1046,6 @@ not_eligible_reason_func <- function(input_df,base_size_in){
                  "History of oral ART non-adherence",
                  "Buttocks implant",
                  "Pregnancy/Family planning",
-                 "Not covered by insurance/payor",
                  "Other",
                  "Unknown"))) |>
     filter(Assessed == 1,
