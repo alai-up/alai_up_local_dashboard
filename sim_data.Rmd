@@ -26,7 +26,7 @@ ny_zips <- zip_code_db |>
   filter(county == "New York County",
          !is.na(lat))
 
-set.seed(123)
+set.seed(2026*6*5)
 ```
 
 ```{r}
@@ -204,7 +204,7 @@ cab_doses <- df |>
              out <- c(first(ref_date),first(ref_date) + rnorm(1,30,5))
              d <- out[2]
              for (i in 3:n()){
-               d <- d + rnorm(1,60,6)
+               d <- d + rnorm(1,62,7)
                out <- c(out,d)
              }
              out
@@ -212,6 +212,7 @@ cab_doses <- df |>
   )) |>
   mutate(interval = if_else(index > num_shots,NA,interval),
          date = if_else(index > num_shots,NA,date),
+         interval = if_else(index == 1 & !is.na(date),1,interval),
          late_exception = if_else(date - lag(date) > 69,rbinom(1,1,0.5),0)) |>
   pivot_wider(names_from = "index",
               values_from = c("date","interval","late_exception"),
