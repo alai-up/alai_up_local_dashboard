@@ -117,14 +117,11 @@ load_and_process_data <- function(input_df) {
       secondary_payor = factor(
         case_when(
           secondary_payor == 1 ~ "ADAP",
-          secondary_payor == 2 ~ "LPAP",
-          secondary_payor == 3 ~ "CAP",
-          secondary_payor == 4 ~ "PAP",
-          secondary_payor == 5 ~ "Program income",
-          secondary_payor == 6 ~ "Other",
+          secondary_payor == 2 ~ "PAP",
+          secondary_payor == 3 ~ "Other",
           .default = NA
         ),
-        levels = c("ADAP","LPAP","PAP","CAP","Program income","Other")),
+        levels = c("ADAP","PAP","Other")),
       insurance_status = if_else(!is.na(secondary_payor), 
                                  str_c(health_care_coverage," & ", secondary_payor),
                                  health_care_coverage)
