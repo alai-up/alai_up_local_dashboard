@@ -422,7 +422,7 @@ server <- function(input, output, session) {
                      "Sex" = "sex",
                      "Race" = "race",
                      "Ethnicity" = "ethnicity",
-                     "Insurance status" = "insurance_status",
+                     "HIV medication payor" = "insurance_status",
                      "Housing status" = "housing_status",
                      "Risk MSM" = "risk_msm",
                      "Risk IDU" = "risk_idu",
@@ -487,7 +487,7 @@ server <- function(input, output, session) {
                      "Sex" = "sex",
                      "Race" = "race",
                      "Ethnicity" = "ethnicity",
-                     "Insurance status" = "insurance_status",
+                     "HIV medication payor" = "insurance_status",
                      "Housing status" = "housing_status",
                      "Risk MSM" = "risk_msm",
                      "Risk IDU" = "risk_idu",
@@ -518,7 +518,7 @@ server <- function(input, output, session) {
                    "Sex" = "sex",
                    "Race" = "race",
                    "Ethnicity" = "ethnicity",
-                   "Insurance status" = "insurance_status",
+                   "HIV medication payor" = "insurance_status",
                    "Housing status" = "housing_status",
                    "Risk MSM" = "risk_msm",
                    "Risk IDU" = "risk_idu",
@@ -568,7 +568,7 @@ server <- function(input, output, session) {
     list(id = "race1", title = "Race", plot = "race1_plot", download = "race1_download_ui"),
     list(id = "ethnicity1", title = "Ethnicity", plot = "ethnicity1_plot", download = "ethnicity1_download_ui"),
     list(id = "age1", title = "Age", plot = "age1_plot", download = "age1_download_ui"),
-    list(id = "insurance1", title = "Insurance status", plot = "insurance1_plot", download = "insurance1_download_ui"),
+    list(id = "insurance1", title = "HIV medication payor", plot = "insurance1_plot", download = "insurance1_download_ui"),
     list(id = "keypop1", title = "Key populations", plot = NULL, download = NULL),
     list(id = "zip1", title = "ZIP code", plot = NULL, download = NULL)
   )
@@ -675,7 +675,7 @@ server <- function(input, output, session) {
     list(id = "race1b", title = "Race", plot = "race1b_plot", download = "race1b_download_ui"),
     list(id = "ethnicity1b", title = "Ethnicity", plot = "ethnicity1b_plot", download = "ethnicity1b_download_ui"),
     list(id = "age1b", title = "Age", plot = "age1b_plot", download = "age1b_download_ui"),
-    list(id = "insurance1b", title = "Insurance status", plot = "insurance1b_plot", download = "insurance1b_download_ui"),
+    list(id = "insurance1b", title = "HIV medication payor", plot = "insurance1b_plot", download = "insurance1b_download_ui"),
     list(id = "keypop1b", title = "Key populations", plot = NULL, download = NULL),
     list(id = "zip1b", title = "ZIP code", plot = NULL, download = NULL)
   )
@@ -899,7 +899,7 @@ server <- function(input, output, session) {
     list(id = "race2", title = "Race", plot = "race2_plot", download = "race2_download_ui"                                             ),
     list(id = "ethnicity2", title = "Ethnicity", plot = "ethnicity2_plot", download = "ethnicity2_download_ui"                         ),
     list(id = "age2", title = "Age", plot = "age2_plot", download = "age2_download_ui"                                                 ),
-    list(id = "insurance2", title = "Insurance status", plot = "insurance2_plot", download = "insurance2_download_ui"                  ),
+    list(id = "insurance2", title = "HIV medication payor", plot = "insurance2_plot", download = "insurance2_download_ui"                  ),
     list(id = "keypop2", title = "Key populations", plot = "keypop2_plot", download = "keypop2_download_ui"                            ),
     list(id = "time2", title = "Assessed over time by person", plot = "time2_plot", download = "time2_download_ui"                     ),
     list(id = "time2_event", title = "Assessed over time by encounter", plot = "time2_event_plot", download = "time2_event_download_ui")
@@ -926,7 +926,7 @@ server <- function(input, output, session) {
     list(id = "race3", title = "Race", plot = "race3_plot", download = "race3_download_ui"),
     list(id = "ethnicity3", title = "Ethnicity", plot = "ethnicity3_plot", download = "ethnicity3_download_ui"),
     list(id = "age3", title = "Age", plot = "age3_plot", download = "age3_download_ui"),
-    list(id = "insurance3", title = "Insurance status", plot = "insurance3_plot", download = "insurance3_download_ui"),
+    list(id = "insurance3", title = "HIV medication payor", plot = "insurance3_plot", download = "insurance3_download_ui"),
     list(id = "keypop3", title = "Key populations", plot = "keypop3_plot", download = "keypop3_download_ui"),
     list(id = "time3", title = "Counseled over time by person", plot = "time3_plot", download = "time3_download_ui"),
     list(id = "time3_event", title = "Counseled over time by encounter", plot = "time3_event_plot", download = "time3_event_download_ui")
@@ -955,7 +955,7 @@ server <- function(input, output, session) {
     list(id = "race4", title = "Race", plot = "race4_plot", download = "race4_download_ui"),
     list(id = "ethnicity4", title = "Ethnicity", plot = "ethnicity4_plot", download = "ethnicity4_download_ui"),
     list(id = "age4", title = "Age", plot = "age4_plot", download = "age4_download_ui"),
-    list(id = "insurance4", title = "Insurance status", plot = "insurance4_plot", download = "insurance4_download_ui"),
+    list(id = "insurance4", title = "HIV medication payor", plot = "insurance4_plot", download = "insurance4_download_ui"),
     list(id = "keypop4", title = "Key populations", plot = "keypop4_plot", download = "keypop4_download_ui"),
     list(id = "time4", title = "Interested over time by person", plot = "time4_plot", download = "time4_download_ui"),
     list(id = "time4_event", title = "Interested over time by encounter", plot = "time4_event_plot", download = "time4_event_download_ui"),
@@ -983,7 +983,7 @@ server <- function(input, output, session) {
     list(id = "race5", title = "Race", plot = "race5_plot", download = "race5_download_ui"),
     list(id = "ethnicity5", title = "Ethnicity", plot = "ethnicity5_plot", download = "ethnicity5_download_ui"),
     list(id = "age5", title = "Age", plot = "age5_plot", download = "age5_download_ui"),
-    list(id = "insurance5", title = "Insurance status", plot = "insurance5_plot", download = "insurance5_download_ui"),
+    list(id = "insurance5", title = "HIV medication payor", plot = "insurance5_plot", download = "insurance5_download_ui"),
     list(id = "keypop5", title = "Key populations", plot = "keypop5_plot", download = "keypop5_download_ui"),
     list(id = "time5", title = "Screened over time by person", plot = "time5_plot", download = "time5_download_ui"),
     list(id = "time5_event", title = "Screened over time by encounter", plot = "time5_event_plot", download = "time5_event_download_ui")
@@ -1010,7 +1010,7 @@ server <- function(input, output, session) {
     list(id = "race6", title = "Race", plot = "race6_plot", download = "race6_download_ui"),
     list(id = "ethnicity6", title = "Ethnicity", plot = "ethnicity6_plot", download = "ethnicity6_download_ui"),
     list(id = "age6", title = "Age", plot = "age6_plot", download = "age6_download_ui"),
-    list(id = "insurance6", title = "Insurance status", plot = "insurance6_plot", download = "insurance6_download_ui"),
+    list(id = "insurance6", title = "HIV medication payor", plot = "insurance6_plot", download = "insurance6_download_ui"),
     list(id = "keypop6", title = "Key populations", plot = "keypop6_plot", download = "keypop6_download_ui"),
     list(id = "time6", title = "Eligible over time by person", plot = "time6_plot", download = "time6_download_ui"),
     list(id = "time6_event", title = "Eligible over time by encounter", plot = "time6_event_plot", download = "time6_event_download_ui"),
@@ -1038,7 +1038,7 @@ server <- function(input, output, session) {
     list(id = "race7", title = "Race", plot = "race7_plot", download = "race7_download_ui"),
     list(id = "ethnicity7", title = "Ethnicity", plot = "ethnicity7_plot", download = "ethnicity7_download_ui"),
     list(id = "age7", title = "Age", plot = "age7_plot", download = "age7_download_ui"),
-    list(id = "insurance7", title = "Insurance status", plot = "insurance7_plot", download = "insurance7_download_ui"),
+    list(id = "insurance7", title = "HIV medication payor", plot = "insurance7_plot", download = "insurance7_download_ui"),
     list(id = "keypop7", title = "Key populations", plot = "keypop7_plot", download = "keypop7_download_ui"),
     list(id = "time7", title = "Prescribed over time", plot = "time7_plot", download = "time7_download_ui")
  )
@@ -1064,7 +1064,7 @@ server <- function(input, output, session) {
     list(id = "race8", title = "Race", plot = "race8_plot", download = "race8_download_ui"),
     list(id = "ethnicity8", title = "Ethnicity", plot = "ethnicity8_plot", download = "ethnicity8_download_ui"),
     list(id = "age8", title = "Age", plot = "age8_plot", download = "age8_download_ui"),
-    list(id = "insurance8", title = "Insurance status", plot = "insurance8_plot", download = "insurance8_download_ui"),
+    list(id = "insurance8", title = "HIV medication payor", plot = "insurance8_plot", download = "insurance8_download_ui"),
     list(id = "keypop8", title = "Key populations", plot = "keypop8_plot", download = "keypop8_download_ui"),
     list(id = "time8", title = "Initiated over time", plot = "time8_plot", download = "time8_download_ui"),
     list(id = "reason8", title = "Not accessible reasons", plot = "not_accessible_reason_plot", download = "not_accessible_reason_download_ui")
@@ -1091,7 +1091,7 @@ server <- function(input, output, session) {
     list(id = "race9", title = "Race", plot = "race9_plot", download = "race9_download_ui"),
     list(id = "ethnicity9", title = "Ethnicity", plot = "ethnicity9_plot", download = "ethnicity9_download_ui"),
     list(id = "age9", title = "Age", plot = "age9_plot", download = "age9_download_ui"),
-    list(id = "insurance9", title = "Insurance status", plot = "insurance9_plot", download = "insurance9_download_ui"),
+    list(id = "insurance9", title = "HIV medication payor", plot = "insurance9_plot", download = "insurance9_download_ui"),
     list(id = "keypop9", title = "Key populations", plot = "keypop9_plot", download = "keypop9_download_ui"),
     list(id = "time9", title = "Time spent on iCAB/RPV", plot = "time9_plot", download = "time9_download_ui"),
     list(id = "reason9", title = "Discontinued reasons", plot = "discontinued_reason_plot", download = "discontinued_reason_download_ui")

@@ -49,7 +49,7 @@ load_and_process_data <- function(input_df) {
     # for historical reasons, uid was named alai_up_uid. so preserving that here
     rename(alai_up_uid = any_of(c("uid", "alai_up_uid"))) |>
     add_missing_cols("race_ai_an","race_asian","race_black","race_nh_pi","race_white","race_other",
-                     "birth_date","sex","ethnicity_hispanic","insurance_status",
+                     "birth_date","sex","ethnicity_hispanic","health_care_coverage", "secondary_payor",
                      "housing_status","risk_msm","risk_idu","risk_heterosex",
                      "employment_status", "poverty_level","immigration_status_undoc",
                      "language","incarceration_history","cd4_recent_result",
@@ -101,20 +101,34 @@ load_and_process_data <- function(input_df) {
         .default = "Unknown"
       ),
       levels = c("Hispanic","Not hispanic","Unknown"))) |>
-    mutate(insurance_status = factor(
+    mutate(health_care_coverage = factor(
       case_when(
-        insurance_status == 1 ~ "Private Insurance",
-        insurance_status == 2 ~ "Medicare",
-        insurance_status == 3 ~ "Medicaid",
-        insurance_status == 4 ~ "Veterans Health Administration",
-        insurance_status == 5 ~ "Indian Health Service",
-        insurance_status == 6 ~ "Other",
-        insurance_status == 7 ~ "Uninsured",
+        health_care_coverage == 1 ~ "Private Insurance",
+        health_care_coverage == 2 ~ "Medicare",
+        health_care_coverage == 3 ~ "Medicaid",
+        health_care_coverage == 4 ~ "Veterans Health Administration",
+        health_care_coverage == 5 ~ "Indian Health Service",
+        health_care_coverage == 6 ~ "Other",
+        health_care_coverage == 7 ~ "Uninsured",
         .default = "Unknown"),
       levels = c("Private Insurance","Medicare",
                  "Medicaid","Veterans Health Administration",
-                 "Indian Health Service", "Other","Uninsured","Unknown")
-    )) |>
+                 "Indian Health Service", "Other","Uninsured","Unknown")),
+      secondary_payor = factor(
+        case_when(
+          secondary_payor == 1 ~ "ADAP",
+          secondary_payor == 2 ~ "LPAP",
+          secondary_payor == 3 ~ "CAP",
+          secondary_payor == 4 ~ "PAP",
+          secondary_payor == 5 ~ "Program income",
+          secondary_payor == 6 ~ "Other",
+          .default = NA
+        ),
+        levels = c("ADAP","LPAP","PAP","CAP","Program income","Other")),
+      insurance_status = if_else(!is.na(secondary_payor), 
+                                 str_c(health_care_coverage," & ", secondary_payor),
+                                 health_care_coverage)
+    ) |>
     mutate(housing_status = factor(case_when(
       housing_status == 1 ~ "Stable or permanent",
       housing_status == 2 ~ "Temporary",
@@ -308,7 +322,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
                     in_col_string == "race" ~ "Race",
                     in_col_string == "ethnicity" ~ "Ethnicity",
                     in_col_string == "sex" ~ "Sex",
-                    in_col_string == "insurance_status" ~ "Insurance status",
+                    in_col_string == "insurance_status" ~ "HIV medication payor",
                     in_col_string == "housing_status" ~ "Housing status",
                     in_col_string == "risk_msm" ~ "Risk MSM",
                     in_col_string == "risk_idu" ~ "Risk IDU",
@@ -722,7 +736,7 @@ ic_var_plot <- function(input_df,
                       group_var_string == "race" ~ "Race",
                       group_var_string == "ethnicity" ~ "Ethnicity",
                       group_var_string == "sex" ~ "Sex",
-                      group_var_string == "insurance_status" ~ "Insurance status",
+                      group_var_string == "insurance_status" ~ "HIV medication payor",
                       group_var_string == "housing_status" ~ "Housing status",
                       group_var_string == "risk_msm" ~ "Risk MSM",
                       group_var_string == "risk_idu" ~ "Risk IDU",
@@ -1666,7 +1680,7 @@ full_report_table <- function(summary_df, cab_df){
                 "Sex" = "sex",
                 "Race" = "race",
                 "Ethnicity" = "ethnicity",
-                "Insurance status" = "insurance_status",
+                "HIV medication payor" = "insurance_status",
                 "Housing status" = "housing_status",
                 "Risk MSM" = "risk_msm",
                 "Risk IDU" = "risk_idu",
