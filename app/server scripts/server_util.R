@@ -284,17 +284,6 @@ load_and_process_data <- function(input_df) {
   return(df)
 }
 
-filter_data_by_site <- function(input_df, dataset_name = NULL){
-  if (dataset_name == "All ALAI UP Sites"){
-    temp <- input_df 
-  } else {
-    temp <- input_df |>
-      filter(site == dataset_name) 
-  }
-  
-  return(temp)
-}
-
   
 filter_active_year <- function(input_df, input_year) {
   if (is.null(input_year)) {
