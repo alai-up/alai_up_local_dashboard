@@ -820,28 +820,6 @@ ic_var_plot <- function(input_df,
   
 }
 
-
-configure_plots <- function(..., num_cols = c(1,2)){
-  plot_list <- list(...)
-  
-  plot_sizes <- map(plot_list, \(x) nrow(x$data))
-
-  if (num_cols == 1){
-    rel_heights = plot_sizes
-    final_plot = reduce(plot_list, `/`) + plot_layout(heights = rel_heights)
-  } else if (num_cols==2){
-    rel_heights1 = as_vector(plot_sizes[seq(1, length(plot_sizes), by = 2)])
-    rel_heights2 = as_vector(plot_sizes[seq(2, length(plot_sizes), by = 2)])
-    
-    final_plot = (reduce(plot_list[seq(1,length(plot_list),by = 2)],`/`) + 
-                    plot_layout(heights = rel_heights1)) |
-      (reduce(plot_list[seq(2,length(plot_list),by = 2)],`/`) + 
-         plot_layout(heights = rel_heights2))
-  }
-  
-  final_plot
-}
-
 plot_outcome_by_month <- function(input_df, title_string, by_outcome = F,base_size_in = 14,
                                   by_person = T){
   base_size <- base_size_in # set dynamically
