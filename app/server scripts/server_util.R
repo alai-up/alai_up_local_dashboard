@@ -122,6 +122,8 @@ load_and_process_data <- function(input_df) {
           .default = NA
         ),
         levels = c("ADAP","PAP","Other")),
+      # insurance_status variable AKA "HIV medication payor" 
+      # is a combination of health_care_coverage and secondary_payor
       insurance_status = if_else(!is.na(secondary_payor), 
                                  str_c(health_care_coverage," & ", secondary_payor),
                                  health_care_coverage)
@@ -458,6 +460,12 @@ demo_plot <- function(input_df, in_col, base_size_in,
         !is.na(icab_rpv_shot2_date) ~1,
       .default = 0
     ),
+    # accessible 
+    Accessible = case_when(
+      Initiated == 1 ~ 1,
+      icab_rpv_accessible == 1 ~ 1,
+      .default = 0
+    ),
     # 5 sustained
     Sustained=case_when(
       Initiated & is.na(icab_rpv_discontinued)~1,
@@ -469,6 +477,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
 }
 
 .get_interested_status <- function(input_df) {
+  #2a Interested
   input_df |>
     select(alai_up_uid, contains("icab_rpv_counsel")&contains("outcome")) |>
     pivot_longer(cols = matches("icab_rpv_counsel.*outcome"),
@@ -486,6 +495,7 @@ demo_plot <- function(input_df, in_col, base_size_in,
 }
 
 .get_eligible_status <- function(input_df) {
+  #2b Eligible
   input_df |>
     select(alai_up_uid,contains("icab_rpv_screen")&contains("outcome")) |>
     pivot_longer(cols = matches("icab_rpv_screen.*outcome"),
@@ -588,13 +598,14 @@ prepare_ic_summary <- function(input_df) {
       Eligible = sum(Eligible, na.rm = TRUE),
       `Interested & Eligible` = sum(`Interested & Eligible`,na.rm = T),
       Prescribed = sum(Prescribed, na.rm = TRUE),
+      Accessible = sum(Accessible, na.rm = TRUE),
       Initiated = sum(Initiated, na.rm = TRUE),
       Sustained = sum(Sustained, na.rm = TRUE),
       .groups = "drop"
     ) |>
     pivot_longer(cols = c(PWH, Assessed, Counseled, Interested, 
                           Screened, Eligible, `Interested & Eligible`,
-                          Prescribed, Initiated, Sustained),
+                          Prescribed, Accessible, Initiated, Sustained),
                  names_to = "Variable", values_to = "Value")
 }
 
@@ -625,7 +636,8 @@ ic_var_plot <- function(input_df,
       arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible', 
                                'Interested & Eligible',
-                               'Prescribed', 'Initiated', 'Sustained'))) |> 
+                               'Prescribed', 'Initiated', 'Sustained',
+                               'Accessible'))) |> 
       ungroup() |>
       mutate(prev_lab = case_when(Variable == "Counseled" ~ "PWH",
                                   Variable == "Interested" ~ "Counseled",
@@ -633,6 +645,7 @@ ic_var_plot <- function(input_df,
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",
                                   Variable == "Prescribed" ~ prescribed_lag,
+                                  Variable == "Accessible" ~ "Prescribed",
                                   .default =  lag(Variable)),
              prev = Value[match(prev_lab, Variable)],
              Variable = data.table::fifelse(Variable != "PWH",str_to_lower(Variable),Variable),
@@ -692,7 +705,8 @@ ic_var_plot <- function(input_df,
       arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible', 
                                'Interested & Eligible',
-                               'Prescribed', 'Initiated', 'Sustained'))) |> 
+                               'Prescribed', 'Initiated', 'Sustained',
+                               'Accessible'))) |> 
       ungroup() |>
       mutate(.by = {{group_var}},
              prev_lab = case_when(Variable == "Counseled" ~ "PWH",
@@ -701,6 +715,7 @@ ic_var_plot <- function(input_df,
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",
                                   Variable == "Prescribed" ~ prescribed_lag,
+                                  Variable == "Accessible" ~ "Prescribed",
                                   .default =  lag(Variable)),
              prev = Value[match(prev_lab, Variable)],
              Variable = data.table::fifelse(Variable != "PWH",str_to_lower(Variable),Variable),
@@ -1119,7 +1134,6 @@ not_accessible_reason_func <- function(input_df, base_size_in){
                  "Other",
                  "Unknown"))) |>
     filter(Prescribed == 1,
-           Initiated == 0,
            icab_rpv_accessible == 0) |>
     group_by(icab_rpv_not_accessible_reason) |>
     count() |>
@@ -1137,7 +1151,6 @@ not_accessible_reason_func <- function(input_df, base_size_in){
   # Get "other" reasons
   other_df <- ic_df |>
     filter(Prescribed == 1,
-           Initiated == 0,
            icab_rpv_accessible == 0) |>
     group_by(icab_rpv_not_accessible_reason_other) |>
     count() |>

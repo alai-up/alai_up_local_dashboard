@@ -366,7 +366,8 @@ server <- function(input, output, session) {
     list(id = "counseled",  label = "Counseled",                      tab = "counseled_page",   ic = "angle-double-right"),
     list(id = "interested",label = HTML("&nbsp;&nbsp; Interested"), tab = "interested_page", ic = "angle-double-right"),
     list(id = "screened",  label = "Screened",                      tab = "screened_page",   ic = "angle-double-right"),
-    list(id = "eligible",  label = HTML("&nbsp;&nbsp; Eligible"),   tab = "eligible_page",   ic = "angle-double-right")
+    list(id = "eligible",  label = HTML("&nbsp;&nbsp; Eligible"),   tab = "eligible_page",   ic = "angle-double-right"),
+    list(id = "accessible",  label = HTML("Accessible"),   tab = "accessible_page",   ic = "angle-double-right")
   )
 
   # Use a loop to create all 5 renderMenu functions at once
@@ -1057,6 +1058,33 @@ server <- function(input, output, session) {
                       selected = input$keypop7_choice)
   })
 
+  accessible_sections_info <- list(
+    list(id = "top7a", title = "Home", plot = NULL, download = NULL),
+    list(id = "overall7a", title = "Overall", plot = "accessible_overall_plot", download = "accessible_overall_download_ui"),
+    list(id = "sex7a", title = "Sex", plot = "sex7a_plot", download = "sex7a_download_ui"),
+    list(id = "race7a", title = "Race", plot = "race7a_plot", download = "race7a_download_ui"),
+    list(id = "ethnicity7a", title = "Ethnicity", plot = "ethnicity7a_plot", download = "ethnicity7a_download_ui"),
+    list(id = "age7a", title = "Age", plot = "age7a_plot", download = "age7a_download_ui"),
+    list(id = "insurance7a", title = "HIV medication payor", plot = "insurance7a_plot", download = "insurance7a_download_ui"),
+    list(id = "keypop7a", title = "Key populations", plot = "keypop7a_plot", download = "keypop7a_download_ui"),
+    list(id = "time7a", title = "Accessible over time", plot = "time7a_plot", download = "time7a_download_ui"),
+    list(id = "reason7a", title = "Not accessible reasons", plot = "not_accessible_reason_plot", download = "not_accessible_reason_download_ui")
+ )
+
+  # accessible
+  renderSectionPage(
+    input, output,
+    page_id = "accessible_page",
+    sections_info = accessible_sections_info,
+    n_output_id = "accessible_n"
+  )
+
+  observe({
+    updateSelectInput(session, "keypop7a_choice",
+                      choices = keypop_choice_list(),
+                      selected = input$keypop7a_choice)
+  })
+
   initiated_sections_info <- list(
     list(id = "top8", title = "Home", plot = NULL, download = NULL),
     list(id = "overall8", title = "Overall", plot = "initiated_overall_plot", download = "initiated_overall_download_ui"),
@@ -1066,8 +1094,7 @@ server <- function(input, output, session) {
     list(id = "age8", title = "Age", plot = "age8_plot", download = "age8_download_ui"),
     list(id = "insurance8", title = "HIV medication payor", plot = "insurance8_plot", download = "insurance8_download_ui"),
     list(id = "keypop8", title = "Key populations", plot = "keypop8_plot", download = "keypop8_download_ui"),
-    list(id = "time8", title = "Initiated over time", plot = "time8_plot", download = "time8_download_ui"),
-    list(id = "reason8", title = "Not accessible reasons", plot = "not_accessible_reason_plot", download = "not_accessible_reason_download_ui")
+    list(id = "time8", title = "Initiated over time", plot = "time8_plot", download = "time8_download_ui")
   )
 
   # initiated

@@ -62,6 +62,7 @@ ui <- dashboardPage(
                          menuItemOutput("eligible_sidebar"),
                          menuItem(text = strong("Prescribed"),
                                   tabName = 'prescribed_page'),
+                         menuItemOutput("accessible_sidebar"),
                          menuItem(text = strong("Initiated"),
                                   tabName = 'initiated_page'),
                          menuItem(text = strong("Sustained"),
@@ -171,6 +172,10 @@ ui <- dashboardPage(
       tabItem(
         tabName = 'prescribed_page',
         uiOutput('prescribed_page')
+      ),
+      tabItem(
+        tabName = 'accessible_page',
+        uiOutput('accessible_page')
       ),
       tabItem(
         tabName = 'initiated_page',
