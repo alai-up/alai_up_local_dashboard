@@ -367,18 +367,17 @@ server <- function(input, output, session) {
   menu_items <- list(
     list(id = "assessed",  label = strong("Assessed"),              tab = "assessed_page",   ic = NULL),
     list(id = "counseled",  label = "Counseled",                      tab = "counseled_page",   ic = "angle-double-right"),
-    list(id = "interested",label = HTML("&nbsp;&nbsp; Interested"), tab = "interested_page", ic = "angle-double-right"),
+    list(id = "interested",label = HTML("&nbsp;&nbsp;Interested"), tab = "interested_page", ic = "angle-double-right"),
     list(id = "screened",  label = "Screened",                      tab = "screened_page",   ic = "angle-double-right"),
-    list(id = "eligible",  label = HTML("&nbsp;&nbsp; Eligible"),   tab = "eligible_page",   ic = "angle-double-right"),
-    list(id = "accessible",  label = HTML("Accessible"),   tab = "accessible_page",   ic = "angle-double-right")
+    list(id = "eligible",  label = HTML("&nbsp;&nbsp;Eligible"),   tab = "eligible_page",   ic = "angle-double-right")
   )
-
-  # Use a loop to create all 5 renderMenu functions at once
+  
+  # Use a loop to create the conditionally visible menu items
   map(menu_items, function(item) {
     output[[paste0(item$id, "_sidebar")]] <- renderMenu({
-
+  
       req(input$assessed_choice == "Yes") # Stops rendering if choice is not "Yes"
-
+  
       menuItem(
         text = item$label,
         tabName = item$tab,
@@ -386,11 +385,20 @@ server <- function(input, output, session) {
       )
     })
   })
+  
+  # Always render the "Accessible" menu item
+  output$accessible_sidebar <- renderMenu({
+    menuItem(
+      text = HTML("Accessible"),
+      tabName = "accessible_page",
+      icon = icon("angle-double-right")
+    )
+  })
 
   observeEvent(input$assessed_choice, {
     if (input$assessed_choice == "No") {
       # If they are on any of the 'Assessed' related tabs, kick them back to home
-      if (input$sidebar %in% c('assessed_page', 'counseled_page', 'interested_page', 'screened_page', 'eligible_page')) {
+      if (input$sidebar %in% c('assessed_page', 'counseled_page', 'interested_page', 'screened_page', 'eligible_page', 'accessible_page')) {
         updateTabItems(session, "sidebar", "lai_overview")
       }
     }
