@@ -30,14 +30,15 @@ test_that("filter_active_year filters data correctly", {
 
 test_that(".get_basic_indicators calculates correctly", {
   test_df <- tibble::tribble(
-    ~alai_up_uid, ~icab_rpv_counsel_ever, ~icab_rpv_screen_ever, ~icab_rpv_rx, ~icab_rpv_shot1_date, ~icab_rpv_shot2_date, ~icab_rpv_discontinued,
-    "patient_A", 1, 0, 0, NA, NA, NA, # Counseled only
-    "patient_B", 0, 1, 0, NA, NA, NA, # Screened only
-    "patient_C", 0, 0, 1, NA, NA, NA, # Prescribed only
-    "patient_D", 0, 0, 0, as.Date("2023-01-01"), NA, 0, # Initiated, not discontinued
-    "patient_E", 0, 0, 0, as.Date("2023-01-01"), NA, 1, # Initiated, discontinued
-    "patient_F", 0, 0, 0, NA, NA, NA, # None
-    "patient_G", 1, 1, 1, as.Date("2023-01-01"), as.Date("2023-02-01"), 0 # All
+    ~alai_up_uid, ~icab_rpv_counsel_ever, ~icab_rpv_screen_ever, ~icab_rpv_rx, 
+    ~icab_rpv_accessible, ~icab_rpv_shot1_date, ~icab_rpv_shot2_date, ~icab_rpv_discontinued,
+    "patient_A", 1, 0, 0, NA, NA, NA, NA, # Counseled only
+    "patient_B", 0, 1, 0, NA, NA, NA, NA, # Screened only
+    "patient_C", 0, 0, 1, NA, NA, NA, NA, # Prescribed only
+    "patient_D", 0, 0, 0, NA, as.Date("2023-01-01"), NA, 0, # Initiated, not discontinued
+    "patient_E", 0, 0, 0, NA, as.Date("2023-01-01"), NA, 1, # Initiated, discontinued
+    "patient_F", 0, 0, 0, NA, NA, NA, NA, # None
+    "patient_G", 1, 1, 1, NA, as.Date("2023-01-01"), as.Date("2023-02-01"), 0 # All
   )
   
   result <- .get_basic_indicators(test_df)
@@ -151,16 +152,16 @@ test_that("get_IC_df joins indicators and reasons correctly", {
     ~alai_up_uid, ~icab_rpv_counsel_ever, ~icab_rpv_counsel1_outcome, ~icab_rpv_disinterest_reason_1, 
     ~icab_rpv_disinterest_reason_1_other, ~icab_rpv_screen_ever, ~icab_rpv_screen1_outcome, 
     ~icab_rpv_not_elig_1_reason, ~icab_rpv_not_elig_1_reason_other, 
-    ~icab_rpv_rx, ~icab_rpv_shot1_date, ~icab_rpv_shot2_date,
+    ~icab_rpv_rx, ~icab_rpv_accessible, ~icab_rpv_shot1_date, ~icab_rpv_shot2_date,
     ~icab_rpv_discontinued,
     # Assessed, Counseled, Not Interested
-    "patient_A", 1, 1, 2, NA, 0, NA, NA, NA, 0, NA, NA, NA,
+    "patient_A", 1, 1, 2, NA, 0, NA, NA, NA, 0, NA, NA, NA, NA,
     # Assessed, Screened, Not Eligible
-    "patient_B", 0, NA, NA, NA, 1, 0, "3", NA, 0, NA, NA, NA,
+    "patient_B", 0, NA, NA, NA, 1, 0, "3", NA, 0, NA, NA, NA, NA,
     # Assessed, Counseled, Interested, Screened, Eligible, Prescribed, Initiated, Sustained
-    "patient_C", 1, 3, NA, NA, 1, 1, NA, NA, 1, as.Date("2023-01-01"), NA,  0,
+    "patient_C", 1, 3, NA, NA, 1, 1, NA, NA, 1, NA, as.Date("2023-01-01"), NA,  0,
     # Assessed, Counseled, Interested, Screened, Eligible, but not prescribed
-    "patient_D", 1, 3, NA, NA, 1, 1, NA, NA, 0, NA, NA, NA
+    "patient_D", 1, 3, NA, NA, 1, 1, NA, NA, 0, NA, NA, NA, NA
   )
   
   result <- suppressWarnings(get_IC_df(test_df))
