@@ -419,9 +419,9 @@ demo_plot <- function(input_df, in_col, base_size_in,
 }
 
 # Get initiation cascade dataframe
-get_IC_df <-function(input_df){
-  
-  basic_df <- input_df |>
+# broken into some helper functions to make testing easier
+.get_basic_indicators <- function(input_df) {
+  input_df |>
     mutate(
     # 3 prescribed
     Prescribed=case_when(
@@ -455,9 +455,10 @@ get_IC_df <-function(input_df){
       .default=0
     ),
     PWH=1, PWH1=1)
-  
-  # 1b interested
-  interested_df <- input_df |>
+}
+
+.get_interested_status <- function(input_df) {
+  input_df |>
     select(alai_up_uid, contains("icab_rpv_counsel")&contains("outcome")) |>
     pivot_longer(cols = matches("icab_rpv_counsel.*outcome"),
                  names_to = "counsel_event", values_to = "counsel_outcome") |>
@@ -471,8 +472,25 @@ get_IC_df <-function(input_df){
       )},
       .groups = "drop"
     )
-  
-  disinterest_df <- input_df |>
+}
+
+.get_eligible_status <- function(input_df) {
+  input_df |>
+    select(alai_up_uid,contains("icab_rpv_screen")&contains("outcome")) |>
+    pivot_longer(cols = matches("icab_rpv_screen.*outcome"),
+                 names_to = "screen_event", values_to = "screen_outcome") |>
+    group_by(alai_up_uid) |>
+    summarise(
+      Eligible = {
+        val <- dplyr::last(screen_outcome, na_rm = T)
+        data.table::fifelse(is.null(val),NA_real_,as.numeric(val))
+      },
+      .groups = "drop"
+    )
+}
+
+.get_disinterest_reason <- function(input_df) {
+  input_df |>
     select(alai_up_uid, contains("icab_rpv_disinterest")&contains("reason")) |>
     rename_with(~paste0(., "_dis_outcome"), !contains("_other") & contains("reason")) |>
     pivot_longer(
@@ -493,23 +511,10 @@ get_IC_df <-function(input_df){
       },
       .groups = "drop"
     )
-  
-  # STEP 4: Eligible
-  eligible_df <- input_df |>
-    select(alai_up_uid,contains("icab_rpv_screen")&contains("outcome")) |>
-    pivot_longer(cols = matches("icab_rpv_screen.*outcome"),
-                 names_to = "screen_event", values_to = "screen_outcome") |>
-    group_by(alai_up_uid) |>
-    summarise(
-      Eligible = {
-        val <- dplyr::last(screen_outcome, na_rm = T)
-        data.table::fifelse(is.null(val),NA_real_,as.numeric(val))
-      },
-      .groups = "drop"
-    )
-  
-  # STEP 5: Not Eligible Reason
-  not_elig_df <- input_df |>   
+}
+
+.get_not_elig_reason <- function(input_df) {
+  input_df |>   
     select(alai_up_uid, contains("icab_rpv_not_elig")&contains("reason")) |>
     rename_with(~paste0(., "_not_elig_outcome"), !contains("_other") & contains("reason")) |>
     pivot_longer(cols = contains("not_elig"),
@@ -526,6 +531,15 @@ get_IC_df <-function(input_df){
       },
       .groups = "drop"
     )
+}
+
+get_IC_df <-function(input_df){
+  
+  basic_df <- .get_basic_indicators(input_df)
+  interested_df <- .get_interested_status(input_df)
+  disinterest_df <- .get_disinterest_reason(input_df) 
+  eligible_df <- .get_eligible_status(input_df) 
+  not_elig_df <- .get_not_elig_reason(input_df)
   
   # STEP 6: Join everything
   IC_df <- basic_df |>
