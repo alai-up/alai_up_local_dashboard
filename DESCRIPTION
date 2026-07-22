@@ -1,0 +1,13 @@
+Package: alai_up_local_dashboard
+Title: The ALAI UP Dashboard 
+Version: 0.0.0.9000
+Authors@R: 
+    person("Ravi", "Brenner", , "irb2118@cumc.columbia.edu", role = c("aut", "cre"))
+Description: The ALAI UP Dashboard is designed to help clinics monitor their long-acting injectable HIV treatment (LAI ART) programs.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
