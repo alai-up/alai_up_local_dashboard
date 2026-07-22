@@ -8,7 +8,7 @@ time_trend_server <- function(input, output, ic_df, session){
     "Sex" = "sex",
     "Race" = "race",
     "Ethnicity" = "ethnicity",
-    "Insurance status" = "insurance_status",
+    "HIV medication payor" = "insurance_status",
     "Housing status" = "housing_status",
     "Risk MSM" = "risk_msm",
     "Risk IDU" = "risk_idu",
