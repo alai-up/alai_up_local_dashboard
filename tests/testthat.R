@@ -7,6 +7,5 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(alai_up_local_dashboard)
 
 test_check("alai_up_local_dashboard")
