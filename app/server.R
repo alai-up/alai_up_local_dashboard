@@ -29,7 +29,9 @@ dynamic_filter_select <- function(input, output, ic_summary_df,selected_site, se
       arrange(match(Variable,c('PWH', 'Assessed','Counseled',
                                'Interested', 'Screened', 'Eligible',
                                'Interested & Eligible',
-                               'Prescribed', 'Initiated', 'Sustained'))) |>
+                               'Prescribed', 'Initiated', 'Sustained',
+                               'Accessible'
+                              ))) |>
       # this should be the grouping var (first) and filter var (second)
       group_by(!!grouping_var,!!filter_var) |>
       mutate(prev_lab = case_when(Variable == "PWH" ~ "PWH",
@@ -38,6 +40,7 @@ dynamic_filter_select <- function(input, output, ic_summary_df,selected_site, se
                                   Variable == "Screened" ~ "PWH",
                                   Variable == "Eligible" ~ "Screened",
                                   Variable == "Interested & Eligible" ~ "Assessed",
+                                  Variable == "Accessible" ~ "Prescribed",
                                   .default =  lag(Variable)),
              prev = Value[match(prev_lab, Variable)]) |>
       mutate(Percent=if_else(prev == 0, NA, Value/prev)) |>
@@ -413,7 +416,7 @@ server <- function(input, output, session) {
     selectInput("time_indicator",
                 "Select an indicator",
                 choices = choice_list,
-                selected = "Assessed")
+                selected = choice_list[1])
   })
 
   output$time_demo_group <- renderUI({
@@ -467,11 +470,13 @@ server <- function(input, output, session) {
                        "Eligible",
                        "Interested & Eligible",
                        "Prescribed",
+                       "Accessible",
                        "Initiated",
                        "Sustained")
     } else {
       choice_list <- c("Demographics",
-                       "Prescribed",
+                       "Prescribed",   
+                       "Accessible",
                        "Initiated",
                        "Sustained")
     }
