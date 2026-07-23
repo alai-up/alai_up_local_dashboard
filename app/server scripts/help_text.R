@@ -90,7 +90,11 @@ help_text <- list(
       who could financially access iCAB/RPV after being prescribed. 
       The percentage is calculated among those prescribed. 
       It also includes a plot showing reasons that iCAB/RPV was not financially accessible
-      to clients who were prescribed.")
+      to clients who were prescribed."),
+    p("Note that if a client initiated iCAB/RPV, they are considered to have 
+      been able to access it financially. If a client was prescribed iCAB/RPV but did
+      not initiate it and the access variable was left blank or unknown, 
+      they are not included in the 'accessible' numerator.")
   ),
   
   info8 = tagList(
