@@ -414,10 +414,12 @@ server <- function(input, output, session) {
                        'Screened',
                        "Eligible",
                        "Prescribed",
+                       "Accessible",
                        "Initiated",
                        "Sustained")
     } else {
       choice_list <- c("Prescribed",
+                       "Accessible",
                        "Initiated",
                        "Sustained")
     }

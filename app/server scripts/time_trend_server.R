@@ -70,6 +70,10 @@ time_trend_server <- function(input, output, ic_df, session){
       "Prescribed" = ic_df() |> 
         select(contains("icab_rpv_rx_date") | (contains("icab_rpv_shot") & contains("date"))) |>
         names(), 
+      "Accessible" = ic_df() |> 
+        select(contains("icab_rpv_rx_date") | (contains("icab_rpv_shot") & contains("date")),
+               contains("icab_rpv_accessible")) |>
+        names(), 
       "Initiated" = ic_df() |> 
         select(contains("icab_rpv_shot") & contains("date")) |>
         names(), 
@@ -88,6 +92,7 @@ time_trend_server <- function(input, output, ic_df, session){
 
     temp <- input_df |>
       select(alai_up_uid, !!demo_group, all_of(cols_to_select)) |>
+      rename_with(.fn = \(x) str_c(x,"_outcome"), .cols = any_of("icab_rpv_accessible")) |>
       pivot_longer(cols = -c(alai_up_uid,!!demo_group),
                    names_to = c("event",".value"),
                    names_pattern = "(.+)_(date|outcome)",
@@ -142,6 +147,15 @@ time_trend_server <- function(input, output, ic_df, session){
           ungroup() |>
           drop_na()
   
+      # } else if (input$time_indicator == "Accessible") {
+      #   temp <- temp |>
+      #     group_by(period, !!demo_group, accessible) |>
+      #     count() |>
+      #     group_by(period, !!demo_group) |>
+      #     mutate(monthly_total = sum(n)) |>
+      #     ungroup() |>
+      #     drop_na() |>
+      #     filter(accessible == 1)
       } else {
         temp <- temp |>
           group_by(period, !!demo_group, outcome) |>
@@ -158,9 +172,7 @@ time_trend_server <- function(input, output, ic_df, session){
       complete(period, !!demo_group, fill = list(n = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
       filter(.by = !!demo_group, denominator > 0) 
-      
-
-      
+            
     return(out_df)
 
   })
