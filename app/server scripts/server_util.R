@@ -894,12 +894,16 @@ plot_outcome_by_month <- function(input_df, title_string, by_outcome = F,base_si
                                    "i2" = "#9ECAE1",
                                    "i3" = "#08519C",
                                    "e0" = "#fE5000",
-                                   "e1" = "#08519C"),
+                                   "e1" = "#08519C",
+                                   "a1" = "#08519C",
+                                   "a0" = "#fE5000"),
                         labels = c("i1" = "Not interested",
                                    "i2" = "Maybe interested",
                                    "i3" = "Interested",
                                    "e0" = "Not eligible",
-                                   "e1" = "Eligible")) 
+                                   "e1" = "Eligible",
+                                   "a1" = "Accessible",
+                                   "a0" = "Not accessible")) 
     
   }
   

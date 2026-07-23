@@ -1532,27 +1532,32 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
     50 * n_bars_accessible_keypop() + 100
   })
 
-  # output$time7a_plot <- renderPlot({
-  #   base_size <- 14
+  output$time7a_plot <- renderPlot({
+    base_size <- 14
 
-  #   p <- tbl() |>
-  #     mutate(date = icab_rpv_rx_date,
-  #            event = NA) |>
-  #     plot_outcome_by_month("Prescription month",base_size_in = base_size)
+    p <- tbl() |>
+      mutate(date = icab_rpv_rx_date,
+             event = 1,
+             outcome = case_when(icab_rpv_accessible == 1 ~ "a1",
+                                 icab_rpv_accessible == 0 ~ "a0")
+  ) |>
+      plot_outcome_by_month("Number who could access iCAB/RPV by prescription month",
+                            base_size_in = base_size,
+                            by_outcome = TRUE)
 
-  #   output$time7_plot_download <- download_box("prescribed_time",p)
-  #   output$time7_table_download <- download_table("prescribed_time",p$data)
-  #   output$time7_download_ui <- renderUI({
-  #     tagList(
-  #       downloadButton(outputId = "time7_plot_download", label = "Download plot"),
-  #       downloadButton(outputId = "time7_table_download",
-  #                      label = "Download table",
-  #                      icon = icon("table"))
-  #     )
-  #   })
+    output$time7a_plot_download <- download_box("accessible_time",p)
+    output$time7a_table_download <- download_table("accessible_time",p$data)
+    output$time7a_download_ui <- renderUI({
+      tagList(
+        downloadButton(outputId = "time7a_plot_download", label = "Download plot"),
+        downloadButton(outputId = "time7a_table_download",
+                       label = "Download table",
+                       icon = icon("table"))
+      )
+    })
 
-  #   p
-  # }, height = 400)
+    p
+  }, height = 400)
 
   n_bars_not_accessible <<- reactiveVal(1)
   output$not_accessible_reason_plot <- renderPlot({
