@@ -80,15 +80,26 @@ help_text <- list(
   info7 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
       who were prescribed iCAB/RPV. The percentage is calculated
-      among those eligible (if screening is consistently recorded) or among all PWH
-      at the clinic (if screening is not consistently recorded).")
+      among those interested and eligible (if counseling and screening 
+      are consistently recorded) or among all PWH
+      at the clinic (if counseling and screening are not consistently recorded).")
+  ),
+
+  info7a = tagList(
+    p("This page shows the number and percentage of people with HIV at the site
+      who could financially access iCAB/RPV after being prescribed. 
+      The percentage is calculated among those prescribed. 
+      It also includes a plot showing reasons that iCAB/RPV was not financially accessible
+      to clients who were prescribed."),
+    p("Note that if a client initiated iCAB/RPV, they are considered to have 
+      been able to access it financially. If a client was prescribed iCAB/RPV but did
+      not initiate it and the access variable was left blank or unknown, 
+      they are not included in the 'accessible' numerator.")
   ),
   
   info8 = tagList(
     p("This page shows the number and percentage of people with HIV at the site
-      who received at least one injection of iCAB/RPV among those prescribed.  
-      It also includes a plot showing reasons that iCAB/RPV was not financially accessible
-      to clients who were prescribed but did not initiate.")
+      who received at least one injection of iCAB/RPV among those prescribed.")
   ),
   
   info9 = tagList(

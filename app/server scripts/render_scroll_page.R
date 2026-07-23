@@ -1,6 +1,6 @@
 renderSectionPage <- function(input, output, page_id, sections_info, n_output_id) {
   # get page number
-  page_num <- str_extract(sections_info[[1]]$id,"\\d+")
+  page_num <- str_extract(sections_info[[1]]$id,"\\d+[a-z]*")
 
   #get help text id string
   help_text_id = paste0("info",page_num)

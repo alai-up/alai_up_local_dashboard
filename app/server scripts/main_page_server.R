@@ -33,6 +33,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
   eligible_count <- reactive({ count_df() |> filter(Variable == "Eligible") |> pull(Value) })
   interested_eligible_count <- reactive({ count_df() |> filter(Variable == "Interested & Eligible") |> pull(Value) })
   prescribed_count <- reactive({ count_df() |> filter(Variable == "Prescribed") |> pull(Value) })
+  accessible_count <- reactive({ count_df() |> filter(Variable == "Accessible") |> pull(Value) })
   initiated_count <- reactive({ count_df() |> filter(Variable == "Initiated") |> pull(Value) })
   sustained_count <- reactive({ count_df() |> filter(Variable == "Sustained") |> pull(Value) })
 
@@ -511,6 +512,12 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
     ethnicity7 = list(var = "ethnicity",        label = "ethnicity", input_var = "prescribed"),
     age7       = list(var = "age_cat",          label = "age",       input_var = "prescribed"),
     insurance7 = list(var = "insurance_status", label = "insurance", input_var = "prescribed"),
+
+    sex7a       = list(var = "sex",              label = "sex",       input_var = "accessible"),
+    race7a      = list(var = "race",             label = "race",      input_var = "accessible"),
+    ethnicity7a = list(var = "ethnicity",        label = "ethnicity", input_var = "accessible"),
+    age7a       = list(var = "age_cat",          label = "age",       input_var = "accessible"),
+    insurance7a = list(var = "insurance_status", label = "insurance", input_var = "accessible"),
 
     sex8       = list(var = "sex",              label = "sex",       input_var = "initiated"),
     race8      = list(var = "race",             label = "race",      input_var = "initiated"),
@@ -1438,6 +1445,143 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
     p
   }, height = 400)
 
+   output$accessible_n <-  renderUI({
+    if (is.null(selected_year_val())){
+      HTML(paste0(
+        "<span style='color: #FE5000; font-size: 36px;'>",
+        accessible_count(),
+        "</span> could access iCAB/RPV out of ",
+        prescribed_count()," people prescribed at ",
+        selected_site()
+      ))
+    } else {
+      HTML(paste0(
+        "<span style='color: #FE5000; font-size: 36px;'>",
+        accessible_count(),
+        "</span> could access iCAB/RPV out of ",
+        prescribed_count()," people prescribed at ",
+        selected_site(),
+        " among PWH active in ", selected_year_val()
+      ))
+    }
+  })
+
+  n_bars_accessible_overall <<- reactiveVal(1)
+  output$accessible_overall_plot <- renderPlot({
+    base_size <- 14
+
+    p <- ic_var_plot(ic_summary_df(), "accessible",by_group = F, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val(),
+                     assessed_choice = input$assessed_choice)
+
+    output$accessible_overall_plot_download <- download_box("accessible_overall", p,nrow(p$data))
+    output$accessible_overall_table_download <- download_table("accessible_overall", p$data)
+    output$accessible_overall_download_ui <- renderUI({
+      tagList(
+        downloadButton(outputId = "accessible_overall_plot_download", label = "Download plot"),
+        downloadButton(outputId = "accessible_overall_table_download",
+                       label = "Download table",
+                       icon = icon("table"))
+      )
+    })
+
+    n_bars_accessible_overall(nrow(p$data))
+    p
+  }, height = function() {
+    50 * n_bars_accessible_overall() + 50
+  })
+
+  n_bars_accessible_keypop <<- reactiveVal(1)
+  output$keypop7a_plot <- renderPlot({
+    base_size <- 14
+
+    var_name <- input$keypop7a_choice
+    var_str = case_when(var_name == "Housing status" ~ "housing_status",
+                        var_name == "Risk MSM" ~ "risk_msm",
+                        var_name == "Risk IDU" ~ "risk_idu",
+                        var_name == "Risk Heterosex" ~ "risk_heterosex",
+                        var_name == "Employment status" ~ "employment_status",
+                        var_name == "Poverty level" ~ "poverty_level",
+                        var_name == "Immigration status" ~ "immigration_status_undoc",
+                        var_name == "Language" ~ "language",
+                        var_name == "Incarceration history" ~ "incarceration_history",
+                        var_name == "Recent CD4" ~ "cd4_recent_result",
+                        var_name == "Site" ~ "site",
+                        var_name == "SDOH Other 1" ~ "SDOH_other_1",
+                        var_name == "SDOH Other 2" ~ "SDOH_other_2",
+                        var_name == "SDOH Other 3" ~ "SDOH_other_3")
+
+    p <- ic_var_plot(ic_summary_df(), "accessible", by_group = T,
+                     group_var = var_str, base_size_in = base_size,
+                     selected_site = selected_site(), selected_year = selected_year_val(),
+                     assessed_choice = input$assessed_choice)
+
+    output$keypop7a_plot_download <- download_box(paste0("accessible_",var_str), p,nrow(p$data))
+    output$keypop7a_table_download <- download_table(paste0("accessible_",var_str), p$data)
+    output$keypop7a_download_ui <- renderUI({
+      tagList(
+        downloadButton(outputId = "keypop7a_plot_download", label = "Download plot"),
+        downloadButton(outputId = "keypop7a_table_download",
+                       label = "Download table",
+                       icon = icon("table"))
+      )
+    })
+    n_bars_accessible_keypop(nrow(p$data))
+    p
+  }, height = function() {
+    50 * n_bars_accessible_keypop() + 100
+  })
+
+  output$time7a_plot <- renderPlot({
+    base_size <- 14
+
+    p <- tbl() |>
+      mutate(date = icab_rpv_rx_date,
+             event = 1,
+             outcome = case_when(icab_rpv_accessible == 1 ~ "a1",
+                                 icab_rpv_accessible == 0 ~ "a0")
+  ) |>
+      plot_outcome_by_month("Number who could access iCAB/RPV by prescription month",
+                            base_size_in = base_size,
+                            by_outcome = TRUE)
+
+    output$time7a_plot_download <- download_box("accessible_time",p)
+    output$time7a_table_download <- download_table("accessible_time",p$data)
+    output$time7a_download_ui <- renderUI({
+      tagList(
+        downloadButton(outputId = "time7a_plot_download", label = "Download plot"),
+        downloadButton(outputId = "time7a_table_download",
+                       label = "Download table",
+                       icon = icon("table"))
+      )
+    })
+
+    p
+  }, height = 400)
+
+  n_bars_not_accessible <<- reactiveVal(1)
+  output$not_accessible_reason_plot <- renderPlot({
+    base_size <- 14
+
+    p <- not_accessible_reason_func(tbl(), base_size_in = base_size)
+
+    output$not_accessible_reason_plot_download <- download_box("not_accessible_reason",p,nrow(p$data))
+    output$not_accessible_reason_table_download <- download_table("not_accessible_reason",p$data)
+    output$not_accessible_reason_download_ui <- renderUI({
+      tagList(
+        downloadButton(outputId = "not_accessible_reason_plot_download", label = "Download plot"),
+        downloadButton(outputId = "not_accessible_reason_table_download",
+                       label = "Download table",
+                       icon = icon("table"))
+      )
+    })
+
+    n_bars_not_accessible(nrow(p$data))
+    p
+  }, height = function() {
+    50 * n_bars_not_accessible() + 50
+  })
+
   output$initiated_n <-  renderUI({
     if (is.null(selected_year_val())){
       HTML(paste0(
@@ -1544,29 +1688,6 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
 
     p
   }, height = 400)
-
-  n_bars_not_accessible <<- reactiveVal(1)
-  output$not_accessible_reason_plot <- renderPlot({
-    base_size <- 14
-
-    p <- not_accessible_reason_func(tbl(), base_size_in = base_size)
-
-    output$not_accessible_reason_plot_download <- download_box("not_accessible_reason",p,nrow(p$data))
-    output$not_accessible_reason_table_download <- download_table("not_accessible_reason",p$data)
-    output$not_accessible_reason_download_ui <- renderUI({
-      tagList(
-        downloadButton(outputId = "not_accessible_reason_plot_download", label = "Download plot"),
-        downloadButton(outputId = "not_accessible_reason_table_download",
-                       label = "Download table",
-                       icon = icon("table"))
-      )
-    })
-
-    n_bars_not_accessible(nrow(p$data))
-    p
-  }, height = function() {
-    50 * n_bars_not_accessible() + 50
-  })
 
 
   output$sustained_n <-  renderUI({
