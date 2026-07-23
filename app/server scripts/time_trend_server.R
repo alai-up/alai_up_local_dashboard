@@ -45,7 +45,8 @@ time_trend_server <- function(input, output, ic_df, session){
     
     demo_group <- sym(input$time_demo_group)
     
-    input_df <- ic_df()
+    input_df <- ic_df() |>
+      mutate(icab_rpv_rx_date = if_else(is.na(icab_rpv_rx_date), icab_rpv_shot1_date, icab_rpv_rx_date)) 
     if (input$time_demo_group == "none") {
       input_df <- input_df |> mutate(none = "Overall")
     }
@@ -68,10 +69,10 @@ time_trend_server <- function(input, output, ic_df, session){
         select(contains("icab_rpv") & contains("screen")) |>
         names(),
       "Prescribed" = ic_df() |> 
-        select(contains("icab_rpv_rx_date") | (contains("icab_rpv_shot") & contains("date"))) |>
+        select(contains("icab_rpv_rx_date")) |>
         names(), 
       "Accessible" = ic_df() |> 
-        select(contains("icab_rpv_rx_date") | (contains("icab_rpv_shot") & contains("date")),
+        select(contains("icab_rpv_rx_date"),
                contains("icab_rpv_accessible")) |>
         names(), 
       "Initiated" = ic_df() |> 
@@ -92,11 +93,13 @@ time_trend_server <- function(input, output, ic_df, session){
 
     temp <- input_df |>
       select(alai_up_uid, !!demo_group, all_of(cols_to_select)) |>
-      rename_with(.fn = \(x) str_c(x,"_outcome"), .cols = any_of("icab_rpv_accessible")) |>
+      rename_with(.fn = \(x) str_replace(x,"icab_rpv_accessible",
+                                         "icab_rpv_rx_outcome"),
+                  .cols = any_of("icab_rpv_accessible")) |>
       pivot_longer(cols = -c(alai_up_uid,!!demo_group),
                    names_to = c("event",".value"),
                    names_pattern = "(.+)_(date|outcome)",
-                   values_drop_na = TRUE)
+                   values_drop_na = TRUE) 
     
     if ("outcome" %in% names(temp)){
       temp <- temp |>
@@ -180,7 +183,7 @@ time_trend_server <- function(input, output, ic_df, session){
   title_df <- reactive({
     temp <- tibble(
       numerator = c("Assessed","Counseled","Screened",
-                    "Interested","Eligible","Prescribed",
+                    "Interested","Eligible","Prescribed","Accessible",
                     "Initiated","Sustained"),
     ) |>
       mutate(denominator = "PWH") |>
