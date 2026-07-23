@@ -938,7 +938,7 @@ not_interested_reason_func <- function(input_df, base_size_in){
   base_size <- base_size_in # set dynamically
   text_size <- base_size / 2.5
   
-  ic_df <- get_IC_df(input_df)
+  ic_df <- input_df
   
   disinterest_df <- ic_df |>
     mutate(disinterest_reason = str_split(disinterest_reason, ",")) |> 
@@ -1028,7 +1028,7 @@ not_eligible_reason_func <- function(input_df,base_size_in){
   base_size <- base_size_in # set dynamically
   text_size <- base_size / 2.5
   
-  ic_df <- get_IC_df(input_df)
+  ic_df <- input_df
   
   not_elig_df <- ic_df |>
     mutate(not_elig_reason = str_split(not_elig_reason, ",")) |> 
@@ -1119,7 +1119,7 @@ not_accessible_reason_func <- function(input_df, base_size_in){
   base_size <- base_size_in # set dynamically
   text_size <- base_size / 2.5
   
-  ic_df <- get_IC_df(input_df)
+  ic_df <- input_df
   
   not_accessible_df <- ic_df |>
     mutate(icab_rpv_not_accessible_reason = str_split(icab_rpv_not_accessible_reason, ",")) |> 

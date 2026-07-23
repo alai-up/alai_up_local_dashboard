@@ -1016,7 +1016,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
   output$not_interested_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- not_interested_reason_func(tbl(), base_size_in = base_size)
+    p <- not_interested_reason_func(ic_df(), base_size_in = base_size)
 
     output$not_interested_reason_plot_download <- download_box("not_interested_reason",p,nrow(p$data))
     output$not_interested_reason_table_download <- download_table("not_interested_reason",p$data)
@@ -1317,7 +1317,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
   output$not_eligible_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- not_eligible_reason_func(tbl(), base_size_in = base_size)
+    p <- not_eligible_reason_func(ic_df(), base_size_in = base_size)
 
     output$not_eligible_reason_plot_download <- download_box("not_eligible_reason",p,nrow(p$data))
     output$not_eligible_reason_table_download <- download_table("not_eligible_reason",p$data)
@@ -1563,7 +1563,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
   output$not_accessible_reason_plot <- renderPlot({
     base_size <- 14
 
-    p <- not_accessible_reason_func(tbl(), base_size_in = base_size)
+    p <- not_accessible_reason_func(ic_df(), base_size_in = base_size)
 
     output$not_accessible_reason_plot_download <- download_box("not_accessible_reason",p,nrow(p$data))
     output$not_accessible_reason_table_download <- download_table("not_accessible_reason",p$data)
