@@ -2221,7 +2221,9 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       labs(x = "Days since iCAB/RPV initiation (number contributing data)",
            y = NULL,
            title = str_c("Estimated time of first VL ",val1(),", among those starting iCAB/RPV with VL ",val2()),
-           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for uncertainty due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
+           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, 
+                               accounting for bias due to (1) people who discontinue and (2) people who have
+                                not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
       scale_fill_manual(name = NULL,
@@ -2321,7 +2323,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       labs(x = str_c("Days since VL ",val1()," (number contributing data)"),
            y = NULL,
            title = str_c("Estimated time of first VL ",val2(),", among those with pre-iCAB/RPV VL ",val1()),
-           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for uncertainty due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
+           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for bias due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
       scale_fill_manual(name = NULL,
@@ -2423,7 +2425,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       labs(x = str_c("Days since VL ",val1()," (number contributing data)"),
            y = NULL,
            title = str_c("Estimated time of first VL ",val2(),", among those with pre-iCAB/RPV VL ",val2()),
-           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for uncertainty due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
+           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for bias due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
       scale_fill_manual(name = NULL,
@@ -2521,7 +2523,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       labs(x = str_c("Days since VL ",val1()," (number contributing data)"),
            y = NULL,
            title = str_c("Estimated time of first Viral failure, among those with pre-iCAB/RPV VL ",val1()),
-           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for uncertainty due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
+           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for bias due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
       scale_fill_manual(name = NULL,
@@ -2619,7 +2621,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       labs(x = str_c("Days since VL ",val1()," (number contributing data)"),
            y = NULL,
            title = str_c("Estimated time of first Viral failure, among those with pre-iCAB/RPV VL ",val2()),
-           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for uncertainty due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
+           caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for bias due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
       scale_fill_manual(name = NULL,

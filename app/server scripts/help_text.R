@@ -131,7 +131,8 @@ help_text <- list(
       is defined as a single viral load >1000 copies/mL or 2 consecutive viral loads
       >200 copies/mL.'),
     p('The first 5 plots are calculated using the Kaplan-Meier estimator. This gives a statistical
-      estimate of the time to the first occurrence of the event. Therefore, the percentages
+      estimate of the time to the first occurrence of the event accounting for potential bias due to
+      clients having variable follow-up time. Therefore, the percentages
       are only statistical estimates and have some uncertainty attached to them. The
       number of people contributing data (in parentheses) can give a sense of how certain
       or uncertain the estimate is.'),
