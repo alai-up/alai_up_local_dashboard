@@ -1221,6 +1221,7 @@ discontinued_reason_func <- function(input_df, base_size_in){
         icab_rpv_discontinued_reason == 8 ~ "Concerns about side effects",
         icab_rpv_discontinued_reason == 9 ~ "Switched out of clinic",
         icab_rpv_discontinued_reason == 10 ~ "Change/loss of insurance/payor",
+        icab_rpv_discontinued_reason == 11 ~ "Emergent resistance",
         icab_rpv_discontinued_reason == 20 ~ "Other",
         icab_rpv_discontinued_reason == "No dose in >90 days" ~ icab_rpv_discontinued_reason,
         .default = "Unknown"),
@@ -1234,6 +1235,7 @@ discontinued_reason_func <- function(input_df, base_size_in){
                  "Concerns about side effects",
                  "Switched out of clinic",
                  "Change/loss of insurance/payor",
+                 "Emergent resistance",
                  "Other",
                  "No dose in >90 days",
                  "Unknown")
