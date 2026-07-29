@@ -8,4 +8,6 @@ The Dashboard can be used by clinic leadership, LAI ART program leads, data mana
 - Identify gaps in LAI ART care delivery across different social determinants of health.
 - Guide efforts to address gaps and improve the quality of services for all clients.
 
+The dashboard can be accessed at https://alai-up.github.io/alai_up_local_dashboard/. Please note that it may take a minute or two for the page to load.
+
 Simulated data for testing out the dashboard is available in [`data/simulated_data.xlsx`](data/simulated_data.xlsx)
