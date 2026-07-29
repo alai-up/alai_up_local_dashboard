@@ -46,7 +46,7 @@ list(
     br(),
     tags$li('Clinical Outcomes. This section shows clinical outcomes for LAI ART clients: 
             number and percent of PWH on LAI ART who received LAI ART 
-            early, on time, or late, and time to viral suppression and viral failure.
+            early, on time, or late, and time to viral suppression and treatment failure.
             There is also data on clinic-level viral load, including clients on oral ART.'),
     br(),    
     tags$li("Time Trends. This page allows you to explore how indicators have changed over

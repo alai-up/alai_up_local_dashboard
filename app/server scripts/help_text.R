@@ -127,9 +127,9 @@ help_text <- list(
   info11 = tagList(
     p('This page shows viral load results among clients on iCAB/RPV. Different 
       viral load cutoffs of interest can be selected on the left. Either 50 copies/mL 
-      or 200 copies/mL can be used to calculate viral suppression. Viral failure 
-      is defined as a single viral load >1000 copies/mL or 2 consecutive viral loads
-      >200 copies/mL.'),
+      or 200 copies/mL can be used to calculate viral suppression. Treatment failure 
+      is defined as a single viral load >1000 copies/mL, 2 consecutive viral loads
+      >200 copies/mL, or emergent resistance.'),
     p('The first 5 plots are calculated using the Kaplan-Meier estimator. This gives a statistical
       estimate of the time to the first occurrence of the event accounting for potential bias due to
       clients having variable follow-up time. Therefore, the percentages
@@ -138,7 +138,7 @@ help_text <- list(
       or uncertain the estimate is.'),
     p('For the first plot, ideally the time to viral suppression will be short and reach 
       near 100%. For the subsequent plots, ideally time to first elevated viral load 
-      or first viral failure will be long, and the percentage will remain low.'),
+      or first treatment failure will be long, and the percentage will remain low.'),
     p('For the clinic-level viral load, the percentage of people with a viral load above/below
       the chosen threshold in each time period is shown. The time periods can be every 3 months,
       every 6 months, or every 12 months. It is stratified by iCAB/RPV receipt in period. 

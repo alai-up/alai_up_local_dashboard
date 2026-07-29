@@ -2522,7 +2522,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       ) +
       labs(x = str_c("Days since VL ",val1()," (number contributing data)"),
            y = NULL,
-           title = str_c("Estimated time of first Viral failure, among those with pre-iCAB/RPV VL ",val1()),
+           title = str_c("Estimated time of first treatment failure, among those with pre-iCAB/RPV VL ",val1()),
            caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for bias due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
@@ -2531,7 +2531,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                                    "total_event" = "#08519C"
                         ),
                         labels = c("surv" = "Suppressed",
-                                   "total_event" = "Virologic Failure")) +
+                                   "total_event" = "Treatment Failure")) +
       theme_minimal(base_size = base_size,
                     base_family = "Roboto") +
       theme(plot.caption.position = "plot",
@@ -2620,7 +2620,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       ) +
       labs(x = str_c("Days since VL ",val1()," (number contributing data)"),
            y = NULL,
-           title = str_c("Estimated time of first Viral failure, among those with pre-iCAB/RPV VL ",val2()),
+           title = str_c("Estimated time of first treatment failure, among those with pre-iCAB/RPV VL ",val2()),
            caption = str_wrap("Percentages at each time point are estimated using the Kaplan-Meier survival function, accounting for bias due to (1) people who discontinue and (2) people who have not accrued enough time on iCAB/RPV yet.",120)) +
       scale_y_continuous(labels = scales::label_percent(accuracy = 1),
                          limits = c(0,1)) +
@@ -2629,7 +2629,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                                    "total_event" = "#FE5000"
                         ),
                         labels = c("surv" = "Suppressed",
-                                   "total_event" = "Virologic Failure")) +
+                                   "total_event" = "Treatment Failure")) +
       theme_minimal(base_size = base_size,
                     base_family = "Roboto") +
       theme(plot.caption.position = "plot",
