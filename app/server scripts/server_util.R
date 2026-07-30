@@ -1334,6 +1334,9 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
              date >= first_shot_date & date <= icab_rpv_discontinued_date ~ 1,
              .default = 0)) |>
     # section to get pre-cab VL. either 3 months before to 2 weeks after, or recorded
+    group_by(alai_up_uid) |>
+    fill(hiv_vl_pre_icab_date, hiv_vl_pre_icab_result, .direction = "downup") |>
+    ungroup() |>
     filter(time_from_cab > -93) |>
     mutate(
       .by = alai_up_uid,
@@ -1341,12 +1344,12 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
         vl_appt == 1 & time_from_cab <=14 & time_from_cab == max(time_from_cab[time_from_cab <= 14 & vl_appt == 1]),1,0),
       pre_icab_vl_date = case_when(any(closest_vl_before_cab == 1) ~
                                      min(date[closest_vl_before_cab == 1],na.rm = T),
-                                   any(!is.na(hiv_vl_pre_icab_date)) ~
+                                   any(!is.na(hiv_vl_pre_icab_date)) & hiv_vl_pre_icab_date <= first_shot_date + days(30)~
                                      min(as.Date(hiv_vl_pre_icab_date),na.rm = T),
                                    .default = NA),
       pre_icab_vl_result = case_when(any(closest_vl_before_cab == 1) ~
                                        min(result[closest_vl_before_cab == 1],na.rm = T),
-                                     any(!is.na(hiv_vl_pre_icab_date)) ~
+                                     any(!is.na(hiv_vl_pre_icab_date)) & hiv_vl_pre_icab_date <= first_shot_date + days(30) ~
                                        min(hiv_vl_pre_icab_result,na.rm = T),
                                      .default = NA)) |>
     group_by(alai_up_uid) |> 
@@ -1391,6 +1394,9 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
              pre_icab_vl_result <= 2 & result >= 4 & lag(result) >= 4 ~ time_from_cab,
              result >= 5 ~ time_from_cab - first_under50_time,
              result >= 4 & lag(result) >= 4 ~ time_from_cab - first_under50_time,
+             icab_rpv_discontinued_reason == 6 | icab_rpv_discontinued_reason == 11 ~ 
+             max(as.numeric(difftime(as.Date(icab_rpv_discontinued_date),
+                                     as.Date(first_shot_date),units = "days"))) - first_under200_time,
              .default = NA
            ),
            failure_time_ref200 = case_when(
@@ -1398,6 +1404,9 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
              pre_icab_vl_result <= 3 & result >= 4 & lag(result) >= 4 ~ time_from_cab,
              result >= 5 ~ time_from_cab - first_under200_time,
              result >= 4 & lag(result) >= 4 ~ time_from_cab - first_under200_time,
+             icab_rpv_discontinued_reason == 6 | icab_rpv_discontinued_reason == 11 ~ 
+             max(as.numeric(difftime(as.Date(icab_rpv_discontinued_date),
+                                     as.Date(first_shot_date),units = "days"))) - first_under200_time,
              .default = NA
            ),
            first_elevated_vl_ref50 = if_else(elevated_time_ref50 == min(elevated_time_ref50,na.rm = T),1,0),
@@ -1418,7 +1427,7 @@ prepare_cab_master_df <- function(input_df, interval_1, interval_2){
                                        as.numeric(difftime(as.Date(icab_rpv_discontinued_date),
                                                            as.Date(first_shot_date),units = "days")),
                                        NA),
-           last_cab_time = max(time_from_cab),
+           last_cab_time = max(max(time_from_cab), discontinued_time,na.rm = T),
            time_from_50 = last_cab_time - first_under50_time,
            time_from_200 = last_cab_time - first_under200_time,
            any_elevated_vl = if_else(any(first_elevated_vl_ref50 == 1,na.rm = T),1,0),

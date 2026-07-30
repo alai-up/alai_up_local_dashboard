@@ -2178,6 +2178,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                   time = min(first_under50_time, last_cab_time,na.rm = T))
     } else {
       temp <- cab_master_df() |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(pre_icab_vl_result > 3) |>
         ungroup() |>
@@ -2275,7 +2276,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                   event = max(first_elevated_vl_ref50),
                   time = min(first_elevated_vl_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
-      temp <-  cab_master_df() |>
+      temp <-  cab_master_df() |>  
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
                !is.na(starting_vl),
@@ -2378,6 +2380,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                   time = min(first_elevated_vl_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
       temp <-  cab_master_df() |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(.by = alai_up_uid,
                !is.na(starting_vl),
@@ -2478,6 +2481,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                   time = min(first_failure_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
       temp <-  cab_master_df() |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
                pre_icab_vl_result <= 3) |>
@@ -2576,6 +2580,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                   time = min(first_failure_ref50_time, max(time_from_50,na.rm = T),na.rm = T))
     } else {
       temp <-  cab_master_df() |>
+        filter(cab_attempt_number == 1 | is.na(cab_attempt_number)) |>
         filter(vl_appt == 1) |>
         filter(!is.na(starting_vl),
                pre_icab_vl_result > 3 & any(first_under200 == 1)) |>
