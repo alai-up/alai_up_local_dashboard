@@ -172,7 +172,7 @@ time_trend_server <- function(input, output, ic_df, session){
     }
 
     out_df <- temp |>
-      complete(period, !!demo_group, fill = list(n = 0)) |>
+      complete(period, !!demo_group, fill = list(n = 0, n_discontinue = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
       filter(.by = !!demo_group, denominator > 0) 
             
@@ -186,9 +186,17 @@ time_trend_server <- function(input, output, ic_df, session){
                     "Interested","Eligible","Prescribed","Accessible",
                     "Initiated","Sustained"),
     ) |>
-      mutate(denominator = "PWH") |>
+      mutate(denominator = "PWH",
+             numerator_monthly = case_when(
+              numerator == "Sustained" ~ "Discontinued",
+              .default = numerator
+             )) |>
       expand_grid(plot = c("Total","Monthly")) |>
-      mutate(title_string = str_c(plot," percent ", numerator, " out of ", denominator))
+      # for total use numerator. for monthly use numerator_monthly
+      mutate(title_string = case_when(
+        plot == "Total" ~ str_c("Total percent ", numerator, " out of ", denominator),
+        plot == "Monthly" ~ str_c("Monthly percent ", numerator_monthly, " out of ", denominator)
+      ))
 
   })
   
@@ -273,6 +281,8 @@ time_trend_server <- function(input, output, ic_df, session){
     demo_group <- sym(input$time_demo_group)
 
     p <- events_data_filtered() |>
+      # for sustained only, set n=n_discontinue,
+      mutate(n = if(input$time_indicator == "Sustained") n_discontinue else n) |>
       mutate(pct = n/denominator) |>
       ggplot(aes(x = period, y = pct, fill = !!demo_group)) +
       geom_bar(position = "dodge", stat = "identity") + 
