@@ -171,8 +171,16 @@ time_trend_server <- function(input, output, ic_df, session){
       }
     }
 
+    # Determine the full range of periods to ensure all are displayed
+    min_period <- min(temp$period, na.rm = TRUE)
+    max_period <- max(temp$period, na.rm = TRUE)
+    
+    full_period_sequence <- seq.Date(from = min_period,
+                                     to = max_period,
+                                     by = paste(input$time_trend_period_time_choice, "months"))
+
     out_df <- temp |>
-      complete(period, !!demo_group, fill = list(n = 0, n_discontinue = 0)) |>
+      complete(period = full_period_sequence, !!demo_group, fill = list(n = 0, n_discontinue = 0)) |>
       full_join(denom_df, by = join_by(!!demo_group)) |>
       filter(.by = !!demo_group, denominator > 0) 
             
