@@ -24,7 +24,6 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: "4.6.1" # or version from renv.lock
           use-public-rspm: true
 
       - name: Setup R dependencies
@@ -35,16 +34,17 @@ jobs:
             posit-dev/r-shinylive
             any::sessioninfo
 
-      - name: Restore packages from lockfile
+      - name: Find package dependencies
         shell: Rscript {0}
-        run: renv::restore()
+        run: |
+          pak::pak(
+            unique(renv::dependencies(".")$Package)
+          )
 
       - name: Build site
         shell: Rscript {0}
-        # pin the assets_version to a specific version to avoid breaking changes
-        # update as needed alongside version updates
         run: |
-          shinylive::export("app", "site", assets_version = "0.10.12") 
+          shinylive::export("app", "site")
 
       - name: Upload site artifact
         if: github.ref == 'refs/heads/main'
