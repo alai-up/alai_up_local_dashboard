@@ -490,7 +490,7 @@ server <- function(input, output, session) {
     choice_list <- choice_list[choice_list != input$time_demo_group]
 
     selectInput("time_demo_group_2",
-                "Filter variable (optional)",
+                "Filter variable",
                 choices = choice_list,
                 selected = choice_list[1])
   })

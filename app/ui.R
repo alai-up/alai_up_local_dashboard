@@ -97,7 +97,7 @@ ui <- dashboardPage(
                                   label = "Time period length, months", 
                                   choices = c(1,3,6),
                                   selected = 1),
-                                 checkboxInput("show_time_trend_var_filter", "Filter by second variable", value = FALSE),
+                                 checkboxInput("show_time_trend_var_filter", "Filter by second variable (optional)", value = FALSE),
                                  conditionalPanel("input.show_time_trend_var_filter === true",
                                                   id = "time_filters_2",
                                                   style = "padding: 15px; margin: 10px 0px; background-color: #2c3b41; border-top: 1px solid #4f5962; border-bottom: 1px solid #4f5962;",
