@@ -31,7 +31,13 @@ list(
                         tags$li('Range of dates: the range of dates to focus on in the graphs, allowing you to 
                                  zoom in on a particular period'),
                         tags$li('Time period length: controls whether the data are aggregated monthly (1 month),
-                                 quarterly (3 months) or biannually (6 months)')
+                                 quarterly (3 months) or biannually (6 months)'),
+                        tags$li('Filter by second variable: Opens the filtering options'),
+                        tags$li('Filter variable: the demographic or social determinant of health category
+                                 you are interested in filtering on'),
+                        tags$li('Select the groups you want to see: Select the groups you want to be included 
+                                in the time trends plots. This will filter the data to only include clients belonging 
+                                to the selected groups. If no groups are selected, then all clients will be included.')
                       )
                    )
                )
