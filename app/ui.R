@@ -25,12 +25,7 @@ library(munsell)
 ui <- dashboardPage(
   dashboardHeader(
     # title
-    title = 'ALAI UP Dashboard',
-    tags$li(
-      class = "dropdown",
-      style = "padding: 8px;",
-      shinyauthr::logoutUI("logout")
-    )
+    title = 'ALAI UP Dashboard'
   ),
   dashboardSidebar(
     width = 300,
