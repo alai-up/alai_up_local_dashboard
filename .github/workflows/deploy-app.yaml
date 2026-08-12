@@ -17,6 +17,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      SHINYLIVE_ASSETS_VERSION: v0.10.12
 
     steps:
       - uses: actions/checkout@v4
@@ -26,25 +27,19 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Setup R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Setup renv
+        uses: r-lib/actions/setup-renv@v2
         with:
-          packages: |
-            any::renv
-            posit-dev/r-shinylive
-            any::sessioninfo
-
-      - name: Find package dependencies
-        shell: Rscript {0}
-        run: |
-          pak::pak(
-            unique(renv::dependencies(".")$Package)
-          )
+          cache-version: 1
 
       - name: Build site
         shell: Rscript {0}
         run: |
-          shinylive::export("app", "site")
+          shinylive::export(
+            "app",
+            "site",
+            assets_version = Sys.getenv("SHINYLIVE_ASSETS_VERSION")
+          )
 
       - name: Upload site artifact
         if: github.ref == 'refs/heads/main'
