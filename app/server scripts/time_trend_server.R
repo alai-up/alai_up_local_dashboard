@@ -30,7 +30,8 @@ time_trend_server <- function(input, output, ic_df, session){
     last_date  <- max(p$data$period, na.rm = TRUE)
     p +
       theme_minimal(base_family = "Roboto") +
-      theme(text = element_text(size = 15), axis.text.x = element_text(size = 15, color = "black")) +
+      theme(text = element_text(size = 15), axis.text.x = element_text(size = 15, color = "black"),
+            plot.caption = element_text(hjust = 0)) +
       scale_x_date(date_labels = "%b %Y",
                    expand = expand_x
                   )
@@ -280,7 +281,16 @@ time_trend_server <- function(input, output, ic_df, session){
            title = str_c(
              title_df() |> filter(numerator == input$time_indicator, plot == "Total") |> pull(title_string),
              if (input$time_demo_group == "none") "" else str_c(" by ", get_demo_label(input$time_demo_group))
-           )) +
+           ),
+           # add caption if there is a time_demo_group_2_selection listing the time_demo_group_2 groups
+           caption = if (input$show_time_trend_var_filter && !is.null(input$time_demo_group_2_selection)) {
+             str_c("The data are filtered to include only the following ",
+                   get_demo_label(input$time_demo_group_2), " groups: ",
+                   paste(input$time_demo_group_2_selection, collapse = ", "))
+           } else {
+             NULL
+           }
+          ) +
       scale_y_continuous(labels = scales::percent)
 
     finalize_time_plot(p, expand_x = expansion(mult = c(0.05, 0.1))) + 
@@ -319,7 +329,15 @@ time_trend_server <- function(input, output, ic_df, session){
            title = str_c(
              title_df() |> filter(numerator == input$time_indicator, plot == "Monthly") |> pull(title_string),
              if (input$time_demo_group == "none") "" else str_c(" by ", get_demo_label(input$time_demo_group))
-           ))
+           ),
+           caption = if (input$show_time_trend_var_filter && !is.null(input$time_demo_group_2_selection)) {
+             str_c("The data are filtered to include only the following ",
+                   get_demo_label(input$time_demo_group_2), " groups: ",
+                   paste(input$time_demo_group_2_selection, collapse = ", "))
+           } else {
+             NULL
+           }
+          )
 
     p <- finalize_time_plot(p)
     if (input$time_demo_group == "none") {
