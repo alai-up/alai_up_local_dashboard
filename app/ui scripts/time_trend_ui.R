@@ -19,7 +19,7 @@ list(
                       Note that this reflects the first date when an event occurred."),
                      p("The second plot shows the monthly percentage of a given indicator over time for each group 
                      within a demographic group. For example, if the indicator is 'Interested' and the demographic 
-                     group is sex, the plot will show the total percentage interested for each sex over time. 
+                     group is sex, the plot will show the monthly percentage interested for each sex over time. 
                      The denominator for each line is the total number of people in that age group.
                       Note that if 'Sustained' is chosen as the indicator, the percentages show the percentage 
                       discontinuing in any given month. To view the number initiating, use the 'Initiated' indicator."),
