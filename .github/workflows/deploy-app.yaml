@@ -33,6 +33,8 @@ jobs:
             any::renv
             posit-dev/r-shinylive
             any::sessioninfo
+          cache-version: ${{ github.event.inputs.cache-version }}
+
 
       - name: Find package dependencies
         shell: Rscript {0}
