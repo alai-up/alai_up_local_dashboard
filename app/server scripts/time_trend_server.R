@@ -45,8 +45,20 @@ time_trend_server <- function(input, output, ic_df, session){
     
     demo_group <- sym(input$time_demo_group)
     
+    if (!is.null(input$time_demo_group_2)) {
+      time_demo_group_2 <- sym(input$time_demo_group_2) 
+      time_demo_group_2_selection <- input$time_demo_group_2_selection
+    } 
+    
     input_df <- ic_df() |>
       mutate(icab_rpv_rx_date = if_else(is.na(icab_rpv_rx_date), icab_rpv_shot1_date, icab_rpv_rx_date)) 
+    
+    # filter time_demo_group_2 to only groups selected in time_demo_group_2_selection if applicable
+    if (input$show_time_trend_var_filter && !is.null(time_demo_group_2_selection)) {
+        input_df <- input_df |> 
+          filter(!!time_demo_group_2 %in% time_demo_group_2_selection)
+      }
+    
     if (input$time_demo_group == "none") {
       input_df <- input_df |> mutate(none = "Overall")
     }
