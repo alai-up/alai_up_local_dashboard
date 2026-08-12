@@ -460,6 +460,58 @@ server <- function(input, output, session) {
                 choices = choice_list,
                 selected = "age_cat")
   })
+
+  output$time_demo_group_2 <- renderUI({
+    # select from the groups not chosen in output$time_demo_group
+    req(input$file1)
+    choice_list <- c("Age" = "age_cat",
+                     "Sex" = "sex",
+                     "Race" = "race",
+                     "Ethnicity" = "ethnicity",
+                     "HIV medication payor" = "insurance_status",
+                     "Housing status" = "housing_status",
+                     "Risk MSM" = "risk_msm",
+                     "Risk IDU" = "risk_idu",
+                     "Risk Heterosex" = "risk_heterosex",
+                     "Employment status" = "employment_status",
+                     "Poverty level" = "poverty_level",
+                     "Immigration status" = "immigration_status_undoc",
+                     "Language" = "language",
+                     "Incarceration history" = "incarceration_history",
+                     "Recent CD4" = "cd4_recent_result",
+                     "SDOH Other 1" = "SDOH_other_1",
+                     "SDOH Other 2" = "SDOH_other_2",
+                     "SDOH Other 3" = "SDOH_other_3")
+
+    if (length(site_list()) > 1){
+      choice_list <- c(choice_list,c("Site" = "site"))
+    }
+
+    choice_list <- choice_list[choice_list != input$time_demo_group]
+
+    selectInput("time_demo_group_2",
+                "Comparison variable 2",
+                choices = choice_list,
+                selected = choice_list[1])
+  })
+
+  output$time_demo_group_2_selection <- renderUI({
+    # get the list of options from the relevant demographic group selected in output$time_demo_group_2
+    req(input$time_demo_group_2)
+    grouping_var <- sym(input$time_demo_group_2)
+    temp <- ic_df() |>
+      group_by(!!grouping_var) |>
+      summarize(PWH = sum(PWH)) |>
+      arrange(!!grouping_var)
+
+    choice_list <- temp |> pull(!!grouping_var) |> as.character() |> sort()
+
+    checkboxGroupInput("time_demo_group_2_selection",
+                       "Select the groups you want to see",
+                       choices = choice_list,
+                       selected = choice_list[1])
+
+  })
   
   output$time_trends_page <- renderUI({
     req(input$file1)
