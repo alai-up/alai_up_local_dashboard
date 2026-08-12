@@ -86,8 +86,6 @@ data_explore_server <- function(input, output, filtered_ic_summary_df, session){
                 size=4, fontface = "bold") +
       labs(y = NULL, x = NULL,
            caption = caption_text) +
-      scale_x_continuous(labels = scales::percent, breaks = seq(0, 1, 0.1),
-                         limits = c(0,1.5)) +
       scale_fill_manual(values= c("1" = "#08519C","0" = "gray")) + 
       facet_wrap(as.formula(paste("~", rlang::as_string(filter_var))),ncol = 1,
                  strip.position = "left",
