@@ -1,3 +1,7 @@
+.skin-blue .wrapper {
+    background-color: #ecf0f5; /* Default shinydashboard background color */
+}
+
 /* FONT */
 /* some AI help with the fonts */
 /* 1. Define the fonts using the local files in your app folder */
