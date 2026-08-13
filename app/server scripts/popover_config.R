@@ -221,8 +221,8 @@ create_details_button <- function(section_id) {
       conditionalPanel(
         condition = sprintf("input.%s %% 2 == 1", button_id),
         div(
-          # Absolute positioning for the popover box
-          style = "position: absolute; z-index: 1000; margin-top: 10px; left: 0; width:35vw",
+          # Absolute positioning for the popover box, centered
+          style = "position: absolute; z-index: 1000; margin-top: 10px; left: 50%; transform: translateX(-50%); width: 35vw;",
           box(
             id = panel_id,
             class = "details-panel",
