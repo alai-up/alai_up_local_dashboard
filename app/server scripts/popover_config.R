@@ -25,6 +25,7 @@ details_lookup <- tribble(
   "age1",                  "Age Demographics",                     "[USER TO FILL]",
   "insurance1",            "HIV Medication Payor",                 "[USER TO FILL]",
   "keypop1",               "Key Population Demographics",          "[USER TO FILL]",
+  "zip_map_1",              "Zip Code Map",                        "[USER TO FILL]",
   
   # ========== Demographics by LAI ART Section ==========
   "sex1b",                 "Sex Demographics (by LAI use)",            "[USER TO FILL]",
@@ -33,6 +34,7 @@ details_lookup <- tribble(
   "age1b",                 "Age Demographics (by LAI use)",            "[USER TO FILL]",
   "insurance1b",           "HIV Medication Payor (by LAI use)",        "[USER TO FILL]",
   "keypop1b",              "Key Population Demographics (by LAI use)", "[USER TO FILL]",
+  "zip_map_1b",             "Zip Code Map (by LAI use)",               "[USER TO FILL]",
   
   # ========== LAI Care Gap Analysis ==========
   "lai_care_gap",          "Care Gap Analysis",             "[USER TO FILL]",

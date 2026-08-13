@@ -717,7 +717,8 @@ server <- function(input, output, session) {
               leafletOutput("zip_map"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
                   "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
-              downloadButton(outputId = "map_data_download", label = "Download data"))
+              downloadButton(outputId = "map_data_download", label = "Download data")),
+              create_details_button("zip_map_1")
         )
       )
     )
@@ -823,7 +824,8 @@ server <- function(input, output, session) {
               leafletOutput("zip_map_b"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
                   "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
-              downloadButton(outputId = "map_data_b_download", label = "Download data"))
+              downloadButton(outputId = "map_data_b_download", label = "Download data")),
+              create_details_button("zip_map_1b")
         )
       )
     )
@@ -880,6 +882,7 @@ server <- function(input, output, session) {
                           downloadButton(outputId = "int_elig_table_download",
                                          label = "Download table",
                                          icon = icon("table")),
+                          create_details_button("assessed_outcomes"),
                           size = "xs")
     } else {
       int_elig_box <- NULL

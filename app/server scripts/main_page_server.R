@@ -187,7 +187,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
    output$keypop1_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "keypop1_plot_download", "Download plot"),
-        downloadButton(outputId = "keypop1_table_download", "Download table", icon = icon("table"))
+        downloadButton(outputId = "keypop1_table_download", "Download table", icon = icon("table")),
+        create_details_button("keypop1")
       )
     })
 
@@ -284,7 +285,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
     output[[paste0(id,"_download_ui")]] <- renderUI({
       tagList(
         downloadButton(outputId = paste0(id, "_plot_download"), "Download plot"),
-        downloadButton(outputId = paste0(id, "_table_download"), "Download table", icon = icon("table"))
+        downloadButton(outputId = paste0(id, "_table_download"), "Download table", icon = icon("table")),
+        create_details_button(id)
       )
     })
 
@@ -331,7 +333,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
    output$keypop1b_download_ui <- renderUI({
       tagList(
         downloadButton(outputId = "keypop1b_plot_download", "Download plot"),
-        downloadButton(outputId = "keypop1b_table_download", "Download table", icon = icon("table"))
+        downloadButton(outputId = "keypop1b_table_download", "Download table", icon = icon("table")),
+        create_details_button("keypop1b")
       )
     })
 
@@ -455,7 +458,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
       downloadButton(outputId = "lai_care_gap_plot_download", label = "Download plot"),
       downloadButton(outputId = "lai_care_gap_table_download",
                      label = "Download table",
-                     icon = icon("table"))
+                     icon = icon("table")),
+      create_details_button("lai_care_gap")
     )
   })
 
@@ -572,7 +576,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
           downloadButton(outputId = paste0(id, "_plot_download"), label = "Download plot"),
           downloadButton(outputId = paste0(id, "_table_download"),
                          label = "Download table",
-                         icon = icon("table"))
+                         icon = icon("table")),
+          create_details_button(id)
         )
       })
     })
@@ -624,7 +629,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "assessed_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "assessed_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("assessed_overall")
       )
     })
 
@@ -671,7 +677,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop2_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop2_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop2")
       )
     })
 
@@ -694,7 +701,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time2_plot_download", label = "Download plot"),
         downloadButton(outputId = "time2_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time2")
       )
     })
 
@@ -721,7 +729,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time2_event_plot_download", label = "Download plot"),
         downloadButton(outputId = "time2_event_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time2_event")
       )
     })
 
@@ -764,7 +773,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "counseled_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "counseled_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("counseled_overall")
       )
     })
 
@@ -805,7 +815,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop3_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop3_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop3")
       )
     })
     n_bars_counseled_keypop(nrow(p$data))
@@ -832,7 +843,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time3_plot_download", label = "Download plot"),
         downloadButton(outputId = "time3_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time3")
       )
     })
 
@@ -858,7 +870,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time3_event_plot_download", label = "Download plot"),
         downloadButton(outputId = "time3_event_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time3_event")
       )
     })
 
@@ -901,7 +914,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "interested_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "interested_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("interested_overall")
       )
     })
 
@@ -942,7 +956,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop4_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop4_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop4")
       )
     })
     n_bars_interested_keypop(nrow(p$data))
@@ -974,7 +989,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time4_plot_download", label = "Download plot"),
         downloadButton(outputId = "time4_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time4")
       )
     })
 
@@ -1004,7 +1020,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time4_event_plot_download", label = "Download plot"),
         downloadButton(outputId = "time4_event_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time4_event")
       )
     })
 
@@ -1025,7 +1042,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "not_interested_reason_plot_download", label = "Download plot"),
         downloadButton(outputId = "not_interested_reason_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("not_interested_reason")
       )
     })
 
@@ -1070,7 +1088,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "screened_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "screened_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("screened_overall")
       )
     })
 
@@ -1111,7 +1130,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop5_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop5_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop5")
       )
     })
     n_bars_screened_keypop(nrow(p$data))
@@ -1138,7 +1158,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time5_plot_download", label = "Download plot"),
         downloadButton(outputId = "time5_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time5")
       )
     })
 
@@ -1164,7 +1185,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time5_event_plot_download", label = "Download plot"),
         downloadButton(outputId = "time5_event_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time5_event")
       )
     })
 
@@ -1206,7 +1228,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "eligible_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "eligible_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("eligible_overall")
       )
     })
 
@@ -1247,7 +1270,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop6_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop6_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop6")
       )
     })
     n_bars_eligible_keypop(nrow(p$data))
@@ -1277,7 +1301,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time6_plot_download", label = "Download plot"),
         downloadButton(outputId = "time6_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time6")
       )
     })
 
@@ -1306,7 +1331,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time6_event_plot_download", label = "Download plot"),
         downloadButton(outputId = "time6_event_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time6_event")
       )
     })
 
@@ -1326,7 +1352,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "not_eligible_reason_plot_download", label = "Download plot"),
         downloadButton(outputId = "not_eligible_reason_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("not_eligible_reason")
       )
     })
 
@@ -1372,7 +1399,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "prescribed_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "prescribed_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("prescribed_overall")
       )
     })
 
@@ -1414,7 +1442,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop7_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop7_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop7")
       )
     })
     n_bars_prescribed_keypop(nrow(p$data))
@@ -1438,7 +1467,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time7_plot_download", label = "Download plot"),
         downloadButton(outputId = "time7_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time7")
       )
     })
 
@@ -1481,7 +1511,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "accessible_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "accessible_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("accessible_overall")
       )
     })
 
@@ -1523,7 +1554,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop7a_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop7a_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop7a")
       )
     })
     n_bars_accessible_keypop(nrow(p$data))
@@ -1552,7 +1584,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time7a_plot_download", label = "Download plot"),
         downloadButton(outputId = "time7a_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time7a")
       )
     })
 
@@ -1572,7 +1605,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "not_accessible_reason_plot_download", label = "Download plot"),
         downloadButton(outputId = "not_accessible_reason_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("not_accessible_reason")
       )
     })
 
@@ -1617,7 +1651,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "initiated_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "initiated_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("initiated_overall")
       )
     })
 
@@ -1658,7 +1693,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop8_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop8_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop8")
       )
     })
     n_bars_initiated_keypop(nrow(p$data))
@@ -1682,7 +1718,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time8_plot_download", label = "Download plot"),
         downloadButton(outputId = "time8_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time8")
       )
     })
 
@@ -1725,7 +1762,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "sustained_overall_plot_download", label = "Download plot"),
         downloadButton(outputId = "sustained_overall_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("sustained_overall")
       )
     })
 
@@ -1766,7 +1804,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "keypop9_plot_download", label = "Download plot"),
         downloadButton(outputId = "keypop9_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("keypop9")
       )
     })
     n_bars_sustained_keypop(nrow(p$data))
@@ -1828,7 +1867,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time9_plot_download", label = "Download plot"),
         downloadButton(outputId = "time9_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time9")
       )
     })
 
@@ -1848,7 +1888,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "discontinued_reason_plot_download", label = "Download plot"),
         downloadButton(outputId = "discontinued_reason_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("discontinued_reason")
       )
     })
 
@@ -1935,7 +1976,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "ontime_status_bar_download", label = "Download plot"),
         downloadButton(outputId = "ontime_status_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("ontime_status")
       )
     })
     p
@@ -1957,7 +1999,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "ontime_plot_monthly_download", label = "Download plot"),
         downloadButton(outputId = "ontime_table_monthly_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("ontime_monthly")
       )
     })
     p
@@ -1977,7 +2020,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "ontime_plot_bimonthly_download", label = "Download plot"),
         downloadButton(outputId = "ontime_table_bimonthly_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("ontime_bimonthly")
       )
     })
     p
@@ -2027,7 +2071,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "late_pt_plot_download", label = "Download plot"),
         downloadButton(outputId = "late_pt_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("late_pt")
       )
     })
     p
@@ -2076,7 +2121,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "early_pt_plot_download", label = "Download plot"),
         downloadButton(outputId = "early_pt_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("early_pt")
       )
     })
     p
@@ -2252,7 +2298,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "vl_time_to_vs_plot_download", label = "Download plot"),
         downloadButton(outputId = "vl_time_to_vs_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("vl_time_to_vs")
       )
     })
     p
@@ -2354,7 +2401,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time_to_el_vl1_plot_download", label = "Download plot"),
         downloadButton(outputId = "time_to_el_vl1_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time_to_el_vl1")
       )
     })
     p
@@ -2457,7 +2505,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time_to_el_vl2_plot_download", label = "Download plot"),
         downloadButton(outputId = "time_to_el_vl2_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time_to_el_vl2")
       )
     })
     p
@@ -2556,7 +2605,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time_to_failure1_plot_download", label = "Download plot"),
         downloadButton(outputId = "time_to_failure1_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time_to_failure1")
       )
     })
     p
@@ -2656,7 +2706,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "time_to_failure2_plot_download", label = "Download plot"),
         downloadButton(outputId = "time_to_failure2_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("time_to_failure2")
       )
     })
     p
@@ -2770,7 +2821,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
         downloadButton(outputId = "clinic_level_vl_plot_download", label = "Download plot"),
         downloadButton(outputId = "clinic_level_vl_table_download",
                        label = "Download table",
-                       icon = icon("table"))
+                       icon = icon("table")),
+        create_details_button("clinic_level_vl")
       )
     })
     p
