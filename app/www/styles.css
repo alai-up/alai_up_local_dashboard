@@ -144,3 +144,56 @@ html {
 .shiny-file-input-progress {
   display: none ;}
 #upload_progress {display: none; }
+
+/* details panel close control */
+.details-panel {
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+.details-panel .box-header {
+  position: relative;
+  padding-right: 2.5rem;
+}
+
+.details-panel .box-body {
+  max-height: calc(60vh - 3.5rem);
+  overflow-y: auto;
+}
+
+.details-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.details-close-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 2rem;
+  line-height: 1;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: -0.2rem 0 0;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.details-close-btn:hover,
+.details-close-btn:focus {
+  opacity: 1;
+  background: rgba(16, 12, 72, 0.08);
+  border-radius: 999px;
+}
+
+.details-toggle-btn:hover,
+.details-toggle-btn:focus {
+  background: rgba(16, 12, 72, 0.06);
+}

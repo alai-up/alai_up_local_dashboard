@@ -195,7 +195,6 @@ details_lookup <- tribble(
 #' The button is styled as a small secondary action button with a circle-info icon.
 #' Clicking the button toggles a simple details panel below it.
 #' If the section_id is not found in the lookup table, silently returns NULL.
-
 create_details_button <- function(section_id) {
   lookup <- details_lookup |>
     filter(section_id == !!section_id)
@@ -209,21 +208,41 @@ create_details_button <- function(section_id) {
   button_id <- paste0(section_id, "_details_btn")
   panel_id <- paste0(section_id, "_details_panel")
   
-  tagList(
-    actionButton(
-      inputId = button_id,
-      label = "Details",
-      icon = icon("circle-info")
-      # class = "btn-sm btn-outline-secondary"
-    ),
-    conditionalPanel(
-      condition = sprintf("input.%s %% 2 == 1", button_id),
-      div(
-        id = panel_id,
-        class = "details-panel",
-        tags$strong(title),
-        tags$br(),
-        tags$span(text)
+  # Use a div with relative positioning to contain the absolutely positioned popover
+  div(
+    style = "position: relative; display: inline-block;",
+    tagList(
+      actionButton(
+        inputId = button_id,
+        label = "Details",
+        icon = icon("circle-info"),
+        class = "details-toggle-btn"
+      ),
+      conditionalPanel(
+        condition = sprintf("input.%s %% 2 == 1", button_id),
+        div(
+          # Absolute positioning for the popover box
+          style = "position: absolute; z-index: 1000; margin-top: 10px; left: 0; width:35vw",
+          box(
+            id = panel_id,
+            class = "details-panel",
+            title = div(
+              class = "details-title-wrap",
+              strong(title),
+              tags$button(
+                type = "button",
+                class = "details-close-btn",
+                `aria-label` = "Close details",
+                HTML("&times;"),
+                onclick = sprintf("$('#%s').trigger('click');", button_id)
+              )
+            ),
+            status = "info",
+            solidHeader = TRUE,
+            width = 12,
+            tags$span(text)
+          )
+        )
       )
     )
   )
