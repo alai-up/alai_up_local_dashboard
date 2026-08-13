@@ -6,9 +6,6 @@
 #   - `details_lookup`: tibble mapping section_id to title and description text
 #   - `create_details_button()`: helper function to render Details button with popover
 
-library(tidyverse)
-library(bslib)
-
 # ============================================================================
 # Details Lookup Table
 # ============================================================================
@@ -191,39 +188,43 @@ details_lookup <- tribble(
 #'
 #' @param section_id Character. The section identifier to look up in details_lookup.
 #'
-#' @return A bslib::popover() wrapping an actionButton with Details icon,
-#'         or NULL if section_id not found in lookup table.
+#' @return A tagList containing an actionButton and a conditionalPanel with
+#'         the matching title and text, or NULL if section_id not found.
 #'
 #' @details
-#' The button is styled as a small, secondary action button with a circle-info icon.
-#' The popover displays below the button by default and auto-repositions if needed.
+#' The button is styled as a small secondary action button with a circle-info icon.
+#' Clicking the button toggles a simple details panel below it.
 #' If the section_id is not found in the lookup table, silently returns NULL.
 
 create_details_button <- function(section_id) {
-  # Look up the section in the details_lookup table
   lookup <- details_lookup |>
     filter(section_id == !!section_id)
   
-  # If not found, silently return NULL (no button)
   if (nrow(lookup) == 0) {
     return(NULL)
   }
   
-  # Extract title and text
   title <- lookup$details_title[1]
   text <- lookup$details_text[1]
+  button_id <- paste0(section_id, "_details_btn")
+  panel_id <- paste0(section_id, "_details_panel")
   
-  # Create the popover with Details button
-  popover(
+  tagList(
     actionButton(
-      inputId = paste0(section_id, "_details_btn"),
+      inputId = button_id,
       label = "Details",
-      icon = icon("circle-info"),
-      class = "btn-sm btn-outline-secondary"
+      icon = icon("circle-info")
+      # class = "btn-sm btn-outline-secondary"
     ),
-    title = title,
-    text,
-    placement = "bottom",
-    trigger = "click"
+    conditionalPanel(
+      condition = sprintf("input.%s %% 2 == 1", button_id),
+      div(
+        id = panel_id,
+        class = "details-panel",
+        tags$strong(title),
+        tags$br(),
+        tags$span(text)
+      )
+    )
   )
 }

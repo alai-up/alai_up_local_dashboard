@@ -131,8 +131,7 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
                      by_cab_status = FALSE)
                      
       output[[paste0(id, "_plot_download")]] <- download_box(label, p, nrow(p$data))
-      output[[paste0(id, "_table_download")]] <- download_table(label, p$data)
-
+      output[[paste0(id, "_table_download")]] <- download_table(label, p$data) 
       p
     })
 
@@ -140,7 +139,8 @@ main_page_server <- function(input, output, tbl,ic_df,ic_summary_df,selected_sit
     output[[paste0(id,"_download_ui")]] <- renderUI({
       tagList(
         downloadButton(outputId = paste0(id, "_plot_download"), "Download plot"),
-        downloadButton(outputId = paste0(id, "_table_download"), "Download table", icon = icon("table"))
+        downloadButton(outputId = paste0(id, "_table_download"), "Download table", icon = icon("table")),
+        create_details_button(id)
       )
     })
   

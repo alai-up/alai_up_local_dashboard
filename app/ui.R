@@ -117,7 +117,7 @@ ui <- dashboardPage(
   ),
   dashboardBody(
     useShinyjs(),
-      tags$head(
+    tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
       ),
     tabItems(

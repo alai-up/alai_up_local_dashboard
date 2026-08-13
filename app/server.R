@@ -12,6 +12,7 @@ source("server scripts/time_trend_server.R")
 source("server scripts/server_util.R")
 source("server scripts/render_scroll_page.R")
 source("server scripts/help_text.R")
+source("server scripts/popover_config.R")
 
 # RENDER filter_select UI
 dynamic_filter_select <- function(input, output, ic_summary_df,selected_site, session){
