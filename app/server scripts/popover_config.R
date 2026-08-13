@@ -23,7 +23,7 @@ details_lookup <- tribble(
   "race1",                 "Race Demographics",                    "[USER TO FILL]",
   "ethnicity1",            "Ethnicity Demographics",               "[USER TO FILL]",
   "age1",                  "Age Demographics",                     "[USER TO FILL]",
-  "insurance1",            "Health Care Coverage",                 "[USER TO FILL]",
+  "insurance1",            "HIV Medication Payor",                 "[USER TO FILL]",
   "keypop1",               "Key Population Demographics",          "[USER TO FILL]",
   
   # ========== Demographics by LAI ART Section ==========
@@ -31,7 +31,7 @@ details_lookup <- tribble(
   "race1b",                "Race Demographics (by LAI use)",           "[USER TO FILL]",
   "ethnicity1b",           "Ethnicity (by LAI use)",                   "[USER TO FILL]",
   "age1b",                 "Age Demographics (by LAI use)",            "[USER TO FILL]",
-  "insurance1b",           "Health Care Coverage (by LAI use)",        "[USER TO FILL]",
+  "insurance1b",           "HIV Medication Payor (by LAI use)",        "[USER TO FILL]",
   "keypop1b",              "Key Population Demographics (by LAI use)", "[USER TO FILL]",
   
   # ========== LAI Care Gap Analysis ==========
@@ -44,7 +44,7 @@ details_lookup <- tribble(
   "race2",                 "Assessed by Race",                     "[USER TO FILL]",
   "ethnicity2",            "Assessed by Ethnicity",                "[USER TO FILL]",
   "age2",                  "Assessed by Age",                      "[USER TO FILL]",
-  "insurance2",            "Assessed by Health Care Coverage",     "[USER TO FILL]",
+  "insurance2",            "Assessed by HIV Medication Payor",     "[USER TO FILL]",
   "keypop2",               "Assessed by Key Population",           "[USER TO FILL]",
   "time2",                 "Assessed Over Time (by person)",       "[USER TO FILL]",
   "time2_event",           "Assessed Over Time (by encounter)",    "[USER TO FILL]",
@@ -55,7 +55,7 @@ details_lookup <- tribble(
   "race3",                 "Counseled by Race",                    "[USER TO FILL]",
   "ethnicity3",            "Counseled by Ethnicity",               "[USER TO FILL]",
   "age3",                  "Counseled by Age",                     "[USER TO FILL]",
-  "insurance3",            "Counseled by Health Care Coverage",    "[USER TO FILL]",
+  "insurance3",            "Counseled by HIV Medication Payor",    "[USER TO FILL]",
   "keypop3",               "Counseled by Key Population",          "[USER TO FILL]",
   "time3",                 "Counseled Over Time (by person)",      "[USER TO FILL]",
   "time3_event",           "Counseled Over Time (by encounter)",   "[USER TO FILL]",
@@ -66,7 +66,7 @@ details_lookup <- tribble(
   "race4",                 "Interested by Race",                       "[USER TO FILL]",
   "ethnicity4",            "Interested by Ethnicity",                  "[USER TO FILL]",
   "age4",                  "Interested by Age",                        "[USER TO FILL]",
-  "insurance4",            "Interested by Health Care Coverage",       "[USER TO FILL]",
+  "insurance4",            "Interested by HIV Medication Payor",       "[USER TO FILL]",
   "keypop4",               "Interested by Key Population",             "[USER TO FILL]",
   "time4",                 "Interested Over Time (by person)",         "[USER TO FILL]",
   "time4_event",           "Interested Over Time (by encounter)",      "[USER TO FILL]",
@@ -78,7 +78,7 @@ details_lookup <- tribble(
   "race5",                 "Screened by Race",                         "[USER TO FILL]",
   "ethnicity5",            "Screened by Ethnicity",                    "[USER TO FILL]",
   "age5",                  "Screened by Age",                          "[USER TO FILL]",
-  "insurance5",            "Screened by Health Care Coverage",         "[USER TO FILL]",
+  "insurance5",            "Screened by HIV Medication Payor",         "[USER TO FILL]",
   "keypop5",               "Screened by Key Population",               "[USER TO FILL]",
   "time5",                 "Screened Over Time (by person)",           "[USER TO FILL]",
   "time5_event",           "Screened Over Time (by encounter)",        "[USER TO FILL]",
@@ -89,7 +89,7 @@ details_lookup <- tribble(
   "race6",                 "Eligible by Race",                         "[USER TO FILL]",
   "ethnicity6",            "Eligible by Ethnicity",                    "[USER TO FILL]",
   "age6",                  "Eligible by Age",                          "[USER TO FILL]",
-  "insurance6",            "Eligible by Health Care Coverage",         "[USER TO FILL]",
+  "insurance6",            "Eligible by HIV Medication Payor",         "[USER TO FILL]",
   "keypop6",               "Eligible by Key Population",               "[USER TO FILL]",
   "time6",                 "Eligible Over Time (by person)",           "[USER TO FILL]",
   "time6_event",           "Eligible Over Time (by encounter)",        "[USER TO FILL]",
@@ -101,7 +101,7 @@ details_lookup <- tribble(
   "race7",                 "Prescribed by Race",                       "[USER TO FILL]",
   "ethnicity7",            "Prescribed by Ethnicity",                  "[USER TO FILL]",
   "age7",                  "Prescribed by Age",                        "[USER TO FILL]",
-  "insurance7",            "Prescribed by Health Care Coverage",       "[USER TO FILL]",
+  "insurance7",            "Prescribed by HIV Medication Payor",       "[USER TO FILL]",
   "keypop7",               "Prescribed by Key Population",             "[USER TO FILL]",
   "time7",                 "Prescribed Over Time",                     "[USER TO FILL]",
   
@@ -111,7 +111,7 @@ details_lookup <- tribble(
   "race7a",                "Accessible by Race",                       "[USER TO FILL]",
   "ethnicity7a",           "Accessible by Ethnicity",                  "[USER TO FILL]",
   "age7a",                 "Accessible by Age",                        "[USER TO FILL]",
-  "insurance7a",           "Accessible by Health Care Coverage",       "[USER TO FILL]",
+  "insurance7a",           "Accessible by HIV Medication Payor",       "[USER TO FILL]",
   "keypop7a",              "Accessible by Key Population",             "[USER TO FILL]",
   "time7a",                "Accessible Over Time",                     "[USER TO FILL]",
   "not_accessible_reason", "Reasons Not Accessible",                   "[USER TO FILL]",
@@ -122,7 +122,7 @@ details_lookup <- tribble(
   "race8",                 "Initiated by Race",                        "[USER TO FILL]",
   "ethnicity8",            "Initiated by Ethnicity",                   "[USER TO FILL]",
   "age8",                  "Initiated by Age",                         "[USER TO FILL]",
-  "insurance8",            "Initiated by Health Care Coverage",        "[USER TO FILL]",
+  "insurance8",            "Initiated by HIV Medication Payor",        "[USER TO FILL]",
   "keypop8",               "Initiated by Key Population",              "[USER TO FILL]",
   "time8",                 "Initiated Over Time",                      "[USER TO FILL]",
   
@@ -132,7 +132,7 @@ details_lookup <- tribble(
   "race9",                 "Sustained by Race",                        "[USER TO FILL]",
   "ethnicity9",            "Sustained by Ethnicity",                   "[USER TO FILL]",
   "age9",                  "Sustained by Age",                         "[USER TO FILL]",
-  "insurance9",            "Sustained by Health Care Coverage",        "[USER TO FILL]",
+  "insurance9",            "Sustained by HIV Medication Payor",        "[USER TO FILL]",
   "keypop9",               "Sustained by Key Population",              "[USER TO FILL]",
   "time9",                 "Time Spent on iCAB/RPV",                   "[USER TO FILL]",
   "discontinued_reason",   "Reasons Discontinued",                     "[USER TO FILL]",
@@ -176,7 +176,7 @@ details_lookup <- tribble(
       str_detect(section_id, "race") ~ "Race",
       str_detect(section_id, "ethnicity") ~ "Ethnicity",
       str_detect(section_id, "age") ~ "Age",
-      str_detect(section_id, "insurance") ~ "Health Care Coverage",
+      str_detect(section_id, "insurance") ~ "HIV Medication Payor",
       str_detect(section_id, "keypop") ~ "Key Population"
   )
 )
