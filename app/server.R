@@ -704,6 +704,8 @@ server <- function(input, output, session) {
                 choices = choice_list,
                 selected = "Housing status"),
               plotOutput("keypop1_plot",, height = "auto"),
+              div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                  'Select the key population/social determinant of health you are interested in looking at. If data are missing from a particular column, those rows will appear as "unknown".'),
               uiOutput("keypop1_download_ui")),
           # Box for the map
           box(id = "zip1_box",
@@ -811,6 +813,8 @@ server <- function(input, output, session) {
                 choices = choice_list,
                 selected = "Housing status"),
               plotOutput("keypop1b_plot",, height = "auto"),
+              div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                  'Select the key population/social determinant of health you are interested in looking at. If data are missing from a particular column, those rows will appear as "unknown".'),
               uiOutput("keypop1b_download_ui")),
           # Box for the map
           box(id = "zip1b_box",

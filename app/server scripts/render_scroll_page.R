@@ -55,6 +55,10 @@ renderSectionPage <- function(input, output, page_id, sections_info, n_output_id
                    selected = "Count")))
       } else{NULL}},
       plotOutput(section$plot, height = "auto"),
+      {if (str_detect(section$id,"keypop")){
+        div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                    'Select the key population/social determinant of health you are interested in looking at. If data are missing from a particular column, those rows will appear as "unknown".')
+      }},
       uiOutput(section$download),
       size = "xs"
     )
