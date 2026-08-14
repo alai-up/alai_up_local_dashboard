@@ -229,7 +229,7 @@ create_details_button <- function(section_id) {
             id = panel_id,
             class = "details-panel",
             title = div(
-              class = "details-title-wrap",
+              class = "details-title-wrap", style = "font-size: 15px;",
               strong(title),
               tags$button(
                 type = "button",
@@ -242,7 +242,7 @@ create_details_button <- function(section_id) {
             status = "info",
             solidHeader = TRUE,
             width = 12,
-            tags$span(text)
+            tags$span(style = "font-size: 14px;", text)
           )
         )
       )
