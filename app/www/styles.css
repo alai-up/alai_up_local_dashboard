@@ -151,8 +151,9 @@ html {
 
 /* details panel close control */
 .details-panel {
-  max-height: 60vh;
+  max-height: 30vh !important;
   overflow: hidden;
+  margin-bottom: 0;
 }
 
 .details-panel .box-header {
@@ -160,9 +161,10 @@ html {
   padding-right: 2.5rem;
 }
 
+/* Scroll only inside the visible content area */
 .details-panel .box-body {
-  max-height: calc(60vh - 3.5rem);
-  overflow-y: auto;
+  max-height: calc(30vh - 2.5rem) !important;
+  overflow-y: auto !important;
 }
 
 .details-title-wrap {

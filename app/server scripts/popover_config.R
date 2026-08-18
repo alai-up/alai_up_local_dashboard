@@ -20,9 +20,6 @@ details_lookup <- tribble(
   ~section_id,              ~details_title,                        ~details_text,
   # ========== Demographics Section ==========
   "sex1",                  "Sex Demographics",                     "[USER TO FILL]",
-  "race1",                 "Race Demographics",                    "[USER TO FILL]",
-  "ethnicity1",            "Ethnicity Demographics",               "[USER TO FILL]",
-  "age1",                  "Age Demographics",                     "[USER TO FILL]",
   "insurance1",            "HIV Medication Payor",                 "[USER TO FILL]",
   "keypop1",               "Key Population Demographics",          "[USER TO FILL]",
   "zip_map_1",              "Zip Code Map",                        "[USER TO FILL]",
@@ -224,7 +221,7 @@ create_details_button <- function(section_id) {
         condition = sprintf("input.%s %% 2 == 1", button_id),
         div(
           # Absolute positioning for the popover box, centered
-          style = "position: absolute; z-index: 1000; margin-top: 10px; left: 50%; transform: translateX(-50%); width: 35vw;",
+          style = "position: absolute; z-index: 1000; margin-top: 10px; left: 50%; transform: translateX(-50%); width: 40vw;",
           box(
             id = panel_id,
             class = "details-panel",
@@ -242,7 +239,10 @@ create_details_button <- function(section_id) {
             status = "info",
             solidHeader = TRUE,
             width = 12,
-            tags$span(style = "font-size: 14px;", text)
+            div(
+              class = "box-body",
+              tags$span(style = "font-size: 14px;", HTML(str_replace_all(text, "\n", "<br>")))
+            )
           )
         )
       )
