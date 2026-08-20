@@ -20,6 +20,9 @@ details_lookup <- tribble(
   ~section_id,              ~details_title,                        ~details_text,
   # ========== Demographics Section ==========
   "sex1",                  "Sex Demographics",                     "[USER TO FILL]",
+  "race1",                 "Race Demographics",                    "[USER TO FILL]",
+  "ethnicity1",            "Ethnicity Demographics",               "[USER TO FILL]",
+  "age1",                  "Age Demographics",                     "[USER TO FILL]",
   "insurance1",            "HIV Medication Payor",                 "[USER TO FILL]",
   "keypop1",               "Key Population Demographics",          "[USER TO FILL]",
   "zip_map_1",              "Zip Code Map",                        "[USER TO FILL]",
