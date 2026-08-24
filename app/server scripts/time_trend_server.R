@@ -2,6 +2,17 @@
 time_trend_server <- function(input, output, ic_df, session){
 
     # Shared constants and helpers -------------------------------------------------
+  
+  # Global date fallback for empty data: use a reasonable window around today
+  # Adjust these as needed based on your expected data range
+  global_date_fallback <- reactive({
+    today_date <- Sys.Date()
+    list(
+      min_date = today_date - 365,
+      max_date = today_date
+    )
+  })
+  
   choice_list <- c(
     "None" = "none",
     "Age" = "age_cat",
@@ -185,17 +196,31 @@ time_trend_server <- function(input, output, ic_df, session){
     }
 
     # Determine the full range of periods to ensure all are displayed
-    min_period <- min(temp$period, na.rm = TRUE)
-    max_period <- max(temp$period, na.rm = TRUE)
+    # Use global fallback if temp is empty or has no valid periods
+    if (nrow(temp) == 0 || all(is.na(temp$period))) {
+      min_period <- global_date_fallback()$min_date
+      max_period <- global_date_fallback()$max_date
+    } else {
+      min_period <- min(temp$period, na.rm = TRUE)
+      max_period <- max(temp$period, na.rm = TRUE)
+    }
     
     full_period_sequence <- seq.Date(from = min_period,
                                      to = max_period,
                                      by = paste(input$time_trend_period_time_choice, "months"))
 
-    out_df <- temp |>
-      complete(period = full_period_sequence, !!demo_group, fill = list(n = 0, n_discontinue = 0)) |>
-      full_join(denom_df, by = join_by(!!demo_group)) |>
-      filter(.by = !!demo_group, denominator > 0) 
+    # If temp is empty, create a skeleton with all demo groups and filled zeros
+    if (nrow(temp) == 0) {
+      out_df <- denom_df |>
+        expand_grid(period = full_period_sequence) |>
+        mutate(n = 0, n_discontinue = 0) |>
+        filter(denominator > 0)
+    } else {
+      out_df <- temp |>
+        complete(period = full_period_sequence, !!demo_group, fill = list(n = 0, n_discontinue = 0)) |>
+        full_join(denom_df, by = join_by(!!demo_group)) |>
+        filter(.by = !!demo_group, denominator > 0)
+    }
             
     return(out_df)
 
