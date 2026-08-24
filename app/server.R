@@ -718,7 +718,7 @@ server <- function(input, output, session) {
                            icon = icon("play")),
               leafletOutput("zip_map"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
-                  "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
+                  "To populate the ZIP code heat map, click “create map”; it may take a moment to process. Please use caution when sharing this map, as small cell sizes may risk client confidentiality."),
               tagList(downloadButton(outputId = "map_data_download", label = "Download data")),
                       create_details_button("zip_map_1"))
         )
@@ -827,7 +827,7 @@ server <- function(input, output, session) {
                            icon = icon("play")),
               leafletOutput("zip_map_b"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
-                  "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
+                  "To populate the ZIP code heat map, click “create map”; it may take a moment to process. Please use caution when sharing this map, as small cell sizes may risk client confidentiality."),
               tagList(downloadButton(outputId = "map_data_b_download", label = "Download data")),
                       create_details_button("zip_map_1b"))
         )
