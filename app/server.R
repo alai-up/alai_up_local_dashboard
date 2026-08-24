@@ -12,6 +12,7 @@ source("server scripts/time_trend_server.R")
 source("server scripts/server_util.R")
 source("server scripts/render_scroll_page.R")
 source("server scripts/help_text.R")
+source("server scripts/popover_config.R")
 
 # RENDER filter_select UI
 dynamic_filter_select <- function(input, output, ic_summary_df,selected_site, session){
@@ -703,6 +704,8 @@ server <- function(input, output, session) {
                 choices = choice_list,
                 selected = "Housing status"),
               plotOutput("keypop1_plot",, height = "auto"),
+              div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                  'Select the key population/social determinant of health you are interested in looking at. If data are missing from a particular column, those rows will appear as "unknown".'),
               uiOutput("keypop1_download_ui")),
           # Box for the map
           box(id = "zip1_box",
@@ -715,8 +718,9 @@ server <- function(input, output, session) {
                            icon = icon("play")),
               leafletOutput("zip_map"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
-                  "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
-              downloadButton(outputId = "map_data_download", label = "Download data"))
+                  "To populate the ZIP code heat map, click “create map”; it may take a moment to process. Please use caution when sharing this map, as small cell sizes may risk client confidentiality."),
+              tagList(downloadButton(outputId = "map_data_download", label = "Download data")),
+                      create_details_button("zip_map_1"))
         )
       )
     )
@@ -809,6 +813,8 @@ server <- function(input, output, session) {
                 choices = choice_list,
                 selected = "Housing status"),
               plotOutput("keypop1b_plot",, height = "auto"),
+              div(style = "padding: 10px; color: #B22222; font-size: 12px;",
+                  'Select the key population/social determinant of health you are interested in looking at. If data are missing from a particular column, those rows will appear as "unknown".'),
               uiOutput("keypop1b_download_ui")),
           # Box for the map
           box(id = "zip1b_box",
@@ -821,8 +827,9 @@ server <- function(input, output, session) {
                            icon = icon("play")),
               leafletOutput("zip_map_b"),
               div(style = "padding: 10px; color: #B22222; font-size: 12px;",
-                  "Note: Use caution when sharing this map, as small cell sizes may risk client confidentiality."),
-              downloadButton(outputId = "map_data_b_download", label = "Download data"))
+                  "To populate the ZIP code heat map, click “create map”; it may take a moment to process. Please use caution when sharing this map, as small cell sizes may risk client confidentiality."),
+              tagList(downloadButton(outputId = "map_data_b_download", label = "Download data")),
+                      create_details_button("zip_map_1b"))
         )
       )
     )
@@ -879,6 +886,7 @@ server <- function(input, output, session) {
                           downloadButton(outputId = "int_elig_table_download",
                                          label = "Download table",
                                          icon = icon("table")),
+                          create_details_button("assessed_outcomes"),
                           size = "xs")
     } else {
       int_elig_box <- NULL
